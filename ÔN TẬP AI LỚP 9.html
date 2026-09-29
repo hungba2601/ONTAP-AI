@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn tập Trí Tuệ Nhân Tạo Lớp 9</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Tùy chỉnh thanh cuộn cho đẹp hơn */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-indigo-600 text-white shadow-md sticky top-0 z-10">
+        <div class="container mx-auto px-4 py-4 sm:px-6 lg:px-8">
+            <h1 class="text-xl md:text-2xl font-bold text-center">BỘ CÂU HỎI ÔN TẬP - MÔN TRÍ TUỆ NHÂN TẠO LỚP 9</h1>
+            <p class="text-center text-indigo-200 text-sm mt-1">Chọn tiết học để bắt đầu ôn tập</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        
+        <!-- Controls Section -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+            <label for="lesson-select" class="block text-sm font-medium text-slate-700 mb-2">Chọn tiết học:</label>
+            <div class="relative">
+                <select id="lesson-select" class="block w-full pl-3 pr-10 py-3 text-base border-slate-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-lg border appearance-none bg-slate-50 cursor-pointer shadow-sm transition-colors hover:bg-slate-100">
+                    <option value="" disabled selected>-- Vui lòng chọn một tiết học --</option>
+                    <option value="1">Tiết 1: Thách thức xã hội trong kỷ nguyên AI</option>
+                    <option value="2">Tiết 2: AI tác động đến xã hội (Dẫn chứng)</option>
+                    <option value="3">Tiết 3: Thiên vị và thành kiến trong AI</option>
+                    <option value="4">Tiết 4: Năng lực cần rèn & hướng nghề trong thế giới có AI</option>
+                    <option value="5">Tiết 5: Trách nhiệm dùng AI & khai báo trung thực</option>
+                    <option value="6">Tiết 6: Phát hiện nội dung giả mạo do AI (Deepfake)</option>
+                    <option value="7">Tiết 7: Kiến tạo AI công bằng - Đa dạng dữ liệu</option>
+                    <option value="8">Tiết 8: Đề xuất ý tưởng sáng tạo giải quyết vấn đề bằng AI</option>
+                    <option value="9">Tiết 9: Cải thiện dữ liệu - 4 thao tác (Thực hành)</option>
+                    <option value="10">Tiết 10: Con người dẫn dắt AI</option>
+                    <option value="11">Tiết 11: Kiểm thử sản phẩm AI - Cách đánh giá</option>
+                    <option value="12">Tiết 12: Chấm chéo sản phẩm AI (Tổng kết cuối kỳ)</option>
+                </select>
+                <!-- Custom Arrow -->
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+            </div>
+            
+            <div class="mt-4 flex justify-between items-center hidden" id="quiz-info-bar">
+                <span class="text-sm font-medium text-slate-600 bg-slate-100 px-3 py-1 rounded-full" id="lesson-title-display"></span>
+                <span class="text-sm font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full"><span id="question-count">0</span> Câu hỏi</span>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="space-y-6 hidden">
+            <!-- Questions will be injected here by Javascript -->
+        </div>
+
+        <!-- Initial Placeholder State -->
+        <div id="placeholder-state" class="text-center py-16 bg-white rounded-xl border border-dashed border-slate-300">
+            <svg class="mx-auto h-12 w-12 text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+            <h3 class="text-lg font-medium text-slate-900">Chưa có tiết học nào được chọn</h3>
+            <p class="mt-1 text-sm text-slate-500">Hãy sử dụng menu thả xuống bên trên để chọn tiết học bạn muốn ôn tập.</p>
+        </div>
+
+        <!-- Submit Button Section -->
+        <div id="submit-section" class="mt-8 pt-6 border-t border-slate-200 hidden">
+            <button id="submit-btn" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 flex items-center justify-center mx-auto">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Nộp bài và Xem kết quả
+            </button>
+        </div>
+
+        <!-- Results Modal/Section -->
+        <div id="results-section" class="mt-8 bg-green-50 border border-green-200 rounded-xl p-6 text-center hidden fade-in">
+            <h2 class="text-2xl font-bold text-green-800 mb-2">Hoàn thành bài tập!</h2>
+            <p class="text-lg text-green-700">Điểm số của bạn:</p>
+            <div class="text-5xl font-black text-green-600 my-4" id="score-display">0/10</div>
+            <p class="text-sm text-green-600 mb-6" id="feedback-message">Tuyệt vời! Hãy tiếp tục phát huy nhé.</p>
+            <button id="retry-btn" class="bg-white border-2 border-green-600 text-green-700 hover:bg-green-50 font-bold py-2 px-6 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                Làm lại tiết này
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-100 py-6 mt-12 border-t border-slate-200">
+        <div class="container mx-auto text-center text-slate-500 text-sm px-4">
+            <p>Tài liệu dựa trên Giáo án chi tiết môn Trí tuệ nhân tạo lớp 9</p>
+        </div>
+    </footer>
+
+    <script>
+        // Database of all questions organized by lesson
+        const quizData = {
+            "1": {
+                title: "Tiết 1: Thách thức xã hội trong kỷ nguyên AI",
+                questions: [
+                    {
+                        question: "Thách thức 'mất việc làm' do AI gây ra tác động mạnh nhất đến nhóm công việc nào?",
+                        options: [
+                            "Các công việc đòi hỏi sự sáng tạo và nghệ thuật.",
+                            "Các công việc lặp đi lặp lại.",
+                            "Các công việc liên quan đến giao tiếp và chăm sóc con người.",
+                            "Các công việc quản lý cấp cao."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "AI và máy móc tự động làm thay tốt nhất những công việc có tính lặp lại (ví dụ: thu ngân, nhập liệu, tổng đài)."
+                    },
+                    {
+                        question: "'Tin giả tràn lan' do AI tạo ra có đặc điểm gì khiến nó trở thành một thách thức lớn?",
+                        options: [
+                            "Dễ dàng nhận biết bằng mắt thường.",
+                            "Rất giống thật và lan nhanh.",
+                            "Chỉ ảnh hưởng đến người lớn tuổi.",
+                            "Không ảnh hưởng đến đời sống thực tế."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "AI tạo ảnh, video, bài viết giả (deepfake) rất giống thật, lan truyền nhanh, gây hoang mang dư luận."
+                    },
+                    {
+                        question: "Việc một ứng dụng AI tự động phân tích lịch sử vị trí của người dùng mà không thông báo là biểu hiện của thách thức nào?",
+                        options: [
+                            "Mất việc làm.",
+                            "Tin giả tràn lan.",
+                            "Xâm phạm quyền riêng tư.",
+                            "Đánh đổi sự an toàn."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "AI thu thập, phân tích dữ liệu cá nhân (vị trí, sở thích) mà ta không hay biết là hành vi xâm phạm quyền riêng tư."
+                    },
+                    {
+                        question: "'Khoảng cách số' trong kỷ nguyên AI có nghĩa là gì?",
+                        options: [
+                            "Khoảng cách vật lý giữa con người và máy tính.",
+                            "Sự khác biệt về thời gian học công nghệ.",
+                            "Người có điều kiện tiếp cận AI sẽ tiến nhanh, người thiếu thiết bị sẽ bị tụt lại.",
+                            "Khoảng cách giữa các quốc gia có mạng 5G."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Khoảng cách số xảy ra khi người có điều kiện tiếp cận công nghệ phát triển nhanh hơn người thiếu thốn thiết bị/Internet."
+                    },
+                    {
+                        question: "Khi doanh nghiệp vội tung ra bản AI mới mà bỏ qua bài kiểm tra rủi ro, họ đang tạo ra thách thức gì?",
+                        options: [
+                            "Đánh đổi sự an toàn.",
+                            "Khoảng cách số.",
+                            "Phụ thuộc AI.",
+                            "Tin giả tràn lan."
+                        ],
+                        correctAnswer: 0,
+                        explanation: "Việc chạy đua công nghệ và vội vã phát hành mà bỏ qua an toàn người dùng được gọi là 'đánh đổi sự an toàn'."
+                    },
+                    {
+                        question: "Vì sao các vấn đề như tin giả hay thất nghiệp do AI tạo ra được gọi là 'thách thức xã hội'?",
+                        options: [
+                            "Chúng chỉ ảnh hưởng đến một cá nhân cụ thể.",
+                            "Chúng ảnh hưởng đến số đông.",
+                            "Chúng không thể giải quyết được.",
+                            "Chúng chỉ do chính phủ tạo ra."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Các thách thức của AI ảnh hưởng đến nhiều người trong xã hội, không chỉ một cá nhân riêng lẻ."
+                    },
+                    {
+                        question: "Nếu luôn dùng chatbot để làm bài tập mà không tự suy nghĩ, học sinh sẽ đối mặt với thách thức nào?",
+                        options: [
+                            "Đánh đổi an toàn.",
+                            "Khoảng cách số.",
+                            "Phụ thuộc quá mức vào AI.",
+                            "Mất việc làm."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Việc gì cũng hỏi AI dẫn đến lười suy nghĩ, giảm khả năng tự học, tự quyết định."
+                    },
+                    {
+                        question: "Hành động nào thể hiện trách nhiệm của công dân số trước vấn nạn tin giả?",
+                        options: [
+                            "Chia sẻ mọi thông tin nhận được để cảnh báo người khác.",
+                            "Không bao giờ đọc tin tức trên mạng.",
+                            "Kiểm chứng nguồn trước khi tin và không lan truyền tin chưa rõ.",
+                            "Tạo tin giả khác để phản bác lại."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Công dân số cần kiểm chứng nguồn, không tin mù quáng và không lan truyền tin chưa được xác minh."
+                    },
+                    {
+                        question: "Giải pháp thiết thực nhất để giảm thiểu tác động của việc AI thay thế con người trong công việc là gì?",
+                        options: [
+                            "Cấm sử dụng AI trong các công ty.",
+                            "Hỗ trợ đào tạo lại kỹ năng nghề mới cho người lao động.",
+                            "Yêu cầu mọi người làm việc lâu giờ hơn.",
+                            "Chỉ sử dụng con người cho mọi công việc."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Khi mất việc do tự động hóa, giải pháp là học lại kỹ năng mới và nhà nước hỗ trợ đào tạo nghề."
+                    },
+                    {
+                        question: "Thái độ đúng đắn nhất của một công dân số trước sự bùng nổ của AI là gì?",
+                        options: [
+                            "Tẩy chay hoàn toàn các sản phẩm AI.",
+                            "Hoảng sợ và tránh xa công nghệ.",
+                            "Có chính kiến và hành động có trách nhiệm, hiểu AI là cơ hội kèm thách thức.",
+                            "Tin tưởng tuyệt đối vào mọi quyết định của AI."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Là công dân số, cần có chính kiến rõ ràng, hành động có trách nhiệm – không thờ ơ cũng không hoảng sợ."
+                    }
+                ]
+            },
+            "2": {
+                title: "Tiết 2: AI tác động đến xã hội (Dẫn chứng)",
+                questions: [
+                    {
+                        question: "Ví dụ nào sau đây là dẫn chứng cụ thể về tác động của AI trong lĩnh vực y tế?",
+                        options: [
+                            "AI tự động đóng gói hàng hóa trong kho.",
+                            "AI đọc ảnh X-quang phát hiện sớm bất thường.",
+                            "AI đề xuất video giải trí trên Youtube.",
+                            "AI tự động chấm bài kiểm tra trắc nghiệm."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Trong y tế, AI hỗ trợ đắc lực trong chẩn đoán, đọc ảnh X-quang, MRI để phát hiện bệnh sớm."
+                    },
+                    {
+                        question: "Tác động tiêu cực cần cảnh giác của AI trong lĩnh vực giáo dục là gì?",
+                        options: [
+                            "Giúp học sinh học cá nhân hóa tốt hơn.",
+                            "Hỗ trợ giáo viên soạn bài án.",
+                            "Học sinh dễ phụ thuộc, chép bài của AI và gian lận.",
+                            "Tạo ra các khóa học trực tuyến miễn phí."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Dù giúp ích nhiều, AI trong giáo dục có mặt tiêu cực là làm học sinh lười suy nghĩ, dễ gian lận."
+                    },
+                    {
+                        question: "Dẫn chứng nào cho thấy tác động của AI trong lĩnh vực truyền thông?",
+                        options: [
+                            "Bác sĩ sử dụng AI để kê đơn thuốc.",
+                            "Mạng xã hội liên tục gợi ý video theo sở thích người dùng.",
+                            "Robot hút bụi tự động dọn dẹp nhà cửa.",
+                            "Nông dân dùng cảm biến đo độ ẩm đất."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Các thuật toán AI trên mạng xã hội phân tích sở thích để gợi ý nội dung (video, tin tức) là ứng dụng truyền thông."
+                    },
+                    {
+                        question: "AI tác động mạnh mẽ đến lĩnh vực kinh tế thông qua hoạt động nào sau đây?",
+                        options: [
+                            "Chẩn đoán bệnh từ xa.",
+                            "Tự động hóa các dây chuyền sản xuất và dịch vụ khách hàng.",
+                            "Nhắc lịch học cho sinh viên.",
+                            "Phát hiện tin giả trên mạng."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "AI thay đổi kinh tế bằng cách tự động hóa kho hàng, tổng đài, làm tăng năng suất nhưng cũng đe dọa một số việc làm cũ."
+                    },
+                    {
+                        question: "Vì sao AI lại có sức lan tỏa nhanh hơn nhiều so với các công nghệ trước đây?",
+                        options: [
+                            "Vì nó chỉ dành cho những người giàu có.",
+                            "Vì nó dễ dùng, chi phí thấp, chạy trên điện thoại và có mạng Internet.",
+                            "Vì nó không cần kết nối Internet.",
+                            "Vì chính phủ bắt buộc mọi người phải dùng."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Sự phổ biến của smartphone và Internet giúp các ứng dụng AI dễ dàng tiếp cận số đông người dùng cùng lúc."
+                    },
+                    {
+                        question: "Yếu tố nào là quan trọng nhất để tạo nên một dẫn chứng tốt khi bàn về tác động của AI?",
+                        options: [
+                            "Nói chung chung về lợi ích của công nghệ.",
+                            "Phải là một câu chuyện khoa học viễn tưởng.",
+                            "Cụ thể, có thật, có thể kiểm chứng được.",
+                            "Chỉ nói về các tác hại của máy tính."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Một dẫn chứng thuyết phục phải cụ thể, có thật và kiểm chứng được (nói rõ AI làm gì, ở đâu, cho ai)."
+                    },
+                    {
+                        question: "Khi đánh giá tác động của AI đối với xã hội, chúng ta cần có góc nhìn như thế nào?",
+                        options: [
+                            "Chỉ nhìn vào mặt tích cực để khuyến khích phát triển.",
+                            "Chỉ nhìn vào mặt tiêu cực để đề phòng.",
+                            "Nhìn nhận cả hai mặt tích cực và tiêu cực.",
+                            "Không cần quan tâm vì AI tự xử lý được."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Tác động của AI luôn có hai mặt, công dân số cần nhận diện cả cơ hội (tích cực) và rủi ro (tiêu cực)."
+                    },
+                    {
+                        question: "Dù thay thế một số việc làm cũ, tác động kinh tế tích cực của AI là tạo ra điều gì?",
+                        options: [
+                            "Sinh ra các nhóm nghề nghiệp mới (ví dụ: huấn luyện dữ liệu).",
+                            "Làm mọi người thất nghiệp hoàn toàn.",
+                            "Làm giảm năng suất lao động.",
+                            "Ngăn cản sự phát triển của các doanh nghiệp nhỏ."
+                        ],
+                        correctAnswer: 0,
+                        explanation: "Bên cạnh việc lấy đi một số việc làm lặp lại, AI cũng sinh ra những nghề mới liên quan đến dữ liệu và quản trị AI."
+                    },
+                    {
+                        question: "Mặt tiêu cực của việc mạng xã hội liên tục dùng AI gợi ý nội dung theo sở thích là gì?",
+                        options: [
+                            "Giúp người dùng tiếp cận thông tin nhanh hơn.",
+                            "Dễ gây nghiện, giam người dùng trong 'bong bóng thông tin' và dễ bị dẫn dắt bởi tin giả.",
+                            "Làm điện thoại hết pin nhanh.",
+                            "Không có mặt tiêu cực nào."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Thuật toán gợi ý khiến người dùng xem mãi không chán (gây nghiện) và chỉ thấy những thông tin hẹp, đôi khi là tin giả."
+                    },
+                    {
+                        question: "Trợ lý ảo nhận lệnh bằng giọng nói để điều khiển thiết bị điện (bật đèn, báo thức) là tác động của AI thuộc lĩnh vực nào?",
+                        options: [
+                            "Y tế.",
+                            "Đời sống hằng ngày.",
+                            "Kinh tế vĩ mô.",
+                            "Giáo dục hàn lâm."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Các thiết bị thông minh (Smart home) và trợ lý ảo (Siri, Google Assistant) phục vụ trực tiếp cho đời sống sinh hoạt hằng ngày."
+                    }
+                ]
+            },
+            "3": {
+                title: "Tiết 3: Thiên vị và thành kiến trong AI",
+                questions: [
+                    {
+                        question: "Trong bối cảnh công nghệ, khái niệm 'thiên vị' (bias) của AI được hiểu như thế nào?",
+                        options: [
+                            "AI hoạt động quá chậm so với tốc độ yêu cầu.",
+                            "AI tự động tắt nguồn khi quá nóng.",
+                            "AI đối xử không công bằng với một số nhóm người.",
+                            "AI từ chối làm việc vào ban đêm."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Thiên vị trong AI là hiện tượng hệ thống đưa ra kết quả bất lợi hoặc không công bằng đối với một nhóm người cụ thể."
+                    },
+                    {
+                        question: "Nguyên nhân gốc rễ dẫn đến hiện tượng phần mềm AI đưa ra kết quả thiên vị là gì?",
+                        options: [
+                            "Do AI có cảm xúc và biết ghét con người.",
+                            "Do lỗi phần cứng của máy tính.",
+                            "Do dữ liệu huấn luyện cung cấp cho máy tính bị lệch hoặc thiếu sót.",
+                            "Do tốc độ mạng Internet quá chậm."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "AI không tự nghĩ ra ý kiến. Nếu dữ liệu con người đưa vào học bị lệch hoặc thiếu, AI sẽ học theo sự lệch lạc đó và trở nên thiên vị."
+                    },
+                    {
+                        question: "Sự khác biệt chính giữa 'thiên vị' của hệ thống AI và 'thành kiến' của xã hội là gì?",
+                        options: [
+                            "Thiên vị là của xã hội, thành kiến là của AI.",
+                            "Thiên vị là đối xử không công bằng, thành kiến là định kiến có sẵn trong xã hội được AI học lại.",
+                            "Thiên vị có lợi, thành kiến có hại.",
+                            "Không có sự khác biệt nào."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Thành kiến là những định kiến vốn có của xã hội. AI học từ dữ liệu mang thành kiến đó, dẫn đến hành vi thiên vị (đối xử không công bằng)."
+                    },
+                    {
+                        question: "Một hệ thống AI tuyển dụng liên tục loại bỏ hồ sơ của các ứng viên nữ. Nguyên nhân khả dĩ nhất (do dữ liệu) là gì?",
+                        options: [
+                            "AI được lập trình để ghét phụ nữ.",
+                            "Hồ sơ của nữ giới thường quá dài.",
+                            "Dữ liệu huấn luyện từ quá khứ (những người trúng tuyển trước đây) chủ yếu là hồ sơ nam giới.",
+                            "Máy tính không thể đọc được tên của nữ giới."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Nếu trong quá khứ công ty chủ yếu tuyển nam, AI sẽ 'học' từ dữ liệu đó và nhầm tưởng rằng chỉ nam giới mới phù hợp với công việc."
+                    },
+                    {
+                        question: "Việc phần mềm AI nhận diện khuôn mặt kém chính xác đối với người dân tộc thiểu số sẽ dẫn đến hậu quả gì?",
+                        options: [
+                            "Làm hỏng camera của điện thoại.",
+                            "Gây phiền hà, nhận nhầm và bất công trực tiếp cho chính nhóm người ít được đại diện này.",
+                            "Không có hậu quả gì đáng kể.",
+                            "Giúp hệ thống bảo mật tốt hơn."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Nếu dữ liệu thiếu ảnh của các dân tộc thiểu số, hệ thống sẽ nhận diện sai, gây bất tiện trong cuộc sống và cảm giác bị phân biệt đối xử."
+                    },
+                    {
+                        question: "Nếu hệ thống AI xét duyệt vay vốn tự động từ chối người dân ở vùng nông thôn dù họ đủ điều kiện, điều này gây ra vấn đề xã hội nào?",
+                        options: [
+                            "Làm tăng trưởng kinh tế nông thôn.",
+                            "Không ảnh hưởng gì vì nông thôn không cần vay vốn.",
+                            "Tạo ra sự bất công và nới rộng khoảng cách giàu nghèo giữa các khu vực.",
+                            "Giúp người dân nông thôn tiết kiệm tiền."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Sự thiên vị thuật toán trong tài chính ngăn cản cơ hội phát triển của những người vốn đã khó khăn, làm trầm trọng thêm khoảng cách kinh tế."
+                    },
+                    {
+                        question: "Vì sao sự thiên vị của máy móc lại được coi là đặc biệt nguy hiểm, có khi nguy hiểm hơn định kiến của một cá nhân con người?",
+                        options: [
+                            "Vì máy móc khỏe hơn con người.",
+                            "Vì AI xử lý hàng loạt với tốc độ cao, lan truyền sự bất công rất nhanh ra số đông.",
+                            "Vì không thể tắt được máy móc.",
+                            "Vì máy móc luôn đúng."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Một người có định kiến chỉ ảnh hưởng phạm vi hẹp; nhưng một hệ thống AI bị lệch có thể đối xử bất công với hàng triệu người cùng lúc."
+                    },
+                    {
+                        question: "Khi phần mềm chấm điểm ngoại ngữ chấm điểm thấp một cách vô lý cho học sinh miền Trung dù họ nói đúng ngữ pháp. Ai là người chịu thiệt thòi nhất trong tình huống này?",
+                        options: [
+                            "Giáo viên ngoại ngữ.",
+                            "Người lập trình ra phần mềm.",
+                            "Học sinh có âm điệu địa phương (miền Trung) đó.",
+                            "Không ai bị thiệt cả."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Học sinh sử dụng giọng nói không nằm trong bộ dữ liệu huấn luyện (ví dụ chỉ huấn luyện giọng Hà Nội) sẽ bị chấm sai, đánh mất cơ hội."
+                    },
+                    {
+                        question: "Khi phần mềm AI đưa ra kết quả phân biệt đối xử, đối tượng nào phải chịu trách nhiệm về nguyên nhân gốc rễ?",
+                        options: [
+                            "Chính bản thân phần mềm AI.",
+                            "Máy chủ lưu trữ phần mềm.",
+                            "Con người (những người cung cấp và lựa chọn nguồn dữ liệu đầu vào).",
+                            "Người dùng bị phân biệt đối xử."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "AI không có ý thức. Con người cung cấp dữ liệu lệch lạc cho nó, do đó con người (nhà phát triển, người làm dữ liệu) phải chịu trách nhiệm."
+                    },
+                    {
+                        question: "Biện pháp hiệu quả nhất để khắc phục tình trạng phần mềm AI nhận diện giọng nói bị thiên vị vùng miền là gì?",
+                        options: [
+                            "Xóa bỏ phần mềm đó đi.",
+                            "Bắt buộc mọi người phải nói giọng chuẩn của một vùng duy nhất.",
+                            "Thu thập thêm dữ liệu đa dạng mẫu giọng của đầy đủ mọi vùng miền khác nhau cho AI học.",
+                            "Sơn lại màu sắc của phần mềm."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Để khắc phục thiên vị do thiếu dữ liệu, giải pháp gốc rễ là bổ sung tính đa dạng cho bộ dữ liệu (thu thập thêm giọng của các vùng bị thiếu)."
+                    }
+                ]
+            },
+            "4": {
+                title: "Tiết 4: Năng lực cần rèn & hướng nghề trong thế giới có AI",
+                questions: [
+                    {
+                        question: "Loại công việc nào có nguy cơ bị hệ thống tự động hóa và AI làm thay thế cao nhất trong tương lai?",
+                        options: [
+                            "Công việc yêu cầu sự thấu cảm sâu sắc.",
+                            "Công việc đòi hỏi tư duy chiến lược dài hạn.",
+                            "Công việc lặp đi lặp lại theo quy tắc rõ ràng.",
+                            "Công việc sáng tạo nghệ thuật độc bản."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "AI làm việc lặp đi lặp lại, có quy tắc rõ ràng rất nhanh và không biết mệt, do đó nhóm công việc này dễ bị thay thế nhất."
+                    },
+                    {
+                        question: "Trong bối cảnh công nghệ thay đổi liên tục, năng lực 'Học cách học' được hiểu chính xác nhất là gì?",
+                        options: [
+                            "Khả năng học thuộc lòng một lượng lớn sách giáo khoa.",
+                            "Khả năng chủ động tìm kiếm, tiếp thu và cập nhật kiến thức mới suốt đời.",
+                            "Khả năng thi đỗ mọi bài kiểm tra trên trường.",
+                            "Khả năng ghi chép thật nhanh lời thầy cô."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "'Học cách học' là năng lực tự tìm hiểu, cập nhật cái mới mà không cần đợi ai cầm tay chỉ việc, giúp không bị lỗi thời."
+                    },
+                    {
+                        question: "Vì sao năng lực 'Tư duy phản biện' lại đặc biệt quan trọng khi làm việc với AI?",
+                        options: [
+                            "Vì AI luôn luôn đúng 100%.",
+                            "Vì AI có thể đưa ra thông tin sai lệch, bịa đặt (hallucination) cần người kiểm chứng.",
+                            "Vì AI không biết nói tiếng Việt.",
+                            "Vì nó giúp máy tính chạy nhanh hơn."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "AI có thể tạo ra thông tin sai lệch một cách rất thuyết phục. Tư duy phản biện giúp con người biết đặt câu hỏi và không tin mù quáng."
+                    },
+                    {
+                        question: "Trong nghề bác sĩ, đâu là phần năng lực 'rất người' mà máy móc (dù đoán bệnh giỏi) vẫn khó có thể thay thế?",
+                        options: [
+                            "Ghi chép hồ sơ bệnh án thật nhanh.",
+                            "So sánh hàng ngàn bức ảnh X-quang trong vài giây.",
+                            "Thấu hiểu, động viên và an ủi tâm lý bệnh nhân.",
+                            "Tìm kiếm phác đồ điều trị trong cơ sở dữ liệu."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Sự thấu cảm, khả năng an ủi và đồng cảm với nỗi đau của người bệnh là năng lực cảm xúc đặc thù của con người."
+                    },
+                    {
+                        question: "AI làm thay đổi tính chất công việc của giáo viên hiện nay chủ yếu thông qua hoạt động nào?",
+                        options: [
+                            "Thay giáo viên trực tiếp dỗ dành trẻ khóc.",
+                            "Chấm điểm trắc nghiệm nhanh và soạn thảo bài giảng tự động.",
+                            "Giáo dục nhân cách và đạo đức cho học sinh.",
+                            "Quét dọn sân trường."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "AI đảm nhận các việc tốn thời gian như chấm trắc nghiệm, tạo tài liệu; giáo viên sẽ tập trung vào việc truyền cảm hứng và giáo dục nhân cách."
+                    },
+                    {
+                        question: "Nhóm năng lực nào giúp con người tạo ra những giá trị đột phá, độc đáo mà máy móc (chỉ biết chắp vá dữ liệu cũ) chưa thể tự nghĩ ra?",
+                        options: [
+                            "Tính toán siêu tốc.",
+                            "Lưu trữ dữ liệu khổng lồ.",
+                            "Sáng tạo và cảm xúc thấu cảm.",
+                            "Làm việc liên tục 24/7."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "AI chỉ sinh nội dung dựa trên những gì đã học. Sự sáng tạo ý tưởng mới lạ và cảm xúc thật sự là thế mạnh độc tôn của con người."
+                    },
+                    {
+                        question: "Khi đối mặt với một vấn đề xã hội phức tạp cần sự chung tay của nhiều chuyên gia, kỹ năng nào của con người đóng vai trò cốt lõi để giải quyết?",
+                        options: [
+                            "Kỹ năng gõ bàn phím nhanh.",
+                            "Hợp tác và giao tiếp hiệu quả.",
+                            "Kỹ năng ghi nhớ số liệu.",
+                            "Kỹ năng lập trình cá nhân độc lập."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Để tập hợp con người lại, lắng nghe, thuyết phục và cùng giải quyết vấn đề lớn, kĩ năng hợp tác và giao tiếp là vô cùng cần thiết."
+                    },
+                    {
+                        question: "Trong nông nghiệp, dù AI hỗ trợ cảm biến dự báo thời tiết rất tốt, nhưng người nông dân vẫn phải giữ lại khả năng nào để quyết định công việc?",
+                        options: [
+                            "Kinh nghiệm thực tiễn để đưa ra quyết định thời vụ cuối cùng.",
+                            "Chế tạo robot hái quả.",
+                            "Sửa chữa bo mạch của cảm biến.",
+                            "Lập trình AI bằng ngôn ngữ Python."
+                        ],
+                        correctAnswer: 0,
+                        explanation: "AI chỉ cung cấp thông tin (cảnh báo, dự báo). Quyết định cuối cùng (xuống giống, thu hoạch) vẫn dựa vào kinh nghiệm thực tiễn của nông dân."
+                    },
+                    {
+                        question: "Trong các sản phẩm nghệ thuật (tranh, nhạc), điểm cốt lõi nào thuộc về con người mà AI chỉ có thể mô phỏng (bắt chước) chứ không thực sự sở hữu?",
+                        options: [
+                            "Độ phân giải sắc nét của bức tranh.",
+                            "Tốc độ hoàn thành tác phẩm.",
+                            "Cảm xúc chân thật và phong cách sống cá nhân của tác giả.",
+                            "Khả năng pha trộn nhiều màu sắc."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Nghệ thuật chạm đến người xem vì nó chứa đựng câu chuyện, trải nghiệm thật và cảm xúc của tác giả - điều mà máy tính hoàn toàn trống rỗng."
+                    },
+                    {
+                        question: "Khi nghe nhận định 'AI sẽ làm thay đổi nghề kế toán', ta nên hiểu thông điệp này theo cách nào là chính xác nhất?",
+                        options: [
+                            "Nghề kế toán sẽ biến mất hoàn toàn vào ngày mai.",
+                            "Kế toán viên không cần đi làm nữa, ở nhà hưởng lương.",
+                            "Người làm kế toán cần học cách dùng AI hỗ trợ tính toán và chuyển sang phân tích tài chính sâu hơn.",
+                            "AI sẽ cấm con người làm sổ sách."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Thay đổi không có nghĩa là biến mất. Con người cần đổi mới cách làm việc: để AI làm phần tính toán cơ bản, con người giữ vai trò phân tích, tư vấn."
+                    }
+                ]
+            },
+            "5": {
+                title: "Tiết 5: Trách nhiệm dùng AI & khai báo trung thực",
+                questions: [
+                    {
+                        question: "Theo nguyên tắc đạo đức sử dụng trí tuệ nhân tạo, người dùng cần nghiêm túc tuân thủ 3 trách nhiệm cốt lõi nào?",
+                        options: [
+                            "Cài đặt nhanh, chia sẻ nhiều, không cần đọc kỹ.",
+                            "Kiểm soát dữ liệu, chịu trách nhiệm kết quả, khai báo trung thực.",
+                            "Tin tưởng tuyệt đối, để máy làm hết, giấu việc sử dụng.",
+                            "Trả tiền bản quyền, nâng cấp phần mềm, bảo trì máy tính."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "3 trách nhiệm cốt lõi: Kiểm soát (kiểm tra lại), Chịu trách nhiệm (không đổ lỗi cho máy), Khai báo trung thực (nói thật đã dùng AI)."
+                    },
+                    {
+                        question: "Hành động nào sau đây phản ánh rõ nhất trách nhiệm 'Kiểm soát' khi tương tác với hệ thống AI?",
+                        options: [
+                            "Lấy kết quả từ AI nộp luôn cho nhanh.",
+                            "Kiểm tra, xác minh và đọc lại kết quả AI sinh ra trước khi mang đi sử dụng.",
+                            "Cấm người khác dùng máy tính của mình.",
+                            "Chỉ dùng AI vào ban đêm."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Kiểm soát nghĩa là không tin mù quáng, luôn có bước đối chiếu và kiểm chứng thông tin trước khi chấp nhận kết quả AI cung cấp."
+                    },
+                    {
+                        question: "Khai báo trung thực khi sử dụng phần mềm hỗ trợ AI trong làm bài tập mang ý nghĩa thực tế là gì?",
+                        options: [
+                            "Nói cho mọi người biết mình mua phần mềm giá bao nhiêu tiền.",
+                            "Để giáo viên biết mình giỏi công nghệ.",
+                            "Ghi chú rõ ràng trong bài nộp những phần nội dung nào có sự hỗ trợ của AI.",
+                            "Thừa nhận mình kém cỏi không tự làm được."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Khai báo trung thực là việc minh bạch hóa quá trình làm việc: xác định rõ phần nào là sức lao động của mình, phần nào là công cụ hỗ trợ."
+                    },
+                    {
+                        question: "Nếu một học sinh sao chép lời giải từ chatbot và nộp bài, sau đó phát hiện chatbot làm sai kiến thức cơ bản. Ai là người phải chịu trách nhiệm về điểm số kém?",
+                        options: [
+                            "Công ty tạo ra chatbot đó.",
+                            "Giáo viên ra đề bài.",
+                            "Chính bản thân học sinh đã nộp bài tập đó.",
+                            "Không ai phải chịu trách nhiệm cả."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Nguyên tắc 'Chịu trách nhiệm': kết quả cuối cùng mang tên ai thì người đó chịu, không được đổ lỗi 'tại AI làm sai'."
+                    },
+                    {
+                        question: "Hành vi nào sau đây được coi là một phương pháp sử dụng công cụ AI ĐÚNG ĐẮN và CÓ TRÁCH NHIỆM trong học tập?",
+                        options: [
+                            "Nhờ AI viết toàn bộ bài văn rồi ghi tên mình vào.",
+                            "Dùng AI để dịch một bài luận sang tiếng Anh rồi nộp luôn không kiểm tra.",
+                            "Dùng AI để gợi ý dàn ý hoặc giải thích khái niệm khó, sau đó học sinh tự mình tổng hợp và viết bài.",
+                            "Dùng AI để làm bài kiểm tra trực tuyến thay mình."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Dùng AI để hỗ trợ ý tưởng (brainstorming), sau đó tự mình thực hiện và kiểm soát là cách học tập kết hợp công nghệ đúng đắn nhất."
+                    },
+                    {
+                        question: "Việc lấy nguyên một đoạn văn dài do AI tự động tạo ra rồi đưa vào bài tập dưới danh nghĩa của chính mình đã vi phạm nghiêm trọng nguyên tắc đạo đức nào?",
+                        options: [
+                            "Vi phạm quy định về độ dài văn bản.",
+                            "Vi phạm nguyên tắc bảo vệ môi trường.",
+                            "Tính trung thực và liêm chính học thuật (đạo văn).",
+                            "Không vi phạm gì vì AI miễn phí."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Nhận công sức sinh ra từ máy móc là của riêng mình (không khai báo) tương đương với hành vi đạo văn, vi phạm sự liêm chính học thuật."
+                    },
+                    {
+                        question: "Để xây dựng môi trường số lành mạnh, ngoài từng cá nhân, cộng đồng người dùng đóng vai trò gì trong việc kiểm soát các ứng dụng AI?",
+                        options: [
+                            "Cộng đồng không có vai trò gì, chỉ nhà sản xuất mới có quyền.",
+                            "Cùng nhau giám sát, phản hồi, cảnh báo và báo cáo các lỗi, rủi ro phát sinh.",
+                            "Góp tiền trả phí cho các ứng dụng.",
+                            "Thi nhau tạo ra tin giả để thử thách AI."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Cộng đồng có vai trò giám sát chéo, báo cáo nội dung độc hại, sai lệch để cùng làm sạch không gian số và buộc AI phải tốt hơn."
+                    },
+                    {
+                        question: "Khi phát hiện một chatbot cung cấp thông tin y tế sai lệch có thể gây nguy hiểm đến tính mạng người làm theo, hành động nào là có trách nhiệm nhất?",
+                        options: [
+                            "Chụp màn hình chia sẻ cho bạn bè cười chơi.",
+                            "Lờ đi vì mình không bị bệnh đó.",
+                            "Báo cáo lỗi thông tin trực tiếp thông qua công cụ phản hồi của nhà cung cấp nền tảng.",
+                            "Tự làm theo để xem có nguy hiểm thật không."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Báo cáo lỗi/report là hành động thể hiện trách nhiệm bảo vệ cộng đồng khỏi những thông tin rủi ro do AI sinh ra."
+                    },
+                    {
+                        question: "Câu khai báo nào sau đây thể hiện rõ nét nhất sự MINH BẠCH khi sử dụng công cụ AI trong một bản báo cáo môn học?",
+                        options: [
+                            "'Bài này có thể có dùng AI một chút.'",
+                            "'Em dùng AI để tra cứu các số liệu dân số, còn phần phân tích đánh giá là do em tự làm.'",
+                            "'Phần lớn bài này là AI viết, em chỉ sửa lỗi chính tả.'",
+                            "Không ghi gì cả."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Khai báo minh bạch phải cụ thể: nói rõ giới hạn đã dùng AI ở công đoạn nào (tra cứu) và khẳng định phần đóng góp cá nhân (phân tích)."
+                    },
+                    {
+                        question: "Vì sao người dùng tuyệt đối không nên 'giao khoán' hoàn toàn mọi công việc cho phần mềm AI mà thiếu đi sự giám sát của con người?",
+                        options: [
+                            "Vì máy móc dùng nhiều sẽ tốn điện.",
+                            "Vì kết quả do hệ thống sinh ra có thể mang nội dung sai lệch, thiên vị hoặc bịa đặt hoàn toàn (hallucination).",
+                            "Vì AI làm chậm hơn con người.",
+                            "Vì giao diện của AI thường rất khó nhìn."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "AI không có nhận thức thực tế, nó chỉ đoán từ tiếp theo. Do đó nó hoàn toàn có thể tự tin đưa ra thông tin bịa đặt. Con người phải luôn giữ vai trò kiểm duyệt cuối."
+                    }
+                ]
+            },
+            "6": {
+                title: "Tiết 6: Phát hiện nội dung giả mạo do AI (Deepfake)",
+                questions: [
+                    {
+                        question: "Khái niệm 'Deepfake' trong lĩnh vực trí tuệ nhân tạo là gì?",
+                        options: [
+                            "Là phần mềm diệt virus thông minh.",
+                            "Là nội dung (ảnh, video, giọng nói) do AI tạo giả rất giống thật.",
+                            "Là một ứng dụng chat ẩn danh.",
+                            "Là kĩ thuật làm tăng độ nét của hình ảnh."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Deepfake là từ ghép của 'Deep learning' (Học sâu) và 'Fake' (Giả mạo), dùng để chỉ các nội dung giả do AI tạo ra cực kì chân thực."
+                    },
+                    {
+                        question: "Đâu là dấu hiệu nghi ngờ phổ biến nhất khi nhìn vào một bức ảnh mặt người do AI tạo ra (Deepfake)?",
+                        options: [
+                            "Màu sắc bức ảnh quá sáng.",
+                            "Bàn tay biến dạng, thừa/thiếu ngón, nhẫn hoặc khuyên tai không đối xứng.",
+                            "Bức ảnh có kích thước tệp quá lớn.",
+                            "Người trong ảnh cười quá tươi."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Hiện nay AI vẫn thường gặp khó khăn khi vẽ các chi tiết phức tạp, logic như bàn tay, số ngón tay, hoặc tính đối xứng của phụ kiện."
+                    },
+                    {
+                        question: "Nếu nhận được một cuộc gọi video từ người thân mượn tiền với ngữ điệu lạ và giục giã, cách ứng phó an toàn nhất là gì?",
+                        options: [
+                            "Chuyển tiền ngay vì sợ người thân gặp rắc rối.",
+                            "Tắt máy và xóa số điện thoại đó ngay lập tức.",
+                            "Bình tĩnh, cúp máy và gọi lại vào đúng số điện thoại cũ đã lưu để xác nhận.",
+                            "Chuyển một nửa số tiền để thử xem sao."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Quy tắc vàng: LUÔN gọi lại bằng số cũ đã lưu hoặc qua các kênh khác để xác nhận. Tuyệt đối không chuyển tiền ngay."
+                    },
+                    {
+                        question: "Cách tốt nhất để kiểm chứng một bức ảnh lan truyền trên mạng mà em nghi ngờ là giả mạo do AI tạo ra là gì?",
+                        options: [
+                            "Đăng lên mạng hỏi bạn bè xem có phải ảnh thật không.",
+                            "Dùng công cụ tìm kiếm hình ảnh ngược (Reverse Image Search) để xem nguồn gốc.",
+                            "Phóng to bức ảnh lên 10 lần để nhìn kĩ.",
+                            "Chỉ cần nhìn bằng mắt thường là đủ."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Tìm kiếm hình ảnh ngược giúp ta biết bức ảnh này đã từng xuất hiện ở đâu, nguồn gốc từ trang web uy tín nào không."
+                    },
+                    {
+                        question: "Vì sao chúng ta tuyệt đối KHÔNG NÊN vội vàng chia sẻ những tin tức hoặc hình ảnh gây sốc mà chưa được kiểm chứng?",
+                        options: [
+                            "Vì chia sẻ nhiều sẽ làm điện thoại bị đơ.",
+                            "Vì đó có thể là deepfake, việc chia sẻ sẽ tiếp tay lan truyền cho kẻ xấu và gây hoang mang dư luận.",
+                            "Vì chia sẻ tin tức trên mạng xã hội sẽ mất phí.",
+                            "Vì làm vậy sẽ khiến bạn bè ghen tị."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Chia sẻ nội dung chưa kiểm chứng (dù vô tình) là hành động tiếp tay cho tin giả lan truyền, gây hậu quả thực tế đến xã hội."
+                    },
+                    {
+                        question: "Một bài báo do AI tự động tạo ra nhằm tung tin đồn thường có đặc điểm gì dễ nhận biết?",
+                        options: [
+                            "Văn phong đều đều, trơn tru nhưng số liệu chung chung, không có nguồn hoặc tra không ra số liệu đó.",
+                            "Bài viết luôn có chữ ký của AI ở cuối.",
+                            "Bài viết luôn rất ngắn, chỉ có 1-2 câu.",
+                            "Chỉ toàn là hình ảnh, không có chữ."
+                        ],
+                        correctAnswer: 0,
+                        explanation: "AI tạo văn bản rất mượt nhưng thường 'bịa' số liệu (hallucination) để nghe có vẻ thuyết phục. Số liệu bịa thường không thể tra cứu ở nguồn chính thống."
+                    },
+                    {
+                        question: "Khi nhận được tin nhắn SMS mạo danh ngân hàng hoặc công an yêu cầu bấm vào một đường link lạ, đó là dấu hiệu của hành vi gì?",
+                        options: [
+                            "Thông báo trúng thưởng thực sự.",
+                            "Khảo sát chất lượng dịch vụ khách hàng.",
+                            "Lừa đảo trực tuyến (phishing).",
+                            "Cập nhật phần mềm điện thoại."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Kẻ gian thường giả danh cơ quan uy tín, kèm đường link lạ để lừa người dùng nhập mật khẩu hoặc chiếm đoạt tài sản."
+                    },
+                    {
+                        question: "Để đánh giá một sản phẩm trên mạng có phải đang bị dùng AI tạo đánh giá giả (review ảo) hay không, ta nên chú ý điều gì?",
+                        options: [
+                            "Hàng loạt lời khen/chê chung chung giống hệt nhau, đăng dồn dập trong thời gian ngắn.",
+                            "Sản phẩm có giá rất rẻ.",
+                            "Chủ cửa hàng trả lời lại các đánh giá đó.",
+                            "Đánh giá có kèm hình ảnh thật của sản phẩm."
+                        ],
+                        correctAnswer: 0,
+                        explanation: "Bot AI thường tạo ra lượng lớn review ảo, nội dung lặp đi lặp lại và tung ra trong thời gian rất ngắn để thao túng người mua."
+                    },
+                    {
+                        question: "Khi em tình cờ phát hiện một nội dung deepfake lừa đảo cực kì tinh vi trên mạng, việc ĐẦU TIÊN em nên làm là gì?",
+                        options: [
+                            "Share (chia sẻ) nội dung đó để mọi người cùng xem AI bây giờ giỏi thế nào.",
+                            "Thử dùng AI để tạo một nội dung giả mạo tương tự.",
+                            "Dừng lại, không tương tác, báo cáo (report) nền tảng và báo cho người lớn (bố mẹ, thầy cô) biết.",
+                            "Để lại bình luận chửi bới kẻ tạo ra nội dung đó."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Quy tắc an toàn số: Dừng lại - Không chia sẻ - Report nền tảng - Báo người lớn để có hướng xử lý an toàn nhất."
+                    },
+                    {
+                        question: "Trong chiêu lừa đảo giả giọng nói người thân qua điện thoại, thủ đoạn nào thường được kẻ xấu sử dụng để nạn nhân mất cảnh giác?",
+                        options: [
+                            "Nói chuyện rất chậm rãi, kể lại kỉ niệm cũ.",
+                            "Tạo tình huống khẩn cấp (tai nạn, cấp cứu, nợ nần), giục giã và yêu cầu giữ bí mật.",
+                            "Hẹn gặp mặt trực tiếp rồi mới mượn tiền.",
+                            "Sử dụng số điện thoại lưu sẵn trong danh bạ của nạn nhân."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Tạo cảm giác gấp gáp, sợ hãi (cấp cứu) khiến nạn nhân mất bình tĩnh, không kịp kiểm chứng là thủ đoạn tâm lí cốt lõi của loại lừa đảo này."
+                    }
+                ]
+            },
+            "7": {
+                title: "Tiết 7: Kiến tạo AI công bằng - Đa dạng dữ liệu",
+                questions: [
+                    {
+                        question: "Để hệ thống AI đưa ra quyết định CÔNG BẰNG, bộ dữ liệu dùng để huấn luyện nó cần phải có đặc điểm gì?",
+                        options: [
+                            "Chỉ cần dữ liệu của những người nổi tiếng.",
+                            "Dữ liệu càng ít càng tốt để AI chạy nhanh.",
+                            "Đa dạng, bao phủ đầy đủ và cân bằng các nhóm đối tượng mà AI sẽ phục vụ.",
+                            "Chỉ cần dữ liệu từ một khu vực địa lý duy nhất."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Sự công bằng bắt nguồn từ dữ liệu. AI cần học từ mẫu dữ liệu đa dạng (mọi vùng miền, giới tính, độ tuổi...) để không thiên vị ai."
+                    },
+                    {
+                        question: "Hành động 'thu thập dữ liệu công bằng' trong thiết kế AI được hiểu đúng nhất là gì?",
+                        options: [
+                            "Tải tất cả dữ liệu miễn phí trên mạng xuống.",
+                            "Chủ động đi tìm, lấy đủ dữ liệu từ mọi nhóm đối tượng, kể cả những nhóm khó tiếp cận.",
+                            "Chỉ lấy dữ liệu từ những người tự nguyện gửi đến.",
+                            "Chỉ lấy dữ liệu của nhóm đa số để tiết kiệm chi phí."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Thu thập công bằng là phải CÓ Ý THỨC chủ động bù đắp dữ liệu cho các nhóm yếu thế, nhóm thiểu số, không phó mặc cho những gì có sẵn."
+                    },
+                    {
+                        question: "Nếu phần mềm nhận diện giọng nói chỉ được huấn luyện bằng giọng nói của người ở thành phố lớn, hậu quả là gì?",
+                        options: [
+                            "Nó sẽ chạy rất nhanh và không bị lỗi gì.",
+                            "Nó sẽ nhận diện kém và gây khó khăn, bất công cho những người nói giọng địa phương, vùng miền khác.",
+                            "Nó sẽ tự động dịch các giọng địa phương sang tiếng Anh.",
+                            "Nó sẽ từ chối hoạt động vào ban đêm."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "AI không hiểu được cái mà nó chưa từng được học. Thiếu dữ liệu giọng địa phương khiến AI phục vụ nhóm người này kém đi."
+                    },
+                    {
+                        question: "Nguyên nhân GỐC RỄ khiến một hệ thống AI xử lý hồ sơ có tính thiên vị giới tính (ví dụ: ưu ái nam giới hơn nữ giới) là gì?",
+                        options: [
+                            "Do AI có nhận thức và tự quyết định phân biệt đối xử.",
+                            "Do phần cứng máy tính bị lỗi.",
+                            "Do bộ dữ liệu lịch sử con người đưa vào có chứa sẵn sự mất cân bằng về giới tính.",
+                            "Do ngôn ngữ lập trình không hỗ trợ giới tính nữ."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "AI chỉ học theo dữ liệu. Nếu trong quá khứ con người ưu tiên nam giới (dữ liệu lệch), AI sẽ học được định kiến đó và áp dụng lên tương lai."
+                    },
+                    {
+                        question: "Khi làm một AI nhắc nhở uống thuốc cho người bệnh, nếu ta bỏ quên việc thu thập dữ liệu về thói quen của NGƯỜI CAO TUỔI, AI sẽ gặp vấn đề gì?",
+                        options: [
+                            "AI sẽ hoạt động hoàn hảo.",
+                            "Giao diện nhắc nhở có thể quá nhỏ, hoặc lời nói quá nhanh, không phù hợp khiến người già không dùng được.",
+                            "AI sẽ tự động chữa khỏi bệnh cho họ.",
+                            "Máy điện thoại sẽ bị hỏng."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Việc bỏ quên nhóm người cao tuổi trong khâu dữ liệu dẫn tới sản phẩm tạo ra không giải quyết được khó khăn thực tế của họ."
+                    },
+                    {
+                        question: "Sự công bằng của một sản phẩm AI chủ yếu được quyết định ở khâu nào trong quá trình phát triển?",
+                        options: [
+                            "Khâu thiết kế bao bì sản phẩm.",
+                            "Khâu bán sản phẩm ra thị trường.",
+                            "Ngay từ khâu ban đầu: Lựa chọn và thu thập Dữ liệu.",
+                            "Khâu bảo hành phần cứng."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Dữ liệu là thức ăn của AI. Chọn dữ liệu sạch, cân bằng từ đầu quyết định trực tiếp việc AI sau này có thiên vị hay không."
+                    },
+                    {
+                        question: "Điều gì chứng minh luận điểm: 'AI không tự nhiên ghét bất kì ai'?",
+                        options: [
+                            "AI là máy móc vô tri, nó chỉ tìm ra khuôn mẫu và bắt chước y hệt theo Dữ liệu mà con người dạy nó.",
+                            "Vì AI được tạo ra bởi những người rất thân thiện.",
+                            "Vì máy móc luôn yêu thương con người.",
+                            "Vì không ai lập trình chữ 'ghét' vào AI."
+                        ],
+                        correctAnswer: 0,
+                        explanation: "AI là một thuật toán toán học. Nếu kết quả nó đưa ra có tính phân biệt đối xử, đó là do sự thiên vị ẩn chứa trong bộ dữ liệu đầu vào."
+                    },
+                    {
+                        question: "Để kiểm tra xem một bộ dữ liệu đã đủ tính 'đa dạng' chưa, kĩ sư dữ liệu cần làm việc gì?",
+                        options: [
+                            "Đo xem kích thước file dữ liệu là bao nhiêu GB.",
+                            "Đếm và thống kê tỉ lệ các nhóm (nam/nữ, các vùng miền, độ tuổi) xem có bị mất cân bằng trầm trọng không.",
+                            "In tất cả dữ liệu ra giấy để đếm.",
+                            "Chạy phần mềm diệt virus."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Kĩ thuật kiểm tra là rà soát các đặc trưng nhân khẩu học. Nếu phát hiện nhóm nào quá ít (ví dụ: chỉ có 5% là người dân tộc), phải đi thu thập bổ sung ngay."
+                    },
+                    {
+                        question: "Nếu phát triển một ứng dụng học tập AI nhưng dữ liệu chỉ thu từ học sinh có điện thoại thông minh cao cấp, nhóm nào sẽ bị thiệt thòi?",
+                        options: [
+                            "Học sinh sử dụng điện thoại thông minh cao cấp.",
+                            "Học sinh sinh sống ở thành thị.",
+                            "Học sinh có hoàn cảnh khó khăn, dùng thiết bị đời cũ hoặc mạng Internet yếu.",
+                            "Giáo viên giảng dạy."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Dữ liệu không bao gồm môi trường kĩ thuật thấp (điện thoại cũ, mạng lag) sẽ khiến AI hoạt động kém hoặc bị lỗi trên máy của các bạn học sinh nghèo."
+                    },
+                    {
+                        question: "Mục đích sâu xa của việc kiến tạo AI công bằng, tôn trọng sự đa dạng dữ liệu là gì?",
+                        options: [
+                            "Để AI có thể bán được giá cao hơn.",
+                            "Để bảo đảm công nghệ phục vụ tốt và không bỏ lại ai phía sau, không làm trầm trọng thêm các bất công xã hội.",
+                            "Để AI có thể tự ý thức và cai trị thế giới.",
+                            "Để tăng kích thước bộ nhớ của máy tính."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Đạo đức AI hướng tới việc bảo vệ con người. AI công bằng giúp giảm thiểu bất bình đẳng, đảm bảo nhóm người yếu thế cũng được hưởng lợi từ công nghệ."
+                    }
+                ]
+            },
+            "8": {
+                title: "Tiết 8: Đề xuất ý tưởng sáng tạo giải quyết vấn đề bằng AI",
+                questions: [
+                    {
+                        question: "Một ý tưởng AI được đánh giá là TỐT cần phải hội tụ đủ 4 yếu tố nào?",
+                        options: [
+                            "Rẻ tiền, Nhanh chóng, Bắt mắt, Nổi tiếng.",
+                            "Vấn đề thật, Sáng tạo, Khả thi, Có ích cho cộng đồng.",
+                            "Phức tạp, Khó hiểu, Tốn kém, Chỉ dùng ở thành phố.",
+                            "Lấy từ mạng, Sao chép y hệt, Không cần dữ liệu, Miễn phí."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "4 tiêu chí cốt lõi: Giải quyết vấn đề có thật, Cách làm mới mẻ (Sáng tạo), Có thể thực hiện được (Khả thi) và Không gây hại (Có ích)."
+                    },
+                    {
+                        question: "Yếu tố 'Vấn đề THẬT' trong một đề xuất ý tưởng AI có nghĩa là gì?",
+                        options: [
+                            "Là vấn đề lấy trong các bộ phim khoa học viễn tưởng.",
+                            "Là vấn đề do nhóm tự tưởng tượng ra cho vui.",
+                            "Xuất phát từ một khó khăn, nhu cầu có thật trong đời sống mà nhiều người đang thực sự gặp phải.",
+                            "Là một bài tập toán trên lớp."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "AI sinh ra để phục vụ cuộc sống. Do đó ý tưởng phải bắt nguồn từ nỗi đau, khó khăn thực tế của con người ở địa phương hoặc xã hội."
+                    },
+                    {
+                        question: "Ý tưởng 'Sử dụng AI qua camera điện thoại đọc to biển báo và chướng ngại vật' giải quyết vấn đề cho nhóm đối tượng nào?",
+                        options: [
+                            "Người đi xe hơi đắt tiền.",
+                            "Người khiếm thị, giúp họ tự chủ và an toàn hơn khi di chuyển.",
+                            "Trẻ em đang học chữ.",
+                            "Người nước ngoài muốn học tiếng Việt."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Đây là một ứng dụng AI thiết thực, sử dụng công nghệ thị giác máy tính chuyển thành giọng nói để hỗ trợ đắc lực cho người khiếm thị."
+                    },
+                    {
+                        question: "Trong quy trình 3 bước nghĩ sáng tạo ý tưởng AI (Quan sát -> Hỏi -> Kết hợp), việc 'Hỏi' mang hàm ý gì?",
+                        options: [
+                            "Hỏi thầy cô xem ý tưởng này được bao nhiêu điểm.",
+                            "Hỏi xem có ai làm chưa, để mình mua lại.",
+                            "Đặt câu hỏi: 'AI có khả năng gì có thể giúp giải quyết vấn đề này theo cách mới mà chưa ai làm?'.",
+                            "Hỏi AI xem nó muốn làm gì."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Việc đặt câu hỏi kết nối vấn đề với sức mạnh của AI (nhìn, nghe, phân tích, tạo sinh) là chìa khóa để tìm ra giải pháp mới lạ."
+                    },
+                    {
+                        question: "Khi làm việc nhóm để động não (brainstorming) đưa ra ý tưởng, nguyên tắc quan trọng nhất ở giai đoạn đầu là gì?",
+                        options: [
+                            "Chỉ chọn ý tưởng của nhóm trưởng.",
+                            "Khuyến khích đưa ra thật nhiều ý tưởng dù táo bạo, KHÔNG chê bai hay đánh giá tính khả thi vội.",
+                            "Gạt bỏ ngay những ý tưởng nghe có vẻ tốn tiền.",
+                            "Mỗi người chỉ được nói 1 ý tưởng."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Brainstorming cần sự cởi mở. Việc chê bai ngay lập tức sẽ 'giết chết' sự sáng tạo. Tính khả thi sẽ được gọt giũa ở các bước sau."
+                    },
+                    {
+                        question: "Yếu tố 'Khả thi' của một ý tưởng AI đòi hỏi điều gì ở nhóm thiết kế?",
+                        options: [
+                            "Ý tưởng phải làm xong trong vòng 1 tiếng.",
+                            "Phải có tiền tỉ để đầu tư máy móc.",
+                            "Ý tưởng có thể thực hiện được bằng công nghệ AI hiện tại và có khả năng thu thập được dữ liệu để AI học.",
+                            "Chỉ những chuyên gia đại học mới làm được."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Khả thi nghĩa là không viển vông. Dù ý tưởng hay nhưng nếu công nghệ chưa tới hoặc không thể có dữ liệu thì không thể tạo ra AI được."
+                    },
+                    {
+                        question: "Ý tưởng AI nào sau đây thể hiện rõ nhất việc giải quyết một vấn đề ĐỊA PHƯƠNG ở miền núi Việt Nam?",
+                        options: [
+                            "AI điều khiển xe tự lái trên đường cao tốc.",
+                            "AI nhận diện khuôn mặt để mua hàng không dùng tiền mặt.",
+                            "AI phân tích dữ liệu lượng mưa, độ ẩm đất để cảnh báo sớm nguy cơ sạt lở bằng tin nhắn tiếng dân tộc.",
+                            "AI sáng tác nhạc giao hưởng."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Đây là vấn đề cấp thiết, mang tính địa phương rõ rệt (sạt lở, tiếng dân tộc) và đem lại lợi ích trực tiếp là bảo vệ tính mạng người dân."
+                    },
+                    {
+                        question: "Sự 'Sáng tạo' trong ý tưởng AI được hiểu đúng đắn là gì?",
+                        options: [
+                            "Là phải làm ra một công nghệ AI chưa từng tồn tại trên thế giới.",
+                            "Là copy nguyên xi một ứng dụng của nước ngoài về dịch sang tiếng Việt.",
+                            "Là có một cách tiếp cận mới, dùng công cụ AI có sẵn giải quyết vấn đề theo góc nhìn chưa ai làm.",
+                            "Là vẽ ra giao diện thật sặc sỡ."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Sáng tạo đối với học sinh không nhất thiết phải phát minh công nghệ lõi, mà là việc ỨNG DỤNG công nghệ sẵn có vào một hoàn cảnh, vấn đề mới mẻ."
+                    },
+                    {
+                        question: "Yếu tố 'Có ích' không chỉ đòi hỏi sản phẩm mang lại giá trị, mà còn bắt buộc điều gì?",
+                        options: [
+                            "Phải thu được nhiều tiền.",
+                            "Tuyệt đối an toàn, không gây hại, không vi phạm đạo đức hay quyền riêng tư của con người.",
+                            "Phải được lên tivi.",
+                            "Phải thay thế hoàn toàn công việc của con người."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Một sản phẩm công nghệ tốt trước hết phải không gây hại. Đạo đức AI yêu cầu sự an toàn và tôn trọng quyền riêng tư được đặt lên hàng đầu."
+                    },
+                    {
+                        question: "Vì sao nói 'Ý tưởng chỉ là bước đầu, dữ liệu mới là thứ quyết định thành bại' của sản phẩm AI?",
+                        options: [
+                            "Vì dữ liệu rất đắt tiền.",
+                            "Vì ý tưởng có hay đến mấy nhưng nếu không có bộ dữ liệu chất lượng để AI học thì AI cũng không thể hoạt động được.",
+                            "Vì dữ liệu tốn ít dung lượng.",
+                            "Vì ý tưởng thì ai cũng ăn cắp được."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Ý tưởng chỉ là bản vẽ, dữ liệu mới là vật liệu xây dựng. Không có dữ liệu, hoặc dữ liệu rác, AI không thể được huấn luyện thành công."
+                    }
+                ]
+            },
+            "9": {
+                title: "Tiết 9: Cải thiện dữ liệu - 4 thao tác (Thực hành)",
+                questions: [
+                    {
+                        question: "Nguyên tắc nghề nghiệp cốt lõi nhất của một kỹ sư dữ liệu là gì?",
+                        options: [
+                            "Máy tính mạnh hơn thì AI giỏi hơn.",
+                            "Giao diện đẹp thì người dùng sẽ thích.",
+                            "Dữ liệu tốt hơn thì AI tốt hơn ('Rác vào thì rác ra').",
+                            "Viết code càng dài thì AI càng thông minh."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Nguyên lý 'Garbage In, Garbage Out' (Rác vào thì rác ra): Nếu dữ liệu đưa vào để học bị sai, lệch, rác thì AI chắc chắn sẽ đưa ra kết quả sai lệch."
+                    },
+                    {
+                        question: "4 thao tác cơ bản để CẢI THIỆN một bộ dữ liệu trước khi cho AI học là gì?",
+                        options: [
+                            "Tải về - Copy - Paste - Xóa.",
+                            "Bổ sung - Loại bỏ - Sửa - Gán nhãn lại.",
+                            "Phóng to - Thu nhỏ - Đổi màu - Cắt ảnh.",
+                            "Cài đặt - Khởi động - Cập nhật - Tắt máy."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Đây là 4 bước dọn dẹp cơ bản: Thêm cái bị thiếu, Bỏ cái trùng/rác, Chữa cái bị sai thông tin, và Đặt lại tên/nhãn cho đúng loại."
+                    },
+                    {
+                        question: "Nếu trong bộ dữ liệu huấn luyện 'Ảnh chó và mèo' vô tình có lọt vào 3 tấm ảnh của CON CHIM, ta phải dùng thao tác nào?",
+                        options: [
+                            "Bổ sung.",
+                            "Loại bỏ (bỏ dữ liệu rác không liên quan).",
+                            "Sửa.",
+                            "Gán nhãn lại."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Những dữ liệu hoàn toàn không liên quan đến mục tiêu huấn luyện (nhận diện chó mèo) được gọi là rác (noise) và cần bị loại bỏ khỏi tập dữ liệu."
+                    },
+                    {
+                        question: "Khi thu thập hồ sơ khách hàng, nếu thấy một phiếu ghi 'Chiều cao: 3 mét' (rõ ràng là nhập sai), kĩ sư dữ liệu cần làm gì?",
+                        options: [
+                            "Xóa luôn khách hàng đó.",
+                            "Dùng thao tác BỔ SUNG.",
+                            "Dùng thao tác SỬA (chữa lại thông tin bị sai cho đúng logic).",
+                            "Dùng thao tác GÁN NHÃN LẠI."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Với lỗi nhập liệu sai lệch thực tế, thao tác cần làm là SỬA lại trường thông tin đó (nếu biết đúng là bao nhiêu) hoặc làm sạch dữ liệu."
+                    },
+                    {
+                        question: "Sự khác biệt chính giữa thao tác 'SỬA' và thao tác 'GÁN NHÃN LẠI' là gì?",
+                        options: [
+                            "Hai thao tác này hoàn toàn giống nhau.",
+                            "Sửa là bỏ ảnh đi, Gán nhãn là thêm ảnh mới.",
+                            "Sửa là thay đổi thông tin sai BÊN TRONG dữ liệu; Gán nhãn lại là đính chính TÊN/PHÂN LOẠI của dữ liệu đó.",
+                            "Sửa làm thay đổi màu ảnh, Gán nhãn thay đổi kích thước ảnh."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Sửa là thay đổi các thuộc tính bị sai. Gán nhãn là khi phân loại sai mục tiêu (VD: ảnh con mèo nhưng bị dán mác là 'chó' -> bóc mác ra dán lại thành 'mèo')."
+                    },
+                    {
+                        question: "Nếu nhận thấy bộ dữ liệu giọng nói có 1000 mẫu của nam giới nhưng chỉ có 50 mẫu của nữ giới, thao tác quan trọng nhất lúc này là gì?",
+                        options: [
+                            "BỔ SUNG (thu thập thêm mẫu giọng nữ giới để cân bằng).",
+                            "LOẠI BỎ (xóa hết giọng nam giới đi).",
+                            "SỬA (đổi cao độ giọng nam thành nữ).",
+                            "GÁN NHÃN LẠI (dán mác giọng nam thành nữ)."
+                        ],
+                        correctAnswer: 0,
+                        explanation: "Sự mất cân bằng giới tính sẽ gây ra thiên vị (bias). Thao tác đúng là đi thu thập bổ sung cho nhóm bị thiếu để đảm bảo đa dạng."
+                    },
+                    {
+                        question: "Trong một bộ ảnh, nếu phát hiện có 10 tấm ảnh GIỐNG HỆT NHAU được tải lặp lại nhiều lần, ta cần xử lý thế nào?",
+                        options: [
+                            "Giữ nguyên để AI học cho kĩ.",
+                            "Dùng thao tác LOẠI BỎ (chỉ giữ lại 1 tấm duy nhất, xóa các bản trùng).",
+                            "Gán nhãn lại cho chúng các tên khác nhau.",
+                            "In tất cả ra để kiểm tra."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Dữ liệu trùng lặp (duplicates) không mang lại kiến thức mới mà làm AI tốn tài nguyên hoặc bị học 'lệch' quá mức vào tấm ảnh đó, cần phải loại bỏ."
+                    },
+                    {
+                        question: "Hoạt động 'Dọn dẹp bộ dữ liệu cho sạch' mang lại lợi ích trực tiếp gì cho sản phẩm AI?",
+                        options: [
+                            "Giúp máy tính ít hao pin hơn.",
+                            "Làm cho hình ảnh của AI hiện lên đẹp hơn.",
+                            "Giúp AI học đúng bản chất, tăng độ chính xác và giảm thiểu các kết quả sai lệch, thiên vị.",
+                            "Giúp phần mềm AI bán được giá đắt hơn."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Quá trình làm sạch dữ liệu (Data Cleaning) quyết định độ chính xác, tính công bằng và độ tin cậy của thuật toán học máy."
+                    },
+                    {
+                        question: "Vì sao công việc của Kỹ sư dữ liệu (Data Engineer) lại quan trọng và mất nhiều thời gian trong các dự án AI?",
+                        options: [
+                            "Vì họ phải vẽ tay từng bức ảnh.",
+                            "Vì họ phải tốn thời gian gõ từng dòng code một.",
+                            "Vì thu thập, kiểm tra tỉ mỉ hàng vạn mẫu dữ liệu và làm sạch chúng là khâu nền tảng quyết định sự sống còn của AI.",
+                            "Vì họ phải đi bán sản phẩm AI đó."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Trong thực tế, 80% thời gian của một dự án khoa học dữ liệu là dành cho việc thu thập và làm sạch bộ dữ liệu."
+                    },
+                    {
+                        question: "Nếu bỏ qua các bước cải thiện dữ liệu mà cho AI học thẳng bộ dữ liệu thô (có lẫn rác, sai nhãn), kết quả sẽ ra sao?",
+                        options: [
+                            "AI sẽ tự động biết đâu là rác và bỏ qua.",
+                            "Hệ thống AI sẽ thường xuyên nhận diện sai, hoạt động kém hiệu quả và không đáng tin cậy.",
+                            "AI sẽ báo lỗi và tắt nguồn ngay lập tức.",
+                            "AI vẫn chạy bình thường và đúng 100%."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Thuật toán Machine Learning rất ngây thơ, nó học mọi thứ được đưa vào. Học rác sẽ trở thành một hệ thống sinh ra rác."
+                    }
+                ]
+            },
+            "10": {
+                title: "Tiết 10: Con người dẫn dắt AI",
+                questions: [
+                    {
+                        question: "Câu nói nào sau đây phản ánh đúng nhất mối quan hệ giữa Con người và AI trong việc tạo ra một sản phẩm công nghệ?",
+                        options: [
+                            "AI tự làm tất cả mọi thứ, con người chỉ việc hưởng thụ.",
+                            "Con người là 'nhạc trưởng' dẫn dắt, AI là 'nhạc cụ' giỏi; cả hai đồng sáng tạo.",
+                            "AI là người chủ quyết định mọi việc thay con người.",
+                            "Con người và AI là hai kẻ thù cạnh tranh nhau."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "AI là một công cụ cực mạnh, nhưng nó cần có người định hướng mục tiêu, cung cấp dữ liệu và kiểm duyệt kết quả - giống như nhạc trưởng điều khiển dàn nhạc."
+                    },
+                    {
+                        question: "Trong quy trình phát triển một hệ thống AI, 'Con người dẫn dắt' mang ý nghĩa cốt lõi là gì?",
+                        options: [
+                            "Con người tự tay viết mọi đoạn code.",
+                            "Con người là người quyết định hướng đi, mục tiêu, giới hạn và là người chịu trách nhiệm cuối cùng về hệ thống.",
+                            "Con người cầm tay robot để dạy nó đi.",
+                            "Con người phải làm việc chậm lại để chờ AI."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Dẫn dắt (Steering) nghĩa là nắm quyền quyết định và chịu trách nhiệm. AI không tự định ra mục đích tồn tại của nó, con người làm việc đó."
+                    },
+                    {
+                        question: "Ở khâu 'Đặt mục tiêu' cho sản phẩm AI, con người phải làm việc gì?",
+                        options: [
+                            "Nêu ra vấn đề thực tế cần giải quyết, đặt giới hạn và yêu cầu kết quả đầu ra cho AI.",
+                            "Tải dữ liệu hình ảnh về máy.",
+                            "Lập trình thuật toán mạng nơ-ron.",
+                            "Cắm điện khởi động máy chủ."
+                        ],
+                        correctAnswer: 0,
+                        explanation: "Khâu đầu tiên luôn thuộc về con người: Xác định chúng ta muốn AI giải quyết bài toán gì, ở mức độ nào và không được vi phạm quy tắc gì."
+                    },
+                    {
+                        question: "Khi sử dụng phần mềm AI vẽ tranh (Midjourney, DALL-E), ai là người thực sự 'đồng sáng tạo' và dẫn dắt bức tranh?",
+                        options: [
+                            "Bản thân phần mềm AI đó tự nghĩ ra tranh.",
+                            "Máy chủ của công ty tạo ra phần mềm.",
+                            "Người dùng - thông qua việc nhập câu lệnh (prompt), ra yêu cầu phong cách, chọn lọc và chỉnh sửa kết quả.",
+                            "Không có ai dẫn dắt cả."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Người dùng (Prompter) đóng vai trò định hướng nghệ thuật, cung cấp ý tưởng gốc. AI chỉ là công cụ vẽ thi công theo bản mô tả đó."
+                    },
+                    {
+                        question: "Khâu 'Dùng hay Dừng' (Quyết định đưa sản phẩm AI vào sử dụng thực tế) thể hiện rõ nhất quyền lực gì của con người?",
+                        options: [
+                            "Khả năng gõ bàn phím nhanh.",
+                            "Quyền kiểm thử phần mềm.",
+                            "Quyền định đoạt và chịu trách nhiệm đạo đức/pháp lý cho những tác động của AI đó lên xã hội.",
+                            "Quyền bán sản phẩm lấy tiền."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Nếu AI bộc lộ rủi ro nguy hiểm ở khâu kiểm thử, con người phải đưa ra quyết định đạo đức là 'Dừng lại' không phát hành, để bảo đảm an toàn."
+                    },
+                    {
+                        question: "Trong khâu 'Chuẩn bị dữ liệu', nếu con người 'buông tay' phó mặc cho AI tự gom dữ liệu trên mạng, điều gì dễ xảy ra?",
+                        options: [
+                            "AI sẽ học được mọi kiến thức đúng đắn nhất.",
+                            "AI có thể thu thập phải dữ liệu rác, tin giả, dữ liệu thiên vị và vi phạm bản quyền.",
+                            "Máy tính sẽ chạy nhanh gấp đôi.",
+                            "Con người sẽ có nhiều thời gian đi chơi hơn."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Việc chọn lọc, làm sạch và cấp phép dữ liệu phải do con người kiểm soát gắt gao. AI tự gom dữ liệu mạng dễ dính phải dữ liệu độc hại."
+                    },
+                    {
+                        question: "Vì sao nói AI không thể tự làm ra chính nó?",
+                        options: [
+                            "Vì AI không có tay chân để lắp ráp máy tính.",
+                            "Vì AI thiếu sự định hướng: nó không tự đặt ra vấn đề cần giải, không tự đi gom dữ liệu, không tự kiểm thử chất lượng.",
+                            "Vì luật pháp cấm AI tự tạo ra AI.",
+                            "Vì AI chưa biết cách kết nối wifi."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "AI là một công đoạn thuật toán. Tất cả các khâu bao quanh nó từ ý tưởng, dữ liệu, luật lệ đều cần sự can thiệp của trí tuệ con người."
+                    },
+                    {
+                        question: "Vai trò 'Kiểm thử' của con người đối với AI giống với vai trò nào trong đời sống?",
+                        options: [
+                            "Giống một người thợ xây trộn xi măng.",
+                            "Giống một giáo viên ra đề thi, chấm điểm, bắt lỗi và đánh giá năng lực của học sinh (AI).",
+                            "Giống người lái xe đạp.",
+                            "Giống một đầu bếp nấu ăn."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Con người đưa ra các bộ dữ liệu mới (đề thi), theo dõi câu trả lời của AI và chấm điểm xem thuật toán đó hoạt động có đúng thiết kế không."
+                    },
+                    {
+                        question: "Sau khi AI được đưa vào sử dụng, ở khâu 'Cải tiến', AI có tự nhận biết điểm yếu để tự sửa chữa hoàn toàn không?",
+                        options: [
+                            "Có, AI hiện đại có thể tự viết lại code cho mình hoàn hảo.",
+                            "Không, con người cần tiếp nhận phản hồi từ người dùng thực tế, phân tích lỗi và cập nhật bộ dữ liệu/thuật toán mới cho AI.",
+                            "AI sẽ tự xóa mình nếu thấy lỗi.",
+                            "AI tự động lấy tiền của người dùng để nâng cấp."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Vòng đời AI là một vòng lặp liên tục cải tiến. Việc ghi nhận lỗi và nâng cấp phiên bản (update) vẫn nằm dưới sự điều khiển của đội ngũ phát triển con người."
+                    },
+                    {
+                        question: "Hiểu được vai trò 'Con người dẫn dắt AI' giúp chúng ta có thái độ như thế nào trong kỷ nguyên số?",
+                        options: [
+                            "Sợ hãi và nghĩ rằng một ngày nào đó máy móc sẽ cai trị con người.",
+                            "Tự tin, làm chủ công nghệ, dùng AI như trợ lí đắc lực và luôn giữ trách nhiệm kiểm soát cuối cùng.",
+                            "Lười biếng, giao khoán mọi thứ để AI lo.",
+                            "Tránh xa mọi thiết bị có chứa AI."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Mục đích của việc học AI là hiểu để làm chủ. Công dân số văn minh luôn biết tận dụng sức mạnh máy móc nhưng không bao giờ buông bỏ quyền tự quyết và trách nhiệm."
+                    }
+                ]
+            },
+            "11": {
+                title: "Tiết 11: Kiểm thử sản phẩm AI - Cách đánh giá",
+                questions: [
+                    {
+                        question: "Mục đích quan trọng nhất của việc KIỂM THỬ (Testing) một sản phẩm AI trước khi phát hành là gì?",
+                        options: [
+                            "Để làm cho giao diện ứng dụng đẹp hơn.",
+                            "Để khách quan đánh giá xem AI hoạt động có ĐÚNG, AN TOÀN như thiết kế không, phát hiện và sửa các lỗi sai.",
+                            "Để đếm xem có bao nhiêu người tải ứng dụng.",
+                            "Để lấy dữ liệu của người dùng."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Kiểm thử giúp phát hiện những lỗi tiềm ẩn, sai số hoặc phản ứng nguy hiểm của AI trước khi chúng gây hại cho người dùng cuối."
+                    },
+                    {
+                        question: "Khi kiểm thử một mô hình nhận dạng (ví dụ: AI nhận diện ảnh chó/mèo), vì sao bắt buộc phải dùng DỮ LIỆU MỚI (chưa từng dùng để huấn luyện)?",
+                        options: [
+                            "Vì dữ liệu cũ đã bị máy tính xóa đi.",
+                            "Vì dùng dữ liệu mới đỡ nhàm chán hơn.",
+                            "Vì nếu thử lại dữ liệu cũ, AI sẽ 'thuộc bài' (học vẹt) và luôn đúng; dữ liệu mới mới đo được khả năng đoán thật sự của AI.",
+                            "Vì dữ liệu mới thường đẹp hơn."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Đây là nguyên tắc vàng trong Machine Learning (Tập Test phải khác Tập Train). Thử trên dữ liệu lạ mới biết AI có khả năng 'tổng quát hóa' tốt hay chỉ là học vẹt."
+                    },
+                    {
+                        question: "Trong một bài kiểm thử mô hình nhận diện giọng nói, em đưa vào 20 đoạn ghi âm mới. Hệ thống nhận diện đúng 15 đoạn. Tỉ lệ ĐÚNG của AI là bao nhiêu?",
+                        options: [
+                            "60%",
+                            "70%",
+                            "75%",
+                            "80%"
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Tính phần trăm: (15 / 20) x 100% = 75%."
+                    },
+                    {
+                        question: "Khi kiểm thử một Chatbot (trợ lý ảo trả lời tin nhắn), chiến thuật hiệu quả nhất để đánh giá nó là gì?",
+                        options: [
+                            "Chỉ hỏi 1 câu duy nhất như 'Bạn tên là gì?'.",
+                            "Đặt một tập hợp NHIỀU câu hỏi: từ câu dễ, câu khó, câu mập mờ, đến những câu 'ngoài phạm vi' kiến thức của nó.",
+                            "Copy một đoạn văn dài 10 trang cho nó đọc.",
+                            "Hỏi nó bằng một ngôn ngữ mà nó chưa từng được lập trình."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Kiểm thử Chatbot đòi hỏi thử nghiệm độ bao phủ (coverage): phải kiểm tra xem nó xử lý các tình huống khó, câu hỏi hóc búa có tốt hay không."
+                    },
+                    {
+                        question: "Mục đích của việc đặt một 'câu hỏi ngoài phạm vi' (ví dụ: hỏi Chatbot dạy Toán cách chữa bệnh đau bụng) trong bài kiểm thử là gì?",
+                        options: [
+                            "Để xem Chatbot có bị hỏng mạch không.",
+                            "Để xem Chatbot có biết ĐỨNG GIỚI HẠN của mình và nói 'Tôi không biết', hay nó sẽ tự động bịa đặt (hallucination) ra thông tin sai.",
+                            "Để dạy cho Chatbot kiến thức y khoa.",
+                            "Để thử xem Chatbot có tức giận không."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Một AI an toàn là một AI biết từ chối trả lời những gì ngoài chuyên môn, thay vì tự tin nói bừa gây nguy hiểm cho người dùng."
+                    },
+                    {
+                        question: "Tiêu chí để đánh giá câu trả lời của một Chatbot trong bài kiểm thử bao gồm những gì?",
+                        options: [
+                            "Chỉ cần trả lời nhanh là được.",
+                            "Trả lời càng dài càng tốt.",
+                            "Chỉ cần đúng sự thật, không quan trọng nội dung gì.",
+                            "Câu trả lời phải ĐÚNG SỰ THẬT, PHÙ HỢP với ngữ cảnh câu hỏi, và AN TOÀN (không chứa nội dung độc hại)."
+                        ],
+                        correctAnswer: 3,
+                        explanation: "Kết quả của Chatbot được chấm dựa trên Độ chính xác (Accuracy), Độ liên quan (Relevance) và Tính an toàn (Safety)."
+                    },
+                    {
+                        question: "Nếu trong quá trình kiểm thử, em phát hiện Chatbot đưa ra một câu trả lời hướng dẫn làm chất nổ. Đánh giá của em vào phiếu kiểm thử cho câu này sẽ là gì?",
+                        options: [
+                            "Đúng và phù hợp (vì nó trả lời đúng cách làm).",
+                            "Chỉ hơi sai một chút.",
+                            "KHÔNG PHÙ HỢP và vi phạm nghiêm trọng tính AN TOÀN.",
+                            "Không đánh giá vì em không rành về chất nổ."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Mọi nội dung xúi giục, hướng dẫn bạo lực, nguy hiểm đều vi phạm tiêu chuẩn an toàn (Safety) dù thông tin đó có đúng về mặt kĩ thuật đi chăng nữa."
+                    },
+                    {
+                        question: "Người thực hiện kiểm thử (Tester) cần phải có phẩm chất đạo đức nào quan trọng nhất khi ghi nhận kết quả?",
+                        options: [
+                            "Khả năng tưởng tượng phong phú.",
+                            "Sự sáng tạo để viết code.",
+                            "TRUNG THỰC và KHÁCH QUAN: AI đoán sai thì ghi là sai, không che giấu hoặc sửa số liệu để làm 'đẹp' kết quả.",
+                            "Thích tranh cãi với người lập trình."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Nếu người kiểm thử bao che lỗi của hệ thống, lỗi đó sẽ lọt ra ngoài thực tế và gây hậu quả nghiêm trọng."
+                    },
+                    {
+                        question: "Sự khác biệt giữa việc 'Người phát triển tự khen AI của mình tốt' và 'Kết quả Kiểm thử' là gì?",
+                        options: [
+                            "Không có sự khác biệt nào.",
+                            "Lời khen là cảm tính; còn Kết quả kiểm thử là bằng chứng định lượng, khách quan dựa trên Dữ liệu, con số thực tế.",
+                            "Người phát triển luôn nói dối.",
+                            "Kiểm thử luôn cho kết quả xấu hơn."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Khoa học công nghệ vận hành dựa trên số liệu (data-driven). Độ tin cậy của AI phải được chứng minh bằng các bài kiểm tra có thông số rõ ràng."
+                    },
+                    {
+                        question: "Sau khi thực hiện bài kiểm thử và lập được 'Bảng kết quả các lỗi sai', bước tiếp theo đội phát triển cần làm là gì?",
+                        options: [
+                            "Xóa bảng kết quả đi để không ai biết.",
+                            "Sử dụng thông tin đó để quay lại khâu CẢI TIẾN: bổ sung dữ liệu mới cho các trường hợp AI đã làm sai và huấn luyện lại.",
+                            "Lập tức phát hành sản phẩm ra thị trường.",
+                            "Đổ lỗi cho người dùng hỏi khó."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Kiểm thử không phải để vứt bỏ sản phẩm, mà để lấy thông tin phản hồi (feedback loop) nhằm nâng cấp, vá lỗi giúp AI thông minh hơn."
+                    }
+                ]
+            },
+            "12": {
+                title: "Tiết 12: Chấm chéo sản phẩm AI (Tổng kết cuối kỳ)",
+                questions: [
+                    {
+                        question: "Trong Phiếu 5 tiêu chí để đánh giá một dự án/sản phẩm AI, tiêu chí ĐẦU TIÊN 'Vấn đề rõ & Cần AI' dùng để kiểm tra điều gì?",
+                        options: [
+                            "Sản phẩm đó có nhiều màu sắc không.",
+                            "Vấn đề đưa ra có thật, cấp thiết không và việc sử dụng công nghệ AI để giải quyết có thực sự phù hợp, hiệu quả không.",
+                            "Nhóm tác giả có đông thành viên không.",
+                            "Dự án này làm hết bao nhiêu tiền."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Một dự án AI tốt phải bắt nguồn từ một bài toán đúng. Nếu bài toán đó có thể giải bằng phần mềm thông thường một cách đơn giản, thì việc nhồi nhét AI vào là không cần thiết."
+                    },
+                    {
+                        question: "Theo bộ 5 tiêu chí đánh giá, tiêu chí 'Dữ liệu chất lượng' sẽ đòi hỏi sản phẩm phải đáp ứng được yêu cầu nào?",
+                        options: [
+                            "Dữ liệu được tải về chỉ mất 1 phút.",
+                            "Có bộ dữ liệu đầu vào đủ lớn, đa dạng, công bằng và ĐÃ QUA CÁC THAO TÁC CẢI THIỆN (bổ sung, loại bỏ, sửa, gán nhãn).",
+                            "Toàn bộ dữ liệu đều bằng tiếng Anh.",
+                            "Dữ liệu không tốn dung lượng ổ cứng."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Tiêu chí này đánh giá công sức làm sạch dữ liệu của nhóm, đảm bảo tính đa dạng và hạn chế tối đa sự thiên vị (bias) từ gốc."
+                    },
+                    {
+                        question: "Tiêu chí 'Có kiểm thử' trong đánh giá dự án AI yêu cầu nhóm thiết kế phải chứng minh được điều gì?",
+                        options: [
+                            "Chứng minh AI đã được thử bằng các dữ liệu MỚI, có bảng thống kê kết quả đúng/sai rõ ràng, khách quan.",
+                            "Chứng minh mã nguồn không có lỗi chính tả.",
+                            "Cam kết bằng lời rằng ứng dụng chạy rất nhanh.",
+                            "Đưa ra được bằng khen của nhà trường."
+                        ],
+                        correctAnswer: 0,
+                        explanation: "Đánh giá chất lượng phải dựa trên số liệu của vòng kiểm thử (Test), không đánh giá bằng cảm tính hay lời hứa."
+                    },
+                    {
+                        question: "Vì sao tiêu chí 'Xử lí lỗi & trường hợp lạ' lại đặc biệt quan trọng khi đánh giá một ứng dụng Trí tuệ nhân tạo?",
+                        options: [
+                            "Vì nó giúp ứng dụng trông ngầu hơn.",
+                            "Vì AI không bao giờ dự đoán đúng 100%. Nhóm cần lường trước việc AI đoán sai hoặc người dùng nhập dữ liệu lạ để có cách cảnh báo an toàn.",
+                            "Vì giáo viên thích hỏi khó.",
+                            "Vì để điền cho đủ 5 tiêu chí."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "AI mang tính xác suất, luôn có tỉ lệ sai. Ứng dụng tốt là ứng dụng biết xử lí thanh lịch khi AI mắc lỗi (ví dụ: xin lỗi, yêu cầu nhập lại, cảnh báo không chắc chắn) thay vì bị sập."
+                    },
+                    {
+                        question: "Mục đích chính của tiêu chí 'Có phương án cải tiến' là gì?",
+                        options: [
+                            "Bắt buộc nhóm phải đập đi làm lại từ đầu.",
+                            "Kiểm tra xem nhóm có nhận thức được điểm yếu hiện tại của sản phẩm và nêu được cách nâng cấp, bổ sung dữ liệu cụ thể ở phiên bản sau không.",
+                            "Yêu cầu nhóm phải kiếm được tiền từ sản phẩm.",
+                            "Để trừ điểm các nhóm làm chưa xong."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Sản phẩm công nghệ là một vòng lặp liên tục. Khả năng nhìn ra thiếu sót và có tư duy phát triển dài hạn là phẩm chất quan trọng của người làm công nghệ."
+                    },
+                    {
+                        question: "Khi thực hiện 'Chấm chéo' (Peer Review) sản phẩm của nhóm bạn, thái độ đúng đắn nhất của một công dân số là gì?",
+                        options: [
+                            "Cố tình chấm điểm thấp để nhóm mình được xếp cao hơn.",
+                            "Chỉ chê bai những điểm xấu mà không đưa ra giải pháp.",
+                            "Công bằng, khách quan; nêu điểm mạnh để động viên và đưa ra GÓP Ý CẢI TIẾN CỤ THỂ, xây dựng để bạn làm tốt hơn.",
+                            "Chấm điểm tối đa cho tất cả các nhóm dù không nghe báo cáo."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Kỹ năng đánh giá đồng đẳng (Peer Review) đề cao sự liêm chính học thuật và tính chất xây dựng. Góp ý tốt là góp ý chỉ ra cách khắc phục."
+                    },
+                    {
+                        question: "Một lời góp ý TỐT trong phần đề xuất cải tiến cho sản phẩm AI của nhóm bạn nên được viết như thế nào?",
+                        options: [
+                            "'Sản phẩm của nhóm bạn rất chán và đầy lỗi.'",
+                            "'Giao diện xấu quá.'",
+                            "'Nhóm nên thu thập THÊM dữ liệu hình ảnh vào ban đêm vì hiện tại AI nhận diện trong bóng tối rất kém.'",
+                            "'Mình không hiểu các bạn làm gì cả.'"
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Góp ý cụ thể (Actionable feedback) chỉ ra đúng điểm yếu (nhận diện ban đêm kém) và hành động cụ thể cần làm (thu thêm dữ liệu ban đêm)."
+                    },
+                    {
+                        question: "Nhìn lại chương trình AI lớp 9, kỹ năng cốt lõi nào giúp học sinh tự bảo vệ mình trên không gian mạng?",
+                        options: [
+                            "Kỹ năng lập trình phần mềm.",
+                            "Kỹ năng nhận diện nội dung giả mạo (Deepfake) và thói quen luôn luôn KỂM CHỨNG thông tin trước khi tin.",
+                            "Kỹ năng tạo ra tin giả.",
+                            "Kỹ năng thiết kế đồ họa."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Trọng tâm của mạch Đạo đức AI lớp 9 là trang bị sức đề kháng số, giúp học sinh nhận diện rủi ro và không trở thành nạn nhân của tin giả/lừa đảo do AI."
+                    },
+                    {
+                        question: "Sau khi học xong toàn bộ chương trình Trí tuệ nhân tạo ở bậc THCS, vai trò của em đối với công nghệ này là gì?",
+                        options: [
+                            "Người dùng bị động, AI bảo gì nghe nấy.",
+                            "Người làm chủ, dẫn dắt AI, biết đánh giá đúng/sai, hiểu được nguồn gốc sự thiên vị và sử dụng công cụ AI một cách có trách nhiệm.",
+                            "Tẩy chay mọi sản phẩm AI.",
+                            "Chuyên gia lập trình cốt lõi của Google."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Chương trình định hướng học sinh trở thành những 'Công dân số có tư duy phản biện', biết tận dụng và kiểm soát công nghệ thay vì sợ hãi hay tin tưởng mù quáng."
+                    },
+                    {
+                        question: "Theo định hướng nghề nghiệp, kỹ năng nào thuộc về nhóm 'Rất Người' mà máy móc AI KHÓ có thể thay thế trong tương lai?",
+                        options: [
+                            "Khả năng ghi nhớ và tính toán siêu tốc.",
+                            "Sự thấu cảm cảm xúc con người, tư duy phản biện, kĩ năng giao tiếp hợp tác và khả năng tự 'Học cách học'.",
+                            "Khả năng làm việc không biết mệt mỏi.",
+                            "Khả năng phân loại hàng hóa lặp đi lặp lại."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Phần cốt lõi để con người luôn làm chủ và không bị thay thế là khả năng sáng tạo độc bản, thấu hiểu con người và tư duy phê phán các cỗ máy."
+                    }
+                ]
+            }
+        };
+
+        // DOM Elements
+        const lessonSelect = document.getElementById('lesson-select');
+        const quizContainer = document.getElementById('quiz-container');
+        const placeholderState = document.getElementById('placeholder-state');
+        const submitSection = document.getElementById('submit-section');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsSection = document.getElementById('results-section');
+        const scoreDisplay = document.getElementById('score-display');
+        const retryBtn = document.getElementById('retry-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const quizInfoBar = document.getElementById('quiz-info-bar');
+        const lessonTitleDisplay = document.getElementById('lesson-title-display');
+        const questionCount = document.getElementById('question-count');
+
+        let currentLessonId = null;
+
+        lessonSelect.addEventListener('change', (e) => {
+            currentLessonId = e.target.value;
+            loadQuiz(currentLessonId);
+        });
+
+        function loadQuiz(lessonId) {
+            const data = quizData[lessonId];
+            if (!data) return;
+
+            // Update UI state
+            placeholderState.classList.add('hidden');
+            resultsSection.classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+            submitSection.classList.remove('hidden');
+            quizInfoBar.classList.remove('hidden');
+            
+            // Update Info Bar
+            lessonTitleDisplay.textContent = data.title;
+            questionCount.textContent = data.questions.length;
+
+            quizContainer.innerHTML = ''; // Clear previous questions
+
+            // Build questions HTML
+            data.questions.forEach((q, index) => {
+                const qNum = index + 1;
+                
+                // Create question block
+                const questionBlock = document.createElement('div');
+                questionBlock.className = 'bg-white p-6 rounded-xl shadow-sm border border-slate-200 fade-in';
+                questionBlock.style.animationDelay = `${index * 0.05}s`;
+                questionBlock.id = `question-block-${index}`;
+                
+                // Question text
+                const questionText = document.createElement('h3');
+                questionText.className = 'text-lg font-bold text-slate-800 mb-4';
+                questionText.innerHTML = `<span class="text-indigo-600">Câu ${qNum}:</span> ${q.question}`;
+                questionBlock.appendChild(questionText);
+
+                // Options
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'space-y-3';
+                
+                q.options.forEach((opt, optIndex) => {
+                    const optionId = `q${index}_opt${optIndex}`;
+                    
+                    const optionLabel = document.createElement('label');
+                    optionLabel.className = 'flex items-start p-4 border border-slate-200 rounded-lg cursor-pointer hover:bg-indigo-50 transition-colors peer-checked:border-indigo-600 peer-checked:bg-indigo-50 group';
+                    optionLabel.id = `label_${optionId}`;
+                    
+                    const radioInput = document.createElement('input');
+                    radioInput.type = 'radio';
+                    radioInput.name = `question${index}`;
+                    radioInput.value = optIndex;
+                    radioInput.className = 'mt-1 mr-3 w-5 h-5 text-indigo-600 border-slate-300 focus:ring-indigo-500';
+                    radioInput.id = optionId;
+                    
+                    const optionTextDiv = document.createElement('div');
+                    optionTextDiv.className = 'text-slate-700 font-medium';
+                    optionTextDiv.textContent = opt;
+
+                    optionLabel.appendChild(radioInput);
+                    optionLabel.appendChild(optionTextDiv);
+                    optionsDiv.appendChild(optionLabel);
+                    
+                    // Add click effect to highlight selected option visually
+                    radioInput.addEventListener('change', function() {
+                        // Reset all labels in this question
+                        const allLabels = optionsDiv.querySelectorAll('label');
+                        allLabels.forEach(lbl => {
+                            lbl.classList.remove('border-indigo-600', 'bg-indigo-50', 'ring-1', 'ring-indigo-600');
+                        });
+                        // Highlight checked
+                        if(this.checked) {
+                             optionLabel.classList.add('border-indigo-600', 'bg-indigo-50', 'ring-1', 'ring-indigo-600');
+                        }
+                    });
+                });
+                
+                questionBlock.appendChild(optionsDiv);
+
+                // Explanation area (hidden initially)
+                const explanationDiv = document.createElement('div');
+                explanationDiv.id = `explanation-${index}`;
+                explanationDiv.className = 'mt-4 p-4 rounded-lg text-sm hidden';
+                
+                const explanationTitle = document.createElement('p');
+                explanationTitle.className = 'font-bold mb-1';
+                explanationTitle.id = `explanation-title-${index}`;
+                
+                const explanationText = document.createElement('p');
+                explanationText.textContent = q.explanation;
+                
+                explanationDiv.appendChild(explanationTitle);
+                explanationDiv.appendChild(explanationText);
+                questionBlock.appendChild(explanationDiv);
+
+                quizContainer.appendChild(questionBlock);
+            });
+            
+            // Scroll to top of quiz
+            window.scrollTo({ top: quizContainer.offsetTop - 100, behavior: 'smooth' });
+        }
+
+        submitBtn.addEventListener('click', () => {
+            if (!currentLessonId) return;
+            
+            const data = quizData[currentLessonId];
+            let score = 0;
+            let answeredCount = 0;
+
+            // Check answers
+            data.questions.forEach((q, index) => {
+                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                const explanationDiv = document.getElementById(`explanation-${index}`);
+                const explanationTitle = document.getElementById(`explanation-title-${index}`);
+                const questionBlock = document.getElementById(`question-block-${index}`);
+                
+                // Disable all inputs after submit
+                const allInputs = document.querySelectorAll(`input[name="question${index}"]`);
+                allInputs.forEach(input => input.disabled = true);
+                
+                // Reveal correct answers and explanations
+                explanationDiv.classList.remove('hidden');
+
+                if (selectedOption) {
+                    answeredCount++;
+                    const selectedValue = parseInt(selectedOption.value);
+                    const labelDiv = document.getElementById(`label_q${index}_opt${selectedValue}`);
+                    
+                    if (selectedValue === q.correctAnswer) {
+                        score++;
+                        labelDiv.classList.replace('border-indigo-600', 'border-green-500');
+                        labelDiv.classList.replace('bg-indigo-50', 'bg-green-50');
+                        labelDiv.classList.replace('ring-indigo-600', 'ring-green-500');
+                        
+                        explanationDiv.classList.add('bg-green-100', 'text-green-800');
+                        explanationTitle.innerHTML = '<span class="text-green-600">✓ Chính xác:</span>';
+                        questionBlock.classList.add('border-green-200');
+                    } else {
+                        labelDiv.classList.replace('border-indigo-600', 'border-red-500');
+                        labelDiv.classList.replace('bg-indigo-50', 'bg-red-50');
+                        labelDiv.classList.replace('ring-indigo-600', 'ring-red-500');
+                        
+                        // Highlight correct one
+                        const correctLabelDiv = document.getElementById(`label_q${index}_opt${q.correctAnswer}`);
+                        correctLabelDiv.classList.add('border-green-500', 'bg-green-50', 'ring-1', 'ring-green-500');
+                        
+                        explanationDiv.classList.add('bg-red-100', 'text-red-800');
+                        explanationTitle.innerHTML = '<span class="text-red-600">✗ Sai rồi:</span>';
+                        questionBlock.classList.add('border-red-200');
+                    }
+                } else {
+                    // Not answered
+                     const correctLabelDiv = document.getElementById(`label_q${index}_opt${q.correctAnswer}`);
+                     correctLabelDiv.classList.add('border-yellow-500', 'bg-yellow-50', 'ring-1', 'ring-yellow-500');
+                     
+                     explanationDiv.classList.add('bg-yellow-100', 'text-yellow-800');
+                     explanationTitle.innerHTML = '<span class="text-yellow-600">! Chưa trả lời:</span>';
+                     questionBlock.classList.add('border-yellow-200');
+                }
+            });
+
+            // Display Results
+            submitSection.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+            scoreDisplay.textContent = `${score}/${data.questions.length}`;
+            
+            // Set feedback message
+            const percentage = score / data.questions.length;
+            if (percentage === 1) {
+                feedbackMessage.textContent = "Xuất sắc! Bạn đã nắm vững hoàn toàn kiến thức tiết này.";
+            } else if (percentage >= 0.8) {
+                feedbackMessage.textContent = "Rất tốt! Bạn hiểu bài khá sâu, chỉ nhầm lẫn một chút xíu thôi.";
+            } else if (percentage >= 0.5) {
+                feedbackMessage.textContent = "Khá tốt. Hãy đọc lại phần giải thích các câu sai để nhớ lâu hơn nhé.";
+            } else {
+                feedbackMessage.textContent = "Bạn cần ôn tập lại tiết học này kỹ hơn. Đừng nản chí, làm lại nhé!";
+            }
+
+            // Scroll to results
+            window.scrollTo({ top: resultsSection.offsetTop - 50, behavior: 'smooth' });
+        });
+
+        retryBtn.addEventListener('click', () => {
+            if (currentLessonId) {
+                loadQuiz(currentLessonId); // Reload the current quiz
+            }
+        });
+    </script>
+</body>
+</html>

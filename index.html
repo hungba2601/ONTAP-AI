@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Ôn Tập Môn Trí Tuệ Nhân Tạo (AI) - Khối 6, 7, 8, 9</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        grade6: { DEFAULT: '#ea580c', light: '#fff7ed', dark: '#c2410c' },
+                        grade7: { DEFAULT: '#0d9488', light: '#f0fdfa', dark: '#0f766e' },
+                        grade8: { DEFAULT: '#2563eb', light: '#eff6ff', dark: '#1d4ed8' },
+                        grade9: { DEFAULT: '#6366f1', light: '#eef2ff', dark: '#4338ca' },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Tùy chỉnh thanh cuộn */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .fade-in { animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse-subtle { animation: pulseSubtle 2s infinite ease-in-out; }
+        @keyframes pulseSubtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Print styles */
+        @media print {
+            header, footer, #grade-nav, #student-card, #lesson-controls, #submit-section, #settings-modal, .no-print {
+                display: none !important;
+            }
+            body { background: white !important; color: black !important; }
+            #results-section, #quiz-container { display: block !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm transition-all duration-300" id="main-header">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
+            
+            <!-- Logo & Title -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-blue-600 to-cyan-400 flex items-center justify-center text-white shadow-md shadow-indigo-100 flex-shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">HỆ THỐNG ÔN TẬP TRÍ TUỆ NHÂN TẠO</h1>
+                    <p class="text-xs text-slate-500 font-medium hidden sm:block">Chương trình Giáo dục AI Cấp THCS (Lớp 6, 7, 8, 9)</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center space-x-2">
+                <!-- Teacher Admin Key Button (Nhập mật khẩu 12345 để mở cấu hình) -->
+                <button type="button" id="btn-admin-lock" onclick="handleAdminLockClick()" class="px-3 py-2 text-xs sm:text-sm font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-all flex items-center gap-1.5 shadow-2xs group" title="Mở khóa quản trị viên để cài đặt Google Sheet">
+                    <span id="admin-lock-icon" class="text-base group-hover:scale-110 transition-transform">🔑</span>
+                    <span id="admin-lock-text" class="hidden sm:inline font-medium">Quản trị</span>
+                </button>
+
+                <!-- Google Sheet Settings Trigger (Ẩn mặc định, chỉ hiện khi nhập đúng MK 12345) -->
+                <button type="button" onclick="openSettingsModal()" class="px-3.5 py-2 text-xs sm:text-sm font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-all flex items-center gap-2 shadow-xs group hidden fade-in" id="btn-sheet-settings" title="Cài đặt kết nối Google Sheet">
+                    <span class="relative flex h-2.5 w-2.5">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" id="gas-ping"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" id="gas-dot"></span>
+                    </span>
+                    <span class="font-medium">Google Sheet</span>
+                    <svg class="w-3.5 h-3.5 text-emerald-600 group-hover:rotate-45 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </button>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Main Body Container -->
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- 1. KHỐI SELECTION CARDS (Grade 6, 7, 8, 9) -->
+        <section id="grade-nav">
+            <div class="mb-2 flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">1. Chọn khối học của em</span>
+                <span class="text-xs text-slate-400 font-medium" id="grade-badge-hint">Đang chọn: Khối 6</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                
+                <!-- Grade 6 -->
+                <button type="button" onclick="selectGrade('6')" id="tab-grade-6" class="grade-tab p-4 rounded-xl border-2 transition-all text-left relative overflow-hidden bg-white border-orange-500 shadow-sm ring-2 ring-orange-500/20">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-black text-sm">K6</span>
+                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-orange-100 text-orange-700">12 Tiết</span>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">Khối 6</h3>
+                    <p class="text-xs text-slate-500 mt-0.5 truncate">Nhận thức & Khám phá AI</p>
+                    <div class="active-indicator absolute bottom-0 left-0 right-0 h-1 bg-orange-500"></div>
+                </button>
+
+                <!-- Grade 7 -->
+                <button type="button" onclick="selectGrade('7')" id="tab-grade-7" class="grade-tab p-4 rounded-xl border-2 transition-all text-left relative overflow-hidden bg-white border-slate-200 hover:border-teal-300 hover:shadow-xs">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="w-8 h-8 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center font-black text-sm">K7</span>
+                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-teal-50 text-teal-700">12 Tiết</span>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">Khối 7</h3>
+                    <p class="text-xs text-slate-500 mt-0.5 truncate">Quyền quyết định & Dự án</p>
+                    <div class="active-indicator absolute bottom-0 left-0 right-0 h-1 bg-teal-500 hidden"></div>
+                </button>
+
+                <!-- Grade 8 -->
+                <button type="button" onclick="selectGrade('8')" id="tab-grade-8" class="grade-tab p-4 rounded-xl border-2 transition-all text-left relative overflow-hidden bg-white border-slate-200 hover:border-blue-300 hover:shadow-xs">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-black text-sm">K8</span>
+                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">12 Tiết</span>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">Khối 8</h3>
+                    <p class="text-xs text-slate-500 mt-0.5 truncate">Rủi ro, Đạo đức & Chatbot</p>
+                    <div class="active-indicator absolute bottom-0 left-0 right-0 h-1 bg-blue-500 hidden"></div>
+                </button>
+
+                <!-- Grade 9 -->
+                <button type="button" onclick="selectGrade('9')" id="tab-grade-9" class="grade-tab p-4 rounded-xl border-2 transition-all text-left relative overflow-hidden bg-white border-slate-200 hover:border-indigo-300 hover:shadow-xs">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-black text-sm">K9</span>
+                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700">12 Tiết</span>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">Khối 9</h3>
+                    <p class="text-xs text-slate-500 mt-0.5 truncate">Thách thức & Kiểm thử AI</p>
+                    <div class="active-indicator absolute bottom-0 left-0 right-0 h-1 bg-indigo-500 hidden"></div>
+                </button>
+
+            </div>
+        </section>
+
+        <!-- 2. STUDENT INFORMATION & LESSON SELECTOR CARD -->
+        <section class="bg-white rounded-2xl shadow-xs border border-slate-200 p-5 sm:p-6 transition-all" id="student-card">
+            
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-end">
+                
+                <!-- Student Full Name -->
+                <div class="md:col-span-4">
+                    <label for="input-student-name" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        Họ và tên học sinh <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="text" id="input-student-name" placeholder="Ví dụ: Nguyễn Văn An" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 focus:bg-white transition-all font-medium" />
+                </div>
+
+                <!-- Student Class -->
+                <div class="md:col-span-3">
+                    <label for="input-student-class" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 flex items-center justify-between">
+                        <span class="flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            Lớp học <span class="text-rose-500">*</span>
+                        </span>
+                        <span id="class-prefix-badge" class="text-xs px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold font-mono">Bắt đầu: 6</span>
+                    </label>
+                    <input type="text" id="input-student-class" placeholder="VD: 6A1, 6/2, 6B..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 focus:bg-white transition-all font-medium uppercase" />
+                    <p id="class-validation-msg" class="hidden text-xs text-rose-500 font-semibold mt-1.5 flex items-center gap-1">
+                        <span>⚠️</span> <span>Lớp phải bắt đầu bằng số <strong id="expected-grade-num">6</strong> (VD: <span id="class-example-hint">6A1</span>)</span>
+                    </p>
+                </div>
+
+                <!-- Lesson Select Dropdown -->
+                <div class="md:col-span-5">
+                    <label for="lesson-select" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 flex items-center justify-between">
+                        <span class="flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                            Chọn tiết học ôn tập <span class="text-rose-500">*</span>
+                        </span>
+                        <span class="text-slate-400 font-normal text-xs normal-case" id="lesson-available-count">12 tiết</span>
+                    </label>
+                    <div class="relative">
+                        <select id="lesson-select" class="w-full pl-3.5 pr-10 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 focus:bg-white transition-all appearance-none cursor-pointer font-medium">
+                            <option value="" disabled selected>-- Bấm để chọn tiết học ôn tập --</option>
+                            <!-- Dynamically populated options -->
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Profile Info Bar -->
+            <div id="profile-saved-badge" class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        Đã sẵn sàng
+                    </span>
+                    <span id="active-student-display">Vui lòng nhập Họ tên và Lớp trước khi nộp bài</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span id="timer-display" class="font-mono text-slate-600 bg-slate-100 px-2 py-0.5 rounded text-xs hidden">⏱️ 00:00</span>
+                    <span class="text-slate-400 italic">Dữ liệu nộp bài sẽ tự động gửi về Google Sheet</span>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 3. ACTIVE QUIZ INFO BANNER (When a lesson is loaded) -->
+        <section id="quiz-info-bar" class="hidden fade-in bg-white rounded-xl p-4 border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div id="grade-chip" class="px-2.5 py-1 rounded-lg text-xs font-extrabold uppercase tracking-wide bg-orange-100 text-orange-700">
+                    Khối 6
+                </div>
+                <h2 id="lesson-title-display" class="text-sm sm:text-base font-bold text-slate-900">
+                    Tiết 1: Giới thiệu AI
+                </h2>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="text-xs font-semibold text-slate-500">
+                    Tiến độ: <span id="answered-counter" class="text-slate-900 font-bold">0</span>/<span id="total-counter">10</span> câu
+                </div>
+                <div class="w-24 bg-slate-100 rounded-full h-2 overflow-hidden">
+                    <div id="progress-bar-fill" class="h-full bg-orange-500 transition-all duration-300" style="width: 0%;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. QUIZ QUESTIONS CONTAINER -->
+        <div id="quiz-container" class="space-y-5 hidden fade-in">
+            <!-- Questions injected dynamically by JavaScript -->
+        </div>
+
+        <!-- 5. INITIAL PLACEHOLDER STATE (Before selecting a lesson) -->
+        <div id="placeholder-state" class="text-center py-16 px-4 bg-white rounded-2xl border-2 border-dashed border-slate-200 shadow-xs">
+            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800">Chưa chọn tiết học ôn tập</h3>
+            <p class="text-sm text-slate-500 mt-1 max-w-md mx-auto">Vui lòng chọn <strong>Khối (6, 7, 8, 9)</strong> và <strong>Tiết học</strong> ở phía trên để tải toàn bộ bộ câu hỏi trắc nghiệm.</p>
+        </div>
+
+        <!-- 6. SUBMIT BUTTON SECTION -->
+        <div id="submit-section" class="pt-4 border-t border-slate-200 hidden">
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button type="button" id="submit-btn" class="w-full sm:w-auto px-8 py-3.5 text-base font-bold text-white rounded-xl shadow-md transition-all flex items-center justify-center gap-2 transform active:scale-95 bg-orange-600 hover:bg-orange-700 hover:shadow-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Nộp bài & Lưu kết quả vào Google Sheet</span>
+                </button>
+            </div>
+            <p class="text-center text-xs text-slate-400 mt-2" id="unanswered-warning"></p>
+        </div>
+
+        <!-- 7. RESULTS & FEEDBACK SECTION -->
+        <section id="results-section" class="hidden fade-in bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm">
+            <div class="text-center max-w-xl mx-auto">
+                
+                <div class="w-20 h-20 mx-auto mb-4 rounded-3xl bg-amber-50 text-amber-500 border border-amber-200 flex items-center justify-center text-4xl shadow-inner pulse-subtle" id="result-trophy">
+                    🏆
+                </div>
+
+                <span class="inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-slate-100 text-slate-600 mb-2" id="result-grade-class">
+                    Khối 6 • Lớp 6A1 • Nguyễn Văn An
+                </span>
+
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-1" id="result-title">
+                    Hoàn thành bài ôn tập!
+                </h2>
+                <p class="text-sm text-slate-500 mb-5" id="result-lesson-name">Tiết 1: Giới thiệu AI</p>
+
+                <!-- Score Big Display -->
+                <div class="inline-flex items-baseline gap-2 bg-slate-50 border border-slate-200 px-6 py-3 rounded-2xl mb-4">
+                    <span class="text-5xl font-black text-slate-900" id="score-display">0</span>
+                    <span class="text-2xl font-bold text-slate-400">/ 10 Điểm</span>
+                    <span class="ml-2 text-sm font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700" id="percentage-display">100%</span>
+                </div>
+
+                <p class="text-sm sm:text-base font-medium text-slate-700 mb-6" id="feedback-message">
+                    Xuất sắc! Bạn đã nắm rất vững kiến thức tiết học này.
+                </p>
+
+                <!-- Google Sheet Sync Status Alert -->
+                <div id="sheet-sync-status" class="mb-6 p-4 rounded-xl border text-left text-xs sm:text-sm flex items-start gap-3 bg-slate-50 border-slate-200 text-slate-700">
+                    <div id="sheet-sync-icon" class="text-lg flex-shrink-0">⏳</div>
+                    <div class="flex-grow">
+                        <div class="font-bold" id="sheet-sync-title">Đang đồng bộ kết quả...</div>
+                        <div class="text-slate-500 text-xs mt-0.5" id="sheet-sync-desc">Đang gửi dữ liệu lên Google Sheet của giáo viên.</div>
+                    </div>
+                    <button type="button" id="btn-retry-sync" onclick="syncResultToSheet()" class="hidden px-2.5 py-1 text-xs font-semibold bg-white border border-slate-300 rounded-md hover:bg-slate-50 flex-shrink-0">
+                        Thử lại
+                    </button>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap items-center justify-center gap-3">
+                    <button type="button" id="retry-btn" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl transition-all shadow-xs flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        Làm lại tiết này
+                    </button>
+                    <button type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="px-5 py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-xl transition-all shadow-xs flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        Chọn bài khác
+                    </button>
+                    <button type="button" onclick="window.print()" class="px-4 py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-xl transition-all shadow-xs flex items-center gap-2 no-print" title="In hoặc lưu kết quả thành PDF">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                        In kết quả
+                    </button>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-slate-100 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    Xem chi tiết đáp án & giải thích từng câu ở bên dưới ↓
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-slate-500 text-xs">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div>
+                <p class="font-semibold text-slate-700">Hệ Thống Ôn Tập Môn Trí Tuệ Nhân Tạo (AI) - Lớp 6, 7, 8, 9</p>
+                <p class="text-slate-400 mt-0.5">Xây dựng dựa trên Khung chương trình & Giáo án chuẩn môn AI THCS</p>
+            </div>
+            <div class="text-slate-400">
+                <span>Dữ liệu: 480 câu hỏi trắc nghiệm</span> • <span>Đồng bộ Google Sheets</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL 0: ADMIN AUTHENTICATION (Nhập mật khẩu 12345 để mở nút cấu hình) -->
+    <div id="admin-auth-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-sm w-full p-6 fade-in">
+            <div class="text-center mb-5">
+                <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl shadow-inner border border-amber-200">
+                    🔑
+                </div>
+                <h3 class="font-bold text-slate-900 text-base">Xác thực Quản trị viên</h3>
+                <p class="text-xs text-slate-500 mt-1">Dành cho Thầy/Cô cấu hình kết nối Google Sheet</p>
+            </div>
+
+            <form onsubmit="handleVerifyAdminPassword(event)" class="space-y-4">
+                <div>
+                    <label for="admin-password-input" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                        Mật khẩu quản trị
+                    </label>
+                    <input type="password" id="admin-password-input" placeholder="Nhập mật khẩu..." autocomplete="current-password" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-center tracking-widest font-mono text-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all" />
+                    <p id="admin-password-error" class="hidden text-xs text-rose-600 font-semibold mt-2 text-center flex items-center justify-center gap-1">
+                        <span>⚠️</span> <span>Mật khẩu không chính xác! Vui lòng thử lại.</span>
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-2 pt-2">
+                    <button type="button" onclick="closeAdminAuthModal()" class="w-1/2 py-2.5 border border-slate-200 hover:bg-slate-100 text-slate-600 font-bold rounded-xl transition-all text-xs">
+                        Đóng
+                    </button>
+                    <button type="submit" class="w-1/2 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition-all shadow-xs text-xs flex items-center justify-center gap-1.5">
+                        <span>Mở khóa</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 1: GOOGLE APPS SCRIPT URL SETTINGS -->
+    <div id="settings-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-lg w-full p-6 fade-in">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base">Cấu hình Backend Google Sheet</h3>
+                        <p class="text-xs text-slate-500">Kết nối Google Apps Script để lưu điểm học sinh</p>
+                    </div>
+                </div>
+                <button type="button" onclick="toggleModal('settings-modal', false)" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-xs sm:text-sm">
+                <div>
+                    <label for="gas-url-input" class="block font-semibold text-slate-700 mb-1">
+                        URL Ứng dụng web Google Apps Script (Web App URL):
+                    </label>
+                    <input type="url" id="gas-url-input" placeholder="https://script.google.com/macros/s/AKfycb.../exec" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-slate-800 text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                    <p class="text-slate-400 text-xs mt-1">Đường dẫn lấy sau khi Triển khai (Deploy Web App) trong file <code>GoogleSheet_Backend.gs</code>.</p>
+                </div>
+
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600 space-y-1">
+                    <p class="font-semibold text-slate-800">📋 Các cột sẽ được ghi nhận vào Google Sheet:</p>
+                    <p>1. STT • 2. Thời gian nộp • 3. Khối • 4. Lớp • 5. Họ tên học sinh • 6. Tiết ôn tập • 7. Điểm số (0-10) • 8. Tỷ lệ % • 9. Thời gian làm • 10. Đánh giá</p>
+                </div>
+
+                <div id="test-connection-result" class="hidden p-3 rounded-xl text-xs font-medium"></div>
+
+                <div class="flex items-center justify-end gap-2.5 pt-2">
+                    <button type="button" onclick="testConnection()" class="px-4 py-2 border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold rounded-xl transition-all text-xs">
+                        Kiểm tra kết nối
+                    </button>
+                    <button type="button" onclick="saveSettings()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all shadow-xs text-xs">
+                        Lưu cấu hình
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUIZ DATA: Embedded or Linked -->
+    <script src="quiz_data.js"></script>
+
+    <!-- MAIN APPLICATION LOGIC SCRIPT -->
+    <script>
+        // Cấu hình theme màu sắc cho từng khối
+        const GRADE_THEMES = {
+            '6': {
+                name: 'Khối 6',
+                color: 'orange',
+                borderClass: 'border-orange-500',
+                ringClass: 'ring-orange-500/20',
+                bgLightClass: 'bg-orange-50',
+                bgActiveCard: 'bg-orange-50/60',
+                textClass: 'text-orange-600',
+                btnClass: 'bg-orange-600 hover:bg-orange-700 ring-orange-500',
+                chipClass: 'bg-orange-100 text-orange-700',
+                progressClass: 'bg-orange-500',
+                radioSelectedBorder: 'border-orange-600',
+                radioSelectedBg: 'bg-orange-50',
+                radioSelectedRing: 'ring-orange-600'
+            },
+            '7': {
+                name: 'Khối 7',
+                color: 'teal',
+                borderClass: 'border-teal-500',
+                ringClass: 'ring-teal-500/20',
+                bgLightClass: 'bg-teal-50',
+                bgActiveCard: 'bg-teal-50/60',
+                textClass: 'text-teal-600',
+                btnClass: 'bg-teal-600 hover:bg-teal-700 ring-teal-500',
+                chipClass: 'bg-teal-100 text-teal-700',
+                progressClass: 'bg-teal-500',
+                radioSelectedBorder: 'border-teal-600',
+                radioSelectedBg: 'bg-teal-50',
+                radioSelectedRing: 'ring-teal-600'
+            },
+            '8': {
+                name: 'Khối 8',
+                color: 'blue',
+                borderClass: 'border-blue-500',
+                ringClass: 'ring-blue-500/20',
+                bgLightClass: 'bg-blue-50',
+                bgActiveCard: 'bg-blue-50/60',
+                textClass: 'text-blue-600',
+                btnClass: 'bg-blue-600 hover:bg-blue-700 ring-blue-500',
+                chipClass: 'bg-blue-100 text-blue-700',
+                progressClass: 'bg-blue-500',
+                radioSelectedBorder: 'border-blue-600',
+                radioSelectedBg: 'bg-blue-50',
+                radioSelectedRing: 'ring-blue-600'
+            },
+            '9': {
+                name: 'Khối 9',
+                color: 'indigo',
+                borderClass: 'border-indigo-500',
+                ringClass: 'ring-indigo-500/20',
+                bgLightClass: 'bg-indigo-50',
+                bgActiveCard: 'bg-indigo-50/60',
+                textClass: 'text-indigo-600',
+                btnClass: 'bg-indigo-600 hover:bg-indigo-700 ring-indigo-500',
+                chipClass: 'bg-indigo-100 text-indigo-700',
+                progressClass: 'bg-indigo-500',
+                radioSelectedBorder: 'border-indigo-600',
+                radioSelectedBg: 'bg-indigo-50',
+                radioSelectedRing: 'ring-indigo-600'
+            }
+        };
+
+        // Biến trạng thái ứng dụng
+        let currentGrade = '6';
+        let currentLessonId = '';
+        let timerInterval = null;
+        let startTime = null;
+        let elapsedSeconds = 0;
+        let lastSubmissionPayload = null;
+
+        // Các phần tử DOM chính
+        const inputStudentName = document.getElementById('input-student-name');
+        const inputStudentClass = document.getElementById('input-student-class');
+        const lessonSelect = document.getElementById('lesson-select');
+        const activeStudentDisplay = document.getElementById('active-student-display');
+        const timerDisplay = document.getElementById('timer-display');
+        const quizContainer = document.getElementById('quiz-container');
+        const placeholderState = document.getElementById('placeholder-state');
+        const submitSection = document.getElementById('submit-section');
+        const submitBtn = document.getElementById('submit-btn');
+        const unansweredWarning = document.getElementById('unanswered-warning');
+        const resultsSection = document.getElementById('results-section');
+        const scoreDisplay = document.getElementById('score-display');
+        const percentageDisplay = document.getElementById('percentage-display');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const retryBtn = document.getElementById('retry-btn');
+        const quizInfoBar = document.getElementById('quiz-info-bar');
+        const lessonTitleDisplay = document.getElementById('lesson-title-display');
+        const gradeChip = document.getElementById('grade-chip');
+        const answeredCounter = document.getElementById('answered-counter');
+        const totalCounter = document.getElementById('total-counter');
+        const progressBarFill = document.getElementById('progress-bar-fill');
+        const gasUrlInput = document.getElementById('gas-url-input');
+        const gasPing = document.getElementById('gas-ping');
+        const gasDot = document.getElementById('gas-dot');
+
+        // Quản lý mật khẩu quản trị (MK: 12345)
+        let isAdminUnlocked = false;
+        const ADMIN_PASSWORD = "12345";
+        const btnAdminLock = document.getElementById('btn-admin-lock');
+        const adminLockIcon = document.getElementById('admin-lock-icon');
+        const adminLockText = document.getElementById('admin-lock-text');
+        const btnSheetSettings = document.getElementById('btn-sheet-settings');
+        const adminPasswordInput = document.getElementById('admin-password-input');
+        const adminPasswordError = document.getElementById('admin-password-error');
+
+        // Khởi động khi tài liệu sẵn sàng
+        document.addEventListener('DOMContentLoaded', () => {
+            // Khôi phục trạng thái mở khóa quản trị
+            initAdminState();
+            // Khôi phục thông tin học sinh từ LocalStorage
+            loadStudentInfo();
+            // Khôi phục URL Google Sheet
+            checkGasUrlStatus();
+            // Khởi tạo danh sách bài học cho Khối 6 mặc định
+            selectGrade('6', false);
+            
+            // Lắng nghe thay đổi thông tin học sinh để tự động lưu
+            inputStudentName.addEventListener('input', saveStudentInfo);
+            inputStudentClass.addEventListener('input', saveStudentInfo);
+
+            // Lắng nghe khi chọn bài học
+            lessonSelect.addEventListener('change', (e) => {
+                currentLessonId = e.target.value;
+                if (currentLessonId) {
+                    loadQuiz(currentGrade, currentLessonId);
+                }
+            });
+
+            // Lắng nghe nút nộp bài
+            submitBtn.addEventListener('click', handleSubmitQuiz);
+
+            // Lắng nghe nút làm lại
+            retryBtn.addEventListener('click', () => {
+                if (currentGrade && currentLessonId) {
+                    loadQuiz(currentGrade, currentLessonId);
+                }
+            });
+        });
+
+        // -------------------------------------------------------------
+        // HÀM QUẢN LÝ THÔNG TIN HỌC SINH
+        // -------------------------------------------------------------
+        function loadStudentInfo() {
+            const savedName = localStorage.getItem('ai_quiz_student_name') || '';
+            const savedClass = localStorage.getItem('ai_quiz_student_class') || '';
+            if (savedName) inputStudentName.value = savedName;
+            if (savedClass) inputStudentClass.value = savedClass;
+            updateStudentDisplay();
+            validateClassInput(false);
+        }
+
+        function saveStudentInfo() {
+            const name = inputStudentName.value.trim();
+            const sClass = inputStudentClass.value.trim();
+            localStorage.setItem('ai_quiz_student_name', name);
+            localStorage.setItem('ai_quiz_student_class', sClass);
+            updateStudentDisplay();
+            validateClassInput(false);
+        }
+
+        function updateStudentDisplay() {
+            const name = inputStudentName.value.trim();
+            const sClass = inputStudentClass.value.trim().toUpperCase();
+            if (name && sClass) {
+                activeStudentDisplay.innerHTML = `Học sinh: <strong class="text-slate-800">${name}</strong> — Lớp: <strong class="text-slate-800">${sClass}</strong>`;
+            } else if (name) {
+                activeStudentDisplay.innerHTML = `Học sinh: <strong class="text-slate-800">${name}</strong> (chưa nhập Lớp)`;
+            } else {
+                activeStudentDisplay.innerHTML = `Vui lòng nhập Họ tên và Lớp của bạn`;
+            }
+        }
+
+        // Dò kiểm tra ký tự đầu tiên của tên lớp có khớp với số Khối đã chọn hay không
+        function validateClassInput(showNotice = false) {
+            const sClass = inputStudentClass.value.trim().toUpperCase();
+            const msgEl = document.getElementById('class-validation-msg');
+            const expectedNumEl = document.getElementById('expected-grade-num');
+            const exampleHintEl = document.getElementById('class-example-hint');
+
+            if (expectedNumEl) expectedNumEl.textContent = currentGrade;
+            if (exampleHintEl) exampleHintEl.textContent = `${currentGrade}A1`;
+
+            if (!sClass) {
+                if (msgEl) msgEl.classList.add('hidden');
+                inputStudentClass.classList.remove('border-rose-500', 'ring-2', 'ring-rose-200');
+                return true;
+            }
+
+            // Dò ký tự đầu tiên
+            const firstChar = sClass.charAt(0);
+            if (firstChar !== currentGrade) {
+                if (msgEl) msgEl.classList.remove('hidden');
+                inputStudentClass.classList.add('border-rose-500', 'ring-2', 'ring-rose-200');
+                if (showNotice) {
+                    alert(`⚠️ TÊN LỚP KHÔNG PHÙ HỢP VỚI KHỐI ĐÃ CHỌN!\n\nEm đang làm bài ôn tập Khối ${currentGrade}, nhưng tên lớp hiện tại là "${sClass}".\nKý tự đầu tiên của tên lớp phải là số ${currentGrade} (Ví dụ: ${currentGrade}A1, ${currentGrade}A2, ${currentGrade}/1, ${currentGrade}B...).\n\nVui lòng nhập lại tên lớp cho đúng nhé!`);
+                }
+                return false;
+            } else {
+                if (msgEl) msgEl.classList.add('hidden');
+                inputStudentClass.classList.remove('border-rose-500', 'ring-2', 'ring-rose-200');
+                return true;
+            }
+        }
+
+        // -------------------------------------------------------------
+        // HÀM CHUYỂN ĐỔI KHỐI (6, 7, 8, 9)
+        // -------------------------------------------------------------
+        function selectGrade(grade, autoResetQuiz = true) {
+            currentGrade = grade;
+            const theme = GRADE_THEMES[grade];
+
+            // Cập nhật giao diện 4 Thẻ Khối
+            ['6', '7', '8', '9'].forEach(g => {
+                const tab = document.getElementById(`tab-grade-${g}`);
+                const indicator = tab.querySelector('.active-indicator');
+                if (g === grade) {
+                    tab.className = `grade-tab p-4 rounded-xl border-2 transition-all text-left relative overflow-hidden bg-white ${theme.borderClass} shadow-sm ring-2 ${theme.ringClass}`;
+                    indicator.className = `active-indicator absolute bottom-0 left-0 right-0 h-1 ${theme.progressClass}`;
+                } else {
+                    tab.className = `grade-tab p-4 rounded-xl border-2 transition-all text-left relative overflow-hidden bg-white border-slate-200 hover:shadow-xs hover:border-slate-300`;
+                    indicator.className = `active-indicator absolute bottom-0 left-0 right-0 h-1 hidden`;
+                }
+            });
+
+            document.getElementById('grade-badge-hint').textContent = `Đang chọn: ${theme.name}`;
+
+            // Cập nhật gợi ý tên lớp và kiểm tra tính hợp lệ với khối mới
+            inputStudentClass.placeholder = `VD: ${grade}A1, ${grade}/2, ${grade}B...`;
+            const prefixBadge = document.getElementById('class-prefix-badge');
+            if (prefixBadge) prefixBadge.textContent = `Bắt đầu: ${grade}`;
+            validateClassInput(false);
+
+            // Cập nhật lại dropdown danh sách 12 tiết của khối được chọn
+            populateLessonDropdown(grade);
+
+            // Nút nộp bài đổi màu theo theme
+            submitBtn.className = `w-full sm:w-auto px-8 py-3.5 text-base font-bold text-white rounded-xl shadow-md transition-all flex items-center justify-center gap-2 transform active:scale-95 ${theme.btnClass}`;
+            
+            // Cập nhật thanh chip khối
+            gradeChip.className = `px-2.5 py-1 rounded-lg text-xs font-extrabold uppercase tracking-wide ${theme.chipClass}`;
+            gradeChip.textContent = theme.name;
+
+            // Nếu đổi khối khi đang mở bài thì reset về trạng thái chờ
+            if (autoResetQuiz) {
+                currentLessonId = '';
+                placeholderState.classList.remove('hidden');
+                quizContainer.classList.add('hidden');
+                quizInfoBar.classList.add('hidden');
+                submitSection.classList.add('hidden');
+                resultsSection.classList.add('hidden');
+                stopTimer();
+            }
+        }
+
+        // Đổ danh sách 12 tiết của khối vào thẻ <select>
+        function populateLessonDropdown(grade) {
+            lessonSelect.innerHTML = '<option value="" disabled selected>-- Bấm để chọn tiết học ôn tập --</option>';
+            
+            if (typeof ALL_QUIZ_DATA === 'undefined' || !ALL_QUIZ_DATA[grade]) {
+                console.error("Không tìm thấy dữ liệu câu hỏi cho khối", grade);
+                return;
+            }
+
+            const gradeData = ALL_QUIZ_DATA[grade];
+            const lessonKeys = Object.keys(gradeData).sort((a, b) => parseInt(a) - parseInt(b));
+
+            lessonKeys.forEach(key => {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = gradeData[key].title;
+                lessonSelect.appendChild(opt);
+            });
+
+            document.getElementById('lesson-available-count').textContent = `${lessonKeys.length} tiết`;
+        }
+
+        // -------------------------------------------------------------
+        // HÀM TẢI BÀI TẬP VÀ RENDER CÂU HỎI
+        // -------------------------------------------------------------
+        function loadQuiz(grade, lessonId) {
+            const gradeData = ALL_QUIZ_DATA[grade];
+            if (!gradeData || !gradeData[lessonId]) return;
+
+            const lesson = gradeData[lessonId];
+            const theme = GRADE_THEMES[grade];
+
+            // Ẩn placeholder & kết quả cũ
+            placeholderState.classList.add('hidden');
+            resultsSection.classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+            quizInfoBar.classList.remove('hidden');
+            submitSection.classList.remove('hidden');
+
+            // Cập nhật thông tin Header của Quiz
+            lessonTitleDisplay.textContent = lesson.title;
+            gradeChip.textContent = theme.name;
+            gradeChip.className = `px-2.5 py-1 rounded-lg text-xs font-extrabold uppercase tracking-wide ${theme.chipClass}`;
+            totalCounter.textContent = lesson.questions.length;
+            answeredCounter.textContent = '0';
+            progressBarFill.style.width = '0%';
+            progressBarFill.className = `h-full ${theme.progressClass} transition-all duration-300`;
+            unansweredWarning.textContent = '';
+
+            // Xóa nội dung câu hỏi cũ
+            quizContainer.innerHTML = '';
+
+            // Render từng câu hỏi
+            lesson.questions.forEach((q, index) => {
+                const qNum = index + 1;
+
+                const qCard = document.createElement('div');
+                qCard.id = `question-block-${index}`;
+                qCard.className = 'p-5 sm:p-6 bg-white rounded-2xl border border-slate-200 shadow-xs transition-all duration-200';
+
+                // Tiêu đề câu hỏi
+                const qHeader = document.createElement('div');
+                qHeader.className = 'flex items-start gap-3 mb-4';
+                qHeader.innerHTML = `
+                    <span class="flex-shrink-0 w-8 h-8 rounded-xl ${theme.bgLightClass} ${theme.textClass} font-extrabold text-sm flex items-center justify-center border border-slate-100">
+                        ${qNum}
+                    </span>
+                    <div class="text-slate-900 font-semibold text-base sm:text-lg leading-relaxed pt-0.5">
+                        ${q.question}
+                    </div>
+                `;
+                qCard.appendChild(qHeader);
+
+                // Khung chứa 4 lựa chọn (A, B, C, D)
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'space-y-2.5 sm:space-y-3 pl-0 sm:pl-11';
+
+                const optionPrefixes = ['A', 'B', 'C', 'D'];
+
+                q.options.forEach((optText, optIndex) => {
+                    const optionId = `q${index}_opt${optIndex}`;
+
+                    const label = document.createElement('label');
+                    label.id = `label_${optionId}`;
+                    label.className = 'flex items-center p-3.5 sm:p-4 rounded-xl border border-slate-200 cursor-pointer transition-all hover:bg-slate-50 hover:border-slate-300 group';
+
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = `question${index}`;
+                    radio.value = optIndex;
+                    radio.id = optionId;
+                    radio.className = 'w-4 h-4 text-slate-800 border-slate-300 focus:ring-slate-400 mr-3.5 flex-shrink-0';
+
+                    const prefixBadge = document.createElement('span');
+                    prefixBadge.className = 'w-6 h-6 rounded-lg bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center mr-3 flex-shrink-0 group-hover:bg-slate-200 transition-colors';
+                    prefixBadge.textContent = optionPrefixes[optIndex] || (optIndex + 1);
+
+                    const textSpan = document.createElement('span');
+                    textSpan.className = 'text-sm sm:text-base text-slate-700 font-medium leading-snug group-hover:text-slate-900';
+                    textSpan.textContent = optText;
+
+                    label.appendChild(radio);
+                    label.appendChild(prefixBadge);
+                    label.appendChild(textSpan);
+                    optionsDiv.appendChild(label);
+
+                    // Khi học sinh chọn một đáp án
+                    radio.addEventListener('change', () => {
+                        // Bỏ highlight các label cùng câu
+                        optionsDiv.querySelectorAll('label').forEach(lbl => {
+                            lbl.classList.remove(theme.radioSelectedBorder, theme.radioSelectedBg, 'ring-1', theme.radioSelectedRing, 'shadow-xs');
+                        });
+                        // Highlight label vừa chọn
+                        label.classList.add(theme.radioSelectedBorder, theme.radioSelectedBg, 'ring-1', theme.radioSelectedRing, 'shadow-xs');
+                        
+                        updateQuizProgress();
+                    });
+                });
+
+                qCard.appendChild(optionsDiv);
+
+                // Khung hiển thị giải thích (ban đầu ẩn, chỉ hiện khi đã nộp bài)
+                const explDiv = document.createElement('div');
+                explDiv.id = `explanation-${index}`;
+                explDiv.className = 'hidden mt-4 ml-0 sm:ml-11 p-4 rounded-xl text-xs sm:text-sm';
+                qCard.appendChild(explDiv);
+
+                quizContainer.appendChild(qCard);
+            });
+
+            // Khởi động đồng hồ đếm thời gian
+            startTimer();
+
+            // Cuộn mượt đến phần bài tập
+            window.scrollTo({
+                top: quizInfoBar.offsetTop - 80,
+                behavior: 'smooth'
+            });
+        }
+
+        // Cập nhật thanh tiến độ làm bài
+        function updateQuizProgress() {
+            const lesson = ALL_QUIZ_DATA[currentGrade][currentLessonId];
+            let answered = 0;
+            lesson.questions.forEach((_, idx) => {
+                if (document.querySelector(`input[name="question${idx}"]:checked`)) {
+                    answered++;
+                }
+            });
+            answeredCounter.textContent = answered;
+            const pct = (answered / lesson.questions.length) * 100;
+            progressBarFill.style.width = `${pct}%`;
+
+            if (answered < lesson.questions.length) {
+                unansweredWarning.textContent = `Em đã làm ${answered}/${lesson.questions.length} câu. Hãy hoàn thành hết các câu trước khi nộp nhé!`;
+            } else {
+                unansweredWarning.textContent = '✨ Tuyệt vời! Em đã hoàn thành đủ tất cả các câu hỏi.';
+            }
+        }
+
+        // -------------------------------------------------------------
+        // ĐỒNG HỒ ĐẾM THỜI GIAN
+        // -------------------------------------------------------------
+        function startTimer() {
+            stopTimer();
+            elapsedSeconds = 0;
+            timerDisplay.classList.remove('hidden');
+            timerDisplay.textContent = '⏱️ 00:00';
+            startTime = Date.now();
+
+            timerInterval = setInterval(() => {
+                elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+                const mins = String(Math.floor(elapsedSeconds / 60)).padStart(2, '0');
+                const secs = String(elapsedSeconds % 60).padStart(2, '0');
+                timerDisplay.textContent = `⏱️ ${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function getFormattedDuration() {
+            const mins = Math.floor(elapsedSeconds / 60);
+            const secs = elapsedSeconds % 60;
+            if (mins === 0) return `${secs} giây`;
+            return `${mins} phút ${secs} giây`;
+        }
+
+        // -------------------------------------------------------------
+        // HÀM CHẤM ĐIỂM & NỘP BÀI
+        // -------------------------------------------------------------
+        function handleSubmitQuiz() {
+            const studentName = inputStudentName.value.trim();
+            const studentClass = inputStudentClass.value.trim().toUpperCase();
+
+            // Kiểm tra thông tin học sinh
+            if (!studentName) {
+                alert('⚠️ Vui lòng nhập Họ và tên của em ở ô trên trước khi nộp bài!');
+                inputStudentName.focus();
+                window.scrollTo({ top: inputStudentName.offsetTop - 120, behavior: 'smooth' });
+                return;
+            }
+
+            if (!studentClass) {
+                alert(`⚠️ Vui lòng nhập Tên lớp của em (Ví dụ: ${currentGrade}A1, ${currentGrade}A2, ${currentGrade}/1...) ở ô trên trước khi nộp bài!`);
+                inputStudentClass.focus();
+                window.scrollTo({ top: inputStudentClass.offsetTop - 120, behavior: 'smooth' });
+                return;
+            }
+
+            // Dò kiểm tra ký tự đầu tiên của tên lớp có trùng với Khối đang chọn không (VD: Khối 9 thì phải bắt đầu bằng số 9)
+            const firstChar = studentClass.charAt(0);
+            if (firstChar !== currentGrade) {
+                validateClassInput(true);
+                inputStudentClass.focus();
+                inputStudentClass.select();
+                window.scrollTo({ top: inputStudentClass.offsetTop - 120, behavior: 'smooth' });
+                return;
+            }
+
+            const lesson = ALL_QUIZ_DATA[currentGrade][currentLessonId];
+            let answeredCount = 0;
+            let firstUnansweredIndex = -1;
+
+            lesson.questions.forEach((_, idx) => {
+                if (document.querySelector(`input[name="question${idx}"]:checked`)) {
+                    answeredCount++;
+                } else if (firstUnansweredIndex === -1) {
+                    firstUnansweredIndex = idx;
+                }
+            });
+
+            // Nếu còn câu chưa làm, hỏi xác nhận
+            if (answeredCount < lesson.questions.length) {
+                const remain = lesson.questions.length - answeredCount;
+                const confirmSubmit = confirm(`Em còn ${remain} câu chưa trả lời. Em có chắc chắn muốn nộp bài ngay bây giờ không?`);
+                if (!confirmSubmit) {
+                    // Cuộn tới câu chưa làm đầu tiên
+                    const targetQ = document.getElementById(`question-block-${firstUnansweredIndex}`);
+                    if (targetQ) {
+                        targetQ.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        targetQ.classList.add('ring-2', 'ring-amber-500');
+                        setTimeout(() => targetQ.classList.remove('ring-2', 'ring-amber-500'), 2500);
+                    }
+                    return;
+                }
+            }
+
+            // Dừng đồng hồ
+            stopTimer();
+            const timeSpentStr = getFormattedDuration();
+
+            // Chấm điểm từng câu
+            let score = 0;
+            lesson.questions.forEach((q, idx) => {
+                const selectedRadio = document.querySelector(`input[name="question${idx}"]:checked`);
+                const explDiv = document.getElementById(`explanation-${idx}`);
+                const qBlock = document.getElementById(`question-block-${idx}`);
+                
+                // Khóa tất cả các radio sau khi nộp
+                document.querySelectorAll(`input[name="question${idx}"]`).forEach(inp => inp.disabled = true);
+                explDiv.classList.remove('hidden');
+
+                if (selectedRadio) {
+                    const userVal = parseInt(selectedRadio.value);
+                    const userLabel = document.getElementById(`label_q${idx}_opt${userVal}`);
+
+                    if (userVal === q.correctAnswer) {
+                        // Đúng
+                        score++;
+                        userLabel.className = 'flex items-center p-3.5 sm:p-4 rounded-xl border border-emerald-500 bg-emerald-50 text-emerald-900 ring-1 ring-emerald-500';
+                        qBlock.className = 'p-5 sm:p-6 bg-white rounded-2xl border border-emerald-200 shadow-xs';
+                        explDiv.className = 'mt-4 ml-0 sm:ml-11 p-4 rounded-xl text-xs sm:text-sm bg-emerald-50 border border-emerald-200 text-emerald-900';
+                        explDiv.innerHTML = `<strong class="text-emerald-700">✓ Chính xác!</strong> ${q.explanation}`;
+                    } else {
+                        // Sai
+                        userLabel.className = 'flex items-center p-3.5 sm:p-4 rounded-xl border border-rose-400 bg-rose-50 text-rose-900';
+                        // Làm nổi bật đáp án đúng
+                        const correctLabel = document.getElementById(`label_q${idx}_opt${q.correctAnswer}`);
+                        correctLabel.className = 'flex items-center p-3.5 sm:p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 font-bold';
+                        
+                        qBlock.className = 'p-5 sm:p-6 bg-white rounded-2xl border border-rose-200 shadow-xs';
+                        explDiv.className = 'mt-4 ml-0 sm:ml-11 p-4 rounded-xl text-xs sm:text-sm bg-rose-50 border border-rose-200 text-rose-900';
+                        explDiv.innerHTML = `<strong class="text-rose-700">✗ Chưa đúng.</strong> Đáp án đúng là lựa chọn màu xanh. <br/><span class="text-slate-600 mt-1 inline-block">💡 <em>Giải thích:</em> ${q.explanation}</span>`;
+                    }
+                } else {
+                    // Bỏ trống
+                    const correctLabel = document.getElementById(`label_q${idx}_opt${q.correctAnswer}`);
+                    correctLabel.className = 'flex items-center p-3.5 sm:p-4 rounded-xl border-2 border-amber-500 bg-amber-50 text-amber-900 font-bold';
+                    qBlock.className = 'p-5 sm:p-6 bg-white rounded-2xl border border-amber-200 shadow-xs';
+                    explDiv.className = 'mt-4 ml-0 sm:ml-11 p-4 rounded-xl text-xs sm:text-sm bg-amber-50 border border-amber-200 text-amber-900';
+                    explDiv.innerHTML = `<strong class="text-amber-700">! Chưa làm câu này.</strong> Đáp án đúng là lựa chọn màu cam. <br/><span class="text-slate-600 mt-1 inline-block">💡 <em>Giải thích:</em> ${q.explanation}</span>`;
+                }
+            });
+
+            // Tính điểm & %
+            const totalQuestions = lesson.questions.length;
+            const percentage = Math.round((score / totalQuestions) * 100);
+
+            // Đánh giá nhận xét
+            let feedback = '';
+            let trophy = '🏆';
+            if (percentage === 100) {
+                feedback = 'Xuất sắc! Em đã nắm vững toàn bộ kiến thức của tiết học này!';
+                trophy = '🌟';
+            } else if (percentage >= 80) {
+                feedback = 'Rất tốt! Em hiểu bài sâu, chỉ nhầm lẫn một chút xíu thôi.';
+                trophy = '🎉';
+            } else if (percentage >= 50) {
+                feedback = 'Khá tốt! Hãy đọc kỹ phần giải thích các câu sai bên dưới để ghi nhớ nhé.';
+                trophy = '👍';
+            } else {
+                feedback = 'Em cần ôn tập lại tiết học này kỹ hơn. Đừng nản lòng, hãy xem giải thích và làm lại nhé!';
+                trophy = '💪';
+            }
+
+            // Hiển thị phần kết quả tổng quan
+            submitSection.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+
+            document.getElementById('result-trophy').textContent = trophy;
+            document.getElementById('result-grade-class').textContent = `Khối ${currentGrade} • Lớp ${studentClass} • ${studentName}`;
+            document.getElementById('result-lesson-name').textContent = lesson.title;
+            scoreDisplay.textContent = score;
+            percentageDisplay.textContent = `${percentage}%`;
+            feedbackMessage.textContent = feedback;
+
+            // Cuộn lên phần kết quả
+            window.scrollTo({
+                top: resultsSection.offsetTop - 70,
+                behavior: 'smooth'
+            });
+
+            // Chuẩn bị dữ liệu gửi về Google Sheet
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('vi-VN') + ' ' + now.toLocaleTimeString('vi-VN');
+
+            lastSubmissionPayload = {
+                timestamp: dateStr,
+                grade: currentGrade,
+                className: studentClass,
+                studentName: studentName,
+                lessonTitle: lesson.title,
+                score: `${score}/${totalQuestions}`,
+                percentage: percentage,
+                timeSpent: timeSpentStr,
+                feedback: feedback
+            };
+
+            // Đồng bộ kết quả lên Google Sheet
+            syncResultToSheet();
+        }
+
+        // -------------------------------------------------------------
+        // HÀM ĐỒNG BỘ KẾT QUẢ VỚI GOOGLE APPS SCRIPT
+        // -------------------------------------------------------------
+        async function syncResultToSheet() {
+            if (!lastSubmissionPayload) return;
+
+            const gasUrl = getGasUrl();
+            const statusBox = document.getElementById('sheet-sync-status');
+            const statusIcon = document.getElementById('sheet-sync-icon');
+            const statusTitle = document.getElementById('sheet-sync-title');
+            const statusDesc = document.getElementById('sheet-sync-desc');
+            const retryBtn = document.getElementById('btn-retry-sync');
+
+            retryBtn.classList.add('hidden');
+
+            if (!gasUrl) {
+                statusBox.className = 'mb-6 p-4 rounded-xl border text-left text-xs sm:text-sm flex items-start gap-3 bg-amber-50 border-amber-200 text-amber-900';
+                statusIcon.textContent = 'ℹ️';
+                statusTitle.textContent = 'Chưa kết nối Google Sheet';
+                statusDesc.innerHTML = 'Kết quả bài làm đã tính xong! Để tự động lưu điểm vào Google Sheet của thầy cô, vui lòng bấm vào nút <strong>"Google Sheet"</strong> góc trên để dán URL Web App.';
+                return;
+            }
+
+            // Đang gửi
+            statusBox.className = 'mb-6 p-4 rounded-xl border text-left text-xs sm:text-sm flex items-start gap-3 bg-blue-50 border-blue-200 text-blue-900';
+            statusIcon.textContent = '⏳';
+            statusTitle.textContent = 'Đang lưu kết quả lên Google Sheet...';
+            statusDesc.textContent = 'Vui lòng chờ giây lát, hệ thống đang gửi dữ liệu bài làm...';
+
+            try {
+                // Sử dụng mode: 'no-cors' để tránh lỗi cross-origin redirect của Google Apps Script
+                await fetch(gasUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(lastSubmissionPayload)
+                });
+
+                // Khi gửi thành công
+                statusBox.className = 'mb-6 p-4 rounded-xl border text-left text-xs sm:text-sm flex items-start gap-3 bg-emerald-50 border-emerald-200 text-emerald-900';
+                statusIcon.textContent = '✅';
+                statusTitle.textContent = 'Đã lưu kết quả thành công vào Google Sheet!';
+                statusDesc.innerHTML = `Đã ghi nhận bài làm của <strong>${lastSubmissionPayload.studentName}</strong> (Lớp ${lastSubmissionPayload.className}) vào bảng tính lúc ${lastSubmissionPayload.timestamp}.`;
+
+            } catch (err) {
+                console.error("Lỗi khi gửi kết quả về Google Sheet:", err);
+                statusBox.className = 'mb-6 p-4 rounded-xl border text-left text-xs sm:text-sm flex items-start gap-3 bg-rose-50 border-rose-200 text-rose-900';
+                statusIcon.textContent = '⚠️';
+                statusTitle.textContent = 'Không thể gửi kết quả lên Google Sheet';
+                statusDesc.textContent = 'Đã xảy ra lỗi mạng hoặc URL Google Apps Script không chính xác. Bạn có thể bấm Thử lại.';
+                retryBtn.classList.remove('hidden');
+            }
+        }
+
+        // -------------------------------------------------------------
+        // HÀM QUẢN LÝ CẤU HÌNH GOOGLE APPS SCRIPT URL
+        // -------------------------------------------------------------
+        function getGasUrl() {
+            return (localStorage.getItem('gas_sheet_url') || '').trim();
+        }
+
+        function checkGasUrlStatus() {
+            const url = getGasUrl();
+            if (url) {
+                gasPing.classList.remove('hidden');
+                gasDot.className = 'relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500';
+            } else {
+                gasPing.classList.add('hidden');
+                gasDot.className = 'relative inline-flex rounded-full h-2.5 w-2.5 bg-slate-300';
+            }
+        }
+
+        function openSettingsModal() {
+            gasUrlInput.value = getGasUrl();
+            document.getElementById('test-connection-result').classList.add('hidden');
+            toggleModal('settings-modal', true);
+        }
+
+        function saveSettings() {
+            const url = gasUrlInput.value.trim();
+            localStorage.setItem('gas_sheet_url', url);
+            checkGasUrlStatus();
+            toggleModal('settings-modal', false);
+            alert('✅ Đã lưu cấu hình Google Apps Script URL thành công!');
+        }
+
+        async function testConnection() {
+            const url = gasUrlInput.value.trim();
+            const resultDiv = document.getElementById('test-connection-result');
+            resultDiv.classList.remove('hidden');
+
+            if (!url) {
+                resultDiv.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-700';
+                resultDiv.textContent = '⚠️ Vui lòng dán đường dẫn Web App URL trước khi kiểm tra!';
+                return;
+            }
+
+            resultDiv.className = 'p-3 rounded-xl text-xs font-semibold bg-blue-50 border border-blue-200 text-blue-700';
+            resultDiv.textContent = '⏳ Đang kiểm tra kết nối tới Google Apps Script...';
+
+            try {
+                const res = await fetch(url, { method: 'GET' });
+                const json = await res.json();
+                if (json.status === 'online') {
+                    resultDiv.className = 'p-3 rounded-xl text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-700';
+                    resultDiv.innerHTML = `✅ Kết nối thành công! Backend phản hồi: "<em>${json.message}</em>"`;
+                } else {
+                    resultDiv.className = 'p-3 rounded-xl text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-700';
+                    resultDiv.textContent = '✅ Đã nhận được phản hồi từ máy chủ Google Apps Script!';
+                }
+            } catch (e) {
+                resultDiv.className = 'p-3 rounded-xl text-xs font-semibold bg-amber-50 border border-amber-200 text-amber-800';
+                resultDiv.innerHTML = `ℹ️ Đã gửi tín hiệu kiểm tra. Lưu ý: Nếu Apps Script đã được thiết lập "Người có quyền: Bất kỳ ai", dữ liệu vẫn sẽ được ghi nhận bình thường qua phương thức POST (no-cors).`;
+            }
+        }
+
+        // -------------------------------------------------------------
+        // HÀM QUẢN TRỊ VIÊN & XÁC THỰC MẬT KHẨU (MK: 12345)
+        // -------------------------------------------------------------
+        function initAdminState() {
+            if (sessionStorage.getItem('ai_quiz_admin_unlocked') === 'true') {
+                setAdminUnlockedState(true, false);
+            }
+        }
+
+        function handleAdminLockClick() {
+            if (isAdminUnlocked) {
+                const lockConfirm = confirm("Bạn đang ở chế độ Quản trị viên (Đã mở khóa).\n\n- Bấm [OK] nếu muốn KHÓA LẠI (ẩn nút cấu hình Google Sheet).\n- Bấm [Hủy] để tiếp tục giữ mở khóa.");
+                if (lockConfirm) {
+                    setAdminUnlockedState(false);
+                }
+            } else {
+                openAdminAuthModal();
+            }
+        }
+
+        function openAdminAuthModal() {
+            adminPasswordInput.value = '';
+            adminPasswordError.classList.add('hidden');
+            toggleModal('admin-auth-modal', true);
+            setTimeout(() => adminPasswordInput.focus(), 150);
+        }
+
+        function closeAdminAuthModal() {
+            toggleModal('admin-auth-modal', false);
+        }
+
+        function handleVerifyAdminPassword(e) {
+            e.preventDefault();
+            const inputVal = adminPasswordInput.value.trim();
+
+            if (inputVal === ADMIN_PASSWORD) {
+                adminPasswordError.classList.add('hidden');
+                closeAdminAuthModal();
+                setAdminUnlockedState(true, true);
+            } else {
+                adminPasswordError.classList.remove('hidden');
+                adminPasswordInput.classList.add('border-rose-500', 'ring-2', 'ring-rose-200');
+                adminPasswordInput.focus();
+                setTimeout(() => {
+                    adminPasswordInput.classList.remove('border-rose-500', 'ring-2', 'ring-rose-200');
+                }, 2000);
+            }
+        }
+
+        function setAdminUnlockedState(unlocked, autoOpenSettings = false) {
+            isAdminUnlocked = unlocked;
+            if (unlocked) {
+                sessionStorage.setItem('ai_quiz_admin_unlocked', 'true');
+                btnSheetSettings.classList.remove('hidden');
+                btnAdminLock.className = "px-3 py-2 text-xs sm:text-sm font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-lg transition-all flex items-center gap-1.5 shadow-2xs group";
+                adminLockIcon.textContent = "🔓";
+                adminLockText.textContent = "Đã mở";
+                btnAdminLock.title = "Đã mở khóa quản trị. Bấm để khóa lại.";
+
+                if (autoOpenSettings) {
+                    openSettingsModal();
+                }
+            } else {
+                sessionStorage.removeItem('ai_quiz_admin_unlocked');
+                btnSheetSettings.classList.add('hidden');
+                btnAdminLock.className = "px-3 py-2 text-xs sm:text-sm font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-all flex items-center gap-1.5 shadow-2xs group";
+                adminLockIcon.textContent = "🔑";
+                adminLockText.textContent = "Quản trị";
+                btnAdminLock.title = "Mở khóa quản trị viên để cài đặt Google Sheet";
+            }
+        }
+
+        // Bật/tắt Modal chung
+        function toggleModal(modalId, show) {
+            const modal = document.getElementById(modalId);
+            if (show) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

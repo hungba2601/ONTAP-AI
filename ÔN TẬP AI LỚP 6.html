@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn tập Trí Tuệ Nhân Tạo Lớp 6</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Tùy chỉnh thanh cuộn cho đẹp hơn */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+    <!-- Header với tông màu Cam (orange-600) cho Lớp 6 -->
+    <header class="bg-orange-600 text-white shadow-md sticky top-0 z-10">
+        <div class="container mx-auto px-4 py-4 sm:px-6 lg:px-8">
+            <h1 class="text-xl md:text-2xl font-bold text-center">BỘ CÂU HỎI ÔN TẬP - MÔN TRÍ TUỆ NHÂN TẠO LỚP 6</h1>
+            <p class="text-center text-orange-200 text-sm mt-1">Chọn tiết học để bắt đầu ôn tập</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        
+        <!-- Controls Section -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+            <label for="lesson-select" class="block text-sm font-medium text-slate-700 mb-2">Chọn tiết học:</label>
+            <div class="relative">
+                <select id="lesson-select" class="block w-full pl-3 pr-10 py-3 text-base border-slate-300 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm rounded-lg border appearance-none bg-slate-50 cursor-pointer shadow-sm transition-colors hover:bg-slate-100">
+                    <option value="" disabled selected>-- Vui lòng chọn một tiết học --</option>
+                    <option value="1">Tiết 1: Giới thiệu AI - AI do ai làm ra?</option>
+                    <option value="2">Tiết 2: Con người quyết định cuối cùng & kiểm chứng</option>
+                    <option value="3">Tiết 3: Ra quyết định cùng AI</option>
+                    <option value="4">Tiết 4: Dữ liệu cá nhân là tài sản & quyền riêng tư</option>
+                    <option value="5">Tiết 5: Mặt tốt và mặt xấu của AI</option>
+                    <option value="6">Tiết 6: Bộ câu hỏi kiểm tra an toàn ứng dụng</option>
+                    <option value="7">Tiết 7: Dữ liệu & thuật toán: AI học thế nào?</option>
+                    <option value="8">Tiết 8: Tác động tích cực & tiêu cực của AI với gia đình</option>
+                    <option value="9">Tiết 9: Phân biệt công cụ có AI và không AI</option>
+                    <option value="10">Tiết 10: Công nghệ AI quen thuộc quanh em</option>
+                    <option value="11">Tiết 11: Nên và không nên dùng AI</option>
+                    <option value="12">Tiết 12: Giới hạn của AI so với con người (Tổng kết)</option>
+                </select>
+                <!-- Custom Arrow -->
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+            </div>
+            
+            <div class="mt-4 flex justify-between items-center hidden" id="quiz-info-bar">
+                <span class="text-sm font-medium text-slate-600 bg-slate-100 px-3 py-1 rounded-full" id="lesson-title-display"></span>
+                <span class="text-sm font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full"><span id="question-count">0</span> Câu hỏi</span>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="space-y-6 hidden">
+            <!-- Questions will be injected here by Javascript -->
+        </div>
+
+        <!-- Initial Placeholder State -->
+        <div id="placeholder-state" class="text-center py-16 bg-white rounded-xl border border-dashed border-slate-300">
+            <svg class="mx-auto h-12 w-12 text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+            <h3 class="text-lg font-medium text-slate-900">Chưa có tiết học nào được chọn</h3>
+            <p class="mt-1 text-sm text-slate-500">Hãy sử dụng menu thả xuống bên trên để chọn tiết học bạn muốn ôn tập.</p>
+        </div>
+
+        <!-- Submit Button Section -->
+        <div id="submit-section" class="mt-8 pt-6 border-t border-slate-200 hidden">
+            <button id="submit-btn" class="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-8 rounded-lg shadow transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center justify-center mx-auto">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Nộp bài và Xem kết quả
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="mt-8 bg-green-50 border border-green-200 rounded-xl p-6 text-center hidden fade-in">
+            <h2 class="text-2xl font-bold text-green-800 mb-2">Hoàn thành bài tập!</h2>
+            <p class="text-lg text-green-700">Điểm số của bạn:</p>
+            <div class="text-5xl font-black text-green-600 my-4" id="score-display">0/10</div>
+            <p class="text-sm text-green-600 mb-6" id="feedback-message">Tuyệt vời! Hãy tiếp tục phát huy nhé.</p>
+            <button id="retry-btn" class="bg-white border-2 border-green-600 text-green-700 hover:bg-green-50 font-bold py-2 px-6 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                Làm lại tiết này
+            </button>
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-100 py-6 mt-12 border-t border-slate-200">
+        <div class="container mx-auto text-center text-slate-500 text-sm px-4">
+            <p>Tài liệu dựa trên Giáo án chi tiết môn Trí tuệ nhân tạo lớp 6</p>
+        </div>
+    </footer>
+
+    <!-- DỮ LIỆU CÂU HỎI TRẮC NGHIỆM LỚP 6 (Toàn bộ 12 Tiết) -->
+    <script>
+        const quizData = {
+            "1": {
+                title: "Tiết 1: Giới thiệu AI - AI do ai làm ra?",
+                questions: [
+                    {
+                        question: "Khái niệm AI (trí tuệ nhân tạo) được hiểu đơn giản nhất là gì?",
+                        options: [
+                            "Một cỗ máy phép thuật tự nhiên sinh ra.",
+                            "Một người bạn bằng sắt thép có cảm xúc như con người.",
+                            "Một chương trình do con người viết ra để giúp làm việc.",
+                            "Một trang web xem video trên mạng."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "AI không phải phép màu. Nó là sản phẩm (chương trình phần mềm) do con người viết ra để hỗ trợ các công việc cụ thể."
+                    },
+                    {
+                        question: "Vì sao nói AI KHÔNG tự nhiên thông minh?",
+                        options: [
+                            "Vì AI phải học từ những ví dụ (dữ liệu) do con người cung cấp.",
+                            "Vì AI cần cắm điện mới chạy được.",
+                            "Vì AI không biết nói tiếng Việt.",
+                            "Vì AI làm việc rất chậm."
+                        ],
+                        correctAnswer: 0,
+                        explanation: "AI giống như một học sinh, cần được con người 'dạy' bằng cách cung cấp rất nhiều dữ liệu (hình ảnh, văn bản, âm thanh) thì mới 'thông minh' lên được."
+                    },
+                    {
+                        question: "Đâu là một công cụ AI quen thuộc mà em có thể gặp trên điện thoại thông minh?",
+                        options: [
+                            "Ứng dụng máy tính (Caculator) để cộng trừ nhân chia.",
+                            "Trợ lý ảo (Siri, Google Assistant) nghe và trả lời bằng giọng nói.",
+                            "Ứng dụng đồng hồ báo thức.",
+                            "Ứng dụng la bàn."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Trợ lý ảo là một ứng dụng AI phổ biến, có khả năng nhận dạng giọng nói, hiểu ngôn ngữ và thực hiện lệnh."
+                    },
+                    {
+                        question: "Để ứng dụng Google Dịch có thể dịch từ tiếng Anh sang tiếng Việt, con người đã phải làm gì?",
+                        options: [
+                            "Chỉ cần cài đặt ứng dụng vào điện thoại.",
+                            "Dạy AI bằng cách cho nó học hàng triệu câu đã được dịch sẵn (dữ liệu).",
+                            "Yêu cầu AI tự học trên mạng internet.",
+                            "Mua một từ điển dày đặt cạnh máy tính."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Con người đóng vai trò cốt lõi: cung cấp một kho dữ liệu khổng lồ gồm các cặp câu song ngữ để AI học cách dịch thuật."
+                    },
+                    {
+                        question: "Khi em xem Youtube, ứng dụng thường tự động đề xuất các video mà em rất thích. Đó là nhờ vào điều gì?",
+                        options: [
+                            "Youtube đoán mò.",
+                            "Điện thoại của em bị hỏng.",
+                            "AI học từ lịch sử những video em đã xem để gợi ý các video tương tự.",
+                            "Do mẹ em cài đặt sẵn."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Đây là tính năng 'gợi ý nội dung' bằng AI, học thói quen của người dùng thông qua dữ liệu lịch sử hoạt động."
+                    },
+                    {
+                        question: "Ứng dụng camera trên điện thoại có thể tự động nhận ra khuôn mặt để làm mịn da. Ai đã giúp camera làm được điều đó?",
+                        options: [
+                            "Bản thân chiếc điện thoại tự biết.",
+                            "Nhà sản xuất đã gắn một camera ma thuật.",
+                            "Con người đã dạy AI cách nhận biết khuôn mặt bằng rất nhiều tấm ảnh mẫu.",
+                            "Người chụp ảnh tự điều chỉnh bằng tay."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Công nghệ 'nhận diện khuôn mặt' do con người phát triển, dựa trên việc huấn luyện AI bằng bộ dữ liệu hình ảnh khuôn mặt."
+                    },
+                    {
+                        question: "Phát biểu nào sau đây ĐÚNG khi nói về AI?",
+                        options: [
+                            "AI tự nó làm ra chính nó.",
+                            "AI không cần con người vẫn hoạt động được.",
+                            "AI là công cụ do con người tạo ra, lập trình và điều khiển.",
+                            "AI luôn luôn thông minh hơn con người về mọi mặt."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Con người luôn là chủ thể tạo ra, kiểm soát và điều khiển AI. AI không thể hoạt động độc lập nếu thiếu con người."
+                    },
+                    {
+                        question: "Nếu không có DỮ LIỆU do con người cung cấp, AI sẽ như thế nào?",
+                        options: [
+                            "AI vẫn hoạt động bình thường.",
+                            "AI sẽ tự đi tìm dữ liệu.",
+                            "AI sẽ không biết gì cả và không thể làm việc được.",
+                            "AI sẽ tự tạo ra dữ liệu mới."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Dữ liệu giống như 'sách giáo khoa' của AI. Không có dữ liệu để học, AI hoàn toàn vô dụng."
+                    },
+                    {
+                        question: "Bản đồ chỉ đường (như Google Maps) biết được đoạn đường nào đang kẹt xe là nhờ đâu?",
+                        options: [
+                            "Bản đồ có mắt nhìn từ vệ tinh xuống.",
+                            "Con người nạp dữ liệu bản đồ và cập nhật tình hình giao thông cho nó.",
+                            "Bản đồ tự động gọi điện cho cảnh sát giao thông.",
+                            "Bản đồ chỉ đoán mò."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "AI của bản đồ tổng hợp dữ liệu khổng lồ (vị trí, tốc độ di chuyển) từ điện thoại của nhiều người dùng để tính toán tình trạng giao thông."
+                    },
+                    {
+                        question: "Bài học quan trọng nhất khi mới làm quen với AI ở lớp 6 là gì?",
+                        options: [
+                            "Nên sợ hãi AI vì nó sẽ chiếm thế giới.",
+                            "AI là thần thánh, AI nói gì cũng đúng.",
+                            "AI chỉ là CÔNG CỤ do con người làm chủ, không tự sinh ra và không phải phép màu.",
+                            "Chỉ người lớn mới được dùng AI."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Đây là thông điệp xuyên suốt: Giải mĩ hóa AI, hiểu bản chất công nghệ để làm chủ nó một cách tự tin."
+                    }
+                ]
+            },
+            "2": {
+                title: "Tiết 2: Con người quyết định cuối cùng & kiểm chứng",
+                questions: [
+                    {
+                        question: "Khi em hỏi AI một câu hỏi, câu trả lời của AI có thể mắc phải lỗi gì?",
+                        options: [
+                            "AI luôn trả lời đúng 100%.",
+                            "AI có thể trả lời sai, thậm chí 'bịa' ra thông tin nghe rất thật.",
+                            "AI chỉ trả lời bằng tiếng Anh.",
+                            "AI luôn trả lời bằng một video."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "AI (nhất là chatbot) hoạt động theo cơ chế đoán từ tiếp theo, do đó nó có thể mắc hội chứng 'ảo giác' (hallucination) - đưa ra thông tin bịa đặt nhưng rất tự tin."
+                    },
+                    {
+                        question: "Thói quen tốt khi nhận được một câu trả lời từ AI là gì?",
+                        options: [
+                            "Copy và chép ngay vào vở bài tập.",
+                            "Tin tưởng tuyệt đối vì máy tính không biết nói dối.",
+                            "KIỂM CHỨNG lại thông tin xem có đúng không rồi mới dùng.",
+                            "Chia sẻ ngay lên mạng xã hội."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Kiểm chứng là bước bắt buộc để phòng tránh việc sử dụng thông tin sai lệch do AI tạo ra."
+                    },
+                    {
+                        question: "Em có thể KIỂM CHỨNG thông tin do AI đưa ra bằng những cách nào?",
+                        options: [
+                            "Mở sách giáo khoa, hỏi thầy cô bố mẹ, hoặc tra cứu trên các trang web uy tín.",
+                            "Hỏi lại chính AI đó xem nó có chắc không.",
+                            "Hỏi một bạn học kém hơn mình.",
+                            "Nhắm mắt chọn đại."
+                        ],
+                        correctAnswer: 0,
+                        explanation: "Cần đối chiếu chéo (cross-check) thông tin bằng các nguồn đáng tin cậy như sách vở, chuyên gia (giáo viên), trang thông tin chính thống."
+                    },
+                    {
+                        question: "Nguyên tắc 'Con người quyết định cuối cùng' khi dùng AI nghĩa là gì?",
+                        options: [
+                            "Để AI quyết định mọi thứ cho nhàn.",
+                            "AI cung cấp kết quả, nhưng CON NGƯỜI mới là người kiểm tra, đánh giá và quyết định có dùng kết quả đó hay không.",
+                            "Con người luôn phải làm ngược lại lời AI.",
+                            "Chỉ dùng AI khi không có con người bên cạnh."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "AI là trợ lý đưa ra gợi ý, con người giữ vai trò 'ông chủ' - kiểm duyệt và ra quyết định cuối cùng."
+                    },
+                    {
+                        question: "Tình huống: Em dùng AI giải Toán, AI ra đáp án là 12, nhưng em tính lại ra 8. Em nên làm gì?",
+                        options: [
+                            "Điền số 12 vì AI giỏi Toán hơn em.",
+                            "Cãi nhau với bạn bè để bảo vệ đáp án 12.",
+                            "Tin vào kết quả tính toán của mình (đáp án 8), gạch bỏ đáp án của AI.",
+                            "Bỏ trống không làm bài này nữa."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Con người cần có tư duy phản biện. Nếu phát hiện AI sai, phải tin vào kiến thức đúng của bản thân và từ chối kết quả của AI."
+                    },
+                    {
+                        question: "Vì sao người quyết định cuối cùng và chịu trách nhiệm LUN LÀ CON NGƯỜI chứ không phải AI?",
+                        options: [
+                            "Vì AI làm việc quá chậm.",
+                            "Vì AI là công cụ vô tri, không có năng lực chịu trách nhiệm đạo đức hay pháp lý khi làm sai.",
+                            "Vì AI không biết xin lỗi.",
+                            "Vì máy tính rất đắt tiền."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Trách nhiệm (accountability) thuộc về con người. Không thể đổ lỗi 'tại AI' khi bài tập của em bị điểm kém."
+                    },
+                    {
+                        question: "Ba bước đơn giản của thói quen 'con người quyết định cuối cùng' là gì?",
+                        options: [
+                            "Hỏi AI -> Chép lại -> Nộp bài.",
+                            "Nhận kết quả AI -> ĐỐI CHIẾU nguồn tin cậy -> TỰ QUYẾT ĐỊNH.",
+                            "Nhìn AI -> Nghe AI -> Tin AI.",
+                            "Tải ứng dụng -> Mở ứng dụng -> Xóa ứng dụng."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Đây là quy trình chuẩn giúp học sinh dùng AI an toàn: Tiếp nhận - Xác thực - Hành động."
+                    },
+                    {
+                        question: "Nguyên nhân chính khiến AI đưa ra câu trả lời sai là do đâu?",
+                        options: [
+                            "Do AI ghét người dùng.",
+                            "Do dữ liệu con người dạy nó bị thiếu, bị sai, hoặc AI chưa hiểu đúng ý câu hỏi.",
+                            "Do kết nối wifi yếu.",
+                            "Do điện thoại hết pin."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Sự sai sót của AI thường bắt nguồn từ chất lượng dữ liệu huấn luyện hoặc hạn chế của thuật toán xử lý ngôn ngữ."
+                    },
+                    {
+                        question: "Hành động nào thể hiện em KHÔNG tin tưởng mù quáng vào AI?",
+                        options: [
+                            "Làm theo mọi chỉ dẫn của phần mềm bản đồ dù nó chỉ vào đường cụt.",
+                            "Dừng lại, quan sát biển báo thực tế trên đường và không đi vào đường cụt dù AI gợi ý.",
+                            "Copy mọi đoạn văn AI viết vào bài làm.",
+                            "Để AI tự động gửi tin nhắn cho bạn bè."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Tin vào thực tế và khả năng phán đoán của bản thân hơn là gợi ý của máy móc là biểu hiện của người dùng có tư duy."
+                    },
+                    {
+                        question: "Tóm lại, mục tiêu của Tiết 2 là giúp học sinh hình thành thói quen gì?",
+                        options: [
+                            "Thói quen lười biếng, ỷ lại.",
+                            "Thói quen nghi ngờ lành mạnh (Tư duy phản biện) và KIỂM CHỨNG thông tin.",
+                            "Thói quen sợ hãi máy tính.",
+                            "Thói quen chơi game trên ứng dụng AI."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Giáo dục tư duy phản biện (Critical Thinking) là lá chắn tốt nhất để học sinh an toàn trong kỷ nguyên tràn ngập nội dung do AI tạo ra."
+                    }
+                ]
+            },
+            "3": {
+                title: "Tiết 3: Ra quyết định cùng AI",
+                questions: [
+                    {
+                        question: "Khái niệm 'AI GỢI Ý - CON NGƯỜI QUYẾT' có ý nghĩa là gì?",
+                        options: [
+                            "AI tự động làm mọi việc, con người chỉ cần ngồi nhìn.",
+                            "AI phân tích dữ liệu để đưa ra các lựa chọn (gợi ý), con người cân nhắc và ra quyết định cuối cùng.",
+                            "Con người đưa ra gợi ý, AI quyết định thay.",
+                            "Không nên dùng AI để gợi ý bất cứ điều gì."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "AI đóng vai trò như một 'cố vấn' cung cấp thông tin, còn con người giữ vai trò 'người chỉ huy' đưa ra quyết định."
+                    },
+                    {
+                        question: "Trong lĩnh vực y tế, khi AI phân tích ảnh chụp và gợi ý một vài căn bệnh có thể mắc phải, ai là người quyết định phương án chữa bệnh?",
+                        options: [
+                            "Phần mềm AI tự động kê đơn thuốc.",
+                            "Người bệnh tự quyết định.",
+                            "Bác sĩ (con người) xem xét kỹ, kết hợp với việc khám trực tiếp để quyết định cách chữa.",
+                            "Người bán thuốc."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Y tế liên quan đến tính mạng. AI chỉ hỗ trợ chẩn đoán (gợi ý), quyết định sinh tử và y đức thuộc về bác sĩ con người."
+                    },
+                    {
+                        question: "Vì sao con người KHÔNG NÊN nghe theo AI răm rắp trong những quyết định quan trọng?",
+                        options: [
+                            "Vì AI không biết hoàn cảnh thực tế, không có cảm xúc và không thể chịu trách nhiệm cho hậu quả.",
+                            "Vì AI luôn luôn sai.",
+                            "Vì AI hoạt động rất chậm.",
+                            "Vì AI tính phí quá cao."
+                        ],
+                        correctAnswer: 0,
+                        explanation: "AI thiếu 'ngữ cảnh thế giới thực' (real-world context) và sự thấu cảm, do đó những quyết định ảnh hưởng lớn đến cuộc sống cần sự cân nhắc của con người."
+                    },
+                    {
+                        question: "Tình huống: Bản đồ AI chỉ em đi đường A để nhanh hơn 5 phút, nhưng em biết đường A đang có công trường rất nguy hiểm. Em nên làm gì?",
+                        options: [
+                            "Cứ đi đường A theo AI để tiết kiệm 5 phút.",
+                            "Tắt điện thoại và không đi đâu nữa.",
+                            "Tự chọn đi đường khác chậm hơn nhưng AN TOÀN hơn.",
+                            "Nhờ người đi đường chỉ giúp."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "AI chỉ tối ưu hóa tiêu chí 'thời gian', nó không nhận thức được 'sự an toàn thực tế'. Con người ưu tiên an toàn lên trên thời gian."
+                    },
+                    {
+                        question: "Khi Youtube (AI) liên tục gợi ý các video giải trí hấp dẫn lúc em đang cần học bài, em nên ra quyết định thế nào?",
+                        options: [
+                            "Bấm xem hết các video AI gợi ý.",
+                            "Tự chủ TỪ CHỐI gợi ý, tự tìm video bài học mà mình cần.",
+                            "Xóa luôn ứng dụng Youtube.",
+                            "Nhờ bạn bè xem hộ."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Tự chủ trước thuật toán (Algorithm autonomy). Con người phải làm chủ mục đích sử dụng công cụ, không để thuật toán dẫn dắt hành vi của mình."
+                    },
+                    {
+                        question: "Điều AI KHÔNG THỂ HIỂU ĐƯỢC khi gợi ý cho con người là gì?",
+                        options: [
+                            "Các con số tính toán.",
+                            "Dữ liệu bản đồ.",
+                            "Hoàn cảnh riêng, cảm xúc và sự an toàn thực tế của con người lúc đó.",
+                            "Lịch sử tìm kiếm trên mạng."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Máy móc làm việc dựa trên dữ liệu định lượng, nó hoàn toàn mù mờ về các giá trị định tính như cảm xúc, đạo đức hay sự nguy hiểm."
+                    },
+                    {
+                        question: "Trong tình huống mua sắm trực tuyến, ứng dụng AI liên tục gợi ý em mua một món đồ đắt tiền. Sự 'cân nhắc' của con người ở đây là gì?",
+                        options: [
+                            "Bấm mua ngay vì AI gợi ý là chắc chắn tốt.",
+                            "Cân nhắc xem túi tiền của mình có đủ không và bản thân CÓ THỰC SỰ CẦN món đồ đó không trước khi quyết định.",
+                            "Mua rồi trả lại sau.",
+                            "Mượn tiền bạn để mua."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Giữ được lí trí trước các thuật toán nhắm mục tiêu (Targeted ads) là kĩ năng quan trọng để bảo vệ tài chính cá nhân."
+                    },
+                    {
+                        question: "Sự khác biệt lớn nhất giữa việc để 'AI tự quyết' và 'Ra quyết định CÙNG AI' là gì?",
+                        options: [
+                            "Không có sự khác biệt.",
+                            "AI tự quyết thì con người bị thụ động; Ra quyết định CÙNG AI thì con người chủ động xem AI như một trợ lý và làm chủ tình hình.",
+                            "AI tự quyết thì ít tốn điện hơn.",
+                            "Ra quyết định cùng AI làm máy tính chạy chậm đi."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Mô hình Human-in-the-loop (con người trong vòng lặp) đảm bảo con người tận dụng sức mạnh máy móc nhưng không đánh mất quyền kiểm soát."
+                    },
+                    {
+                        question: "Vì sao các ứng dụng AI thường xuyên gợi ý (Recommend) nội dung cho người dùng?",
+                        options: [
+                            "Vì chúng muốn giúp đỡ người dùng vô điều kiện.",
+                            "Vì thuật toán được thiết kế để phân tích dữ liệu quá khứ và dự đoán sở thích, nhằm giữ chân người dùng ở lại ứng dụng lâu hơn.",
+                            "Vì điện thoại bị lỗi hệ điều hành.",
+                            "Vì có người ngồi trực tiếp thao tác gửi gợi ý."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Các hệ thống đề xuất (Recommendation Systems) tối ưu hóa thời gian tương tác (Engagement time) của người dùng để sinh lời."
+                    },
+                    {
+                        question: "Thái độ tốt nhất khi đối mặt với vô số gợi ý từ AI hàng ngày là gì?",
+                        options: [
+                            "Bực bội và không dùng công nghệ nữa.",
+                            "Biết ơn và làm theo mọi gợi ý.",
+                            "Tiếp nhận thông tin cởi mở nhưng luôn TỈNH TÁO, CÂN NHẮC và CHỦ ĐỘNG LỰA CHỌN cái phù hợp với mình.",
+                            "Chỉ làm theo gợi ý vào ban ngày."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Sự tỉnh táo (Mindfulness) khi dùng mạng giúp học sinh tận dụng lợi ích của AI mà không trở thành 'nô lệ' của thuật toán."
+                    }
+                ]
+            },
+            "4": {
+                title: "Tiết 4: Dữ liệu cá nhân là tài sản & quyền riêng tư",
+                questions: [
+                    {
+                        question: "Khái niệm 'Dữ liệu cá nhân' bao gồm những thông tin nào của em?",
+                        options: [
+                            "Chỉ bao gồm sách vở em đang học.",
+                            "Chỉ bao gồm quần áo em đang mặc.",
+                            "Mọi thông tin gắn với em: họ tên, ảnh mặt, giọng nói, số điện thoại, địa chỉ nhà, thói quen trên mạng.",
+                            "Chỉ bao gồm điểm số trên lớp."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Bất cứ thông tin nào có thể dùng để định danh hoặc nhận diện trực tiếp một con người đều là dữ liệu cá nhân."
+                    },
+                    {
+                        question: "Vì sao nói dữ liệu cá nhân là TÀI SẢN của em?",
+                        options: [
+                            "Vì có thể mang ra chợ bán lấy tiền mặt ngay.",
+                            "Vì nó quý giá, thuộc sở hữu riêng của em và CHỈ EM (hoặc cha mẹ) mới có quyền quyết định cho ai biết.",
+                            "Vì nó được cất trong két sắt.",
+                            "Vì nhà nước phát cho mỗi người."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Tương tự tài sản vật chất, tài sản dữ liệu thuộc quyền kiểm soát cá nhân. Quyền riêng tư bảo vệ tài sản vô hình này."
+                    },
+                    {
+                        question: "Loại dữ liệu nào sau đây nếu bị lộ sẽ RẤT NGUY HIỂM vì dẫn kẻ xấu trực tiếp đến em ngoài đời thật?",
+                        options: [
+                            "Màu sắc yêu thích của em.",
+                            "Tên bộ phim hoạt hình em hay xem.",
+                            "Địa chỉ nhà và số điện thoại của em.",
+                            "Hãng điện thoại em đang dùng."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Thông tin liên lạc và vị trí địa lý là những dữ liệu nhạy cảm cao độ, ảnh hưởng trực tiếp đến an toàn thân thể."
+                    },
+                    {
+                        question: "Tình huống: Một ứng dụng trò chơi mới tải về yêu cầu quyền truy cập vào 'Danh bạ điện thoại' và 'Vị trí' của em. Em nên làm gì?",
+                        options: [
+                            "Bấm 'Đồng ý' (Allow) ngay lập tức để chơi game.",
+                            "Hỏi bạn bè xem game có hay không.",
+                            "Cảnh giác TỪ CHỐI cấp quyền vì một trò chơi không cần đến danh bạ hay vị trí của em.",
+                            "Nhập danh bạ của bạn bè vào thay thế."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Nguyên tắc 'Giảm thiểu dữ liệu' (Data Minimization). Nếu quyền truy cập không liên quan đến chức năng chính của ứng dụng, đó là dấu hiệu thu thập dữ liệu trái phép."
+                    },
+                    {
+                        question: "Hậu quả của việc để lộ ảnh chân dung hoặc giọng nói của em cho các ứng dụng AI lạ là gì?",
+                        options: [
+                            "Em sẽ nổi tiếng nhanh chóng.",
+                            "Hình ảnh của em sẽ đẹp hơn.",
+                            "Kẻ xấu có thể dùng AI để ghép mặt, giả giọng em (Deepfake) để đi lừa đảo hoặc bôi nhọ em.",
+                            "Ứng dụng sẽ chạy nhanh hơn."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Dữ liệu sinh trắc học (biometrics) như khuôn mặt, giọng nói khi rơi vào tay kẻ xấu sẽ trở thành nguyên liệu để tạo ra tội phạm Deepfake."
+                    },
+                    {
+                        question: "Khẩu quyết 3 BƯỚC ỨNG PHÓ khi gặp một ứng dụng lạ xin thông tin cá nhân là gì?",
+                        options: [
+                            "Tải về -> Cài đặt -> Nhập thông tin.",
+                            "DỪNG chia sẻ -> BÁO cha mẹ/thầy cô -> BÁO CÁO trên ứng dụng.",
+                            "Chia sẻ cho bạn bè -> Cùng nhập thông tin -> Chờ nhận quà.",
+                            "Xóa màn hình -> Khởi động lại -> Nhập lại."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Đây là quy trình an toàn số cơ bản: Dừng lại để suy nghĩ, tìm kiếm sự trợ giúp từ người lớn, và hành động ngăn chặn (report)."
+                    },
+                    {
+                        question: "Nếu có người lấy ảnh của em đăng lên một diễn đàn công khai mà không xin phép em, họ đã vi phạm điều gì?",
+                        options: [
+                            "Vi phạm luật giao thông.",
+                            "Vi phạm luật bảo vệ môi trường.",
+                            "Vi phạm QUYỀN RIÊNG TƯ và quyền hình ảnh của em.",
+                            "Không vi phạm gì cả."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Sử dụng hình ảnh cá nhân của người khác mà không có sự đồng thuận (Consent) là hành vi xâm phạm quyền riêng tư nghiêm trọng."
+                    },
+                    {
+                        question: "Ứng dụng AI phân tích thói quen 'em hay xem video gì, đi đâu' để làm gì?",
+                        options: [
+                            "Để giúp em tiết kiệm tiền.",
+                            "Để hiểu sở thích của em, từ đó dụ dỗ, đề xuất video quảng cáo và thao túng hành vi mua sắm của em.",
+                            "Để làm bài tập hộ em.",
+                            "Để bảo vệ em khỏi virus máy tính."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Dữ liệu hành vi (Behavioral data) được dùng để lập hồ sơ người dùng (Profiling), phục vụ cho nền kinh tế nhắm mục tiêu (Targeted advertising)."
+                    },
+                    {
+                        question: "Hành động nào sau đây là ĐÚNG ĐẮN để bảo vệ tài khoản của em trên mạng?",
+                        options: [
+                            "Đặt mật khẩu là 123456 cho dễ nhớ.",
+                            "Dùng chung một mật khẩu cho tất cả các tài khoản.",
+                            "Đặt mật khẩu khó đoán và TUYỆT ĐỐI KHÔNG chia sẻ mật khẩu cho bất kỳ ai, kể cả bạn thân.",
+                            "Ghi mật khẩu ra giấy và dán trước máy tính."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Bảo vệ mật khẩu (chìa khóa dữ liệu) là lớp phòng thủ kỹ thuật số cơ bản và quan trọng nhất."
+                    },
+                    {
+                        question: "Tóm tắt bài học: 'Con người làm chủ AI' trong tiết 4 có nghĩa là gì?",
+                        options: [
+                            "Biết cách viết code AI.",
+                            "Biết cách làm hỏng máy tính.",
+                            "Biết TỰ BẢO VỆ thông tin cá nhân của mình, không để AI hoặc ứng dụng thu thập dữ liệu trái phép.",
+                            "Sở hữu nhiều điện thoại di động."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Làm chủ AI không chỉ là biết dùng, mà còn là kiểm soát được những gì công nghệ lấy đi từ mình (bảo vệ chủ quyền dữ liệu)."
+                    }
+                ]
+            },
+            "5": {
+                title: "Tiết 5: Mặt tốt và mặt xấu của AI",
+                questions: [
+                    {
+                        question: "'Tư duy hai mặt' khi sử dụng một tính năng AI có nghĩa là gì?",
+                        options: [
+                            "Dùng AI vào cả ban ngày và ban đêm.",
+                            "Dùng AI trên cả điện thoại và máy tính.",
+                            "Nhìn nhận và phân tích được CẢ MẶT LỢI (tích cực) VÀ MẶT HẠI (tiêu cực) của cùng một tính năng đó.",
+                            "Chỉ nhìn thấy điểm xấu của AI."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Mọi công nghệ đều mang tính hai mặt (như con dao hai lưỡi). Tư duy phản biện yêu cầu đánh giá toàn diện, không định kiến."
+                    },
+                    {
+                        question: "Tính năng 'Gợi ý video' trên Youtube/Tiktok có MẶT TỐT (tích cực) là gì?",
+                        options: [
+                            "Làm tốn nhiều dung lượng 4G.",
+                            "Giúp em tìm nhanh và chính xác những video đúng sở thích mà không mất công tìm kiếm.",
+                            "Làm màn hình điện thoại sáng hơn.",
+                            "Giúp em học thuộc lòng dễ hơn."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Thuật toán đề xuất giúp cá nhân hóa trải nghiệm người dùng, tiết kiệm thời gian lọc thông tin."
+                    },
+                    {
+                        question: "Cũng tính năng 'Gợi ý video' đó, MẶT HẠN CHẾ (tiêu cực) mà em cần cẩn thận là gì?",
+                        options: [
+                            "Làm cho video bị mờ đi.",
+                            "Khiến em xem liên tục không dứt (gây nghiện), tốn thời gian và làm lộ thói quen sở thích của em cho ứng dụng.",
+                            "Làm điện thoại tự động tắt nguồn.",
+                            "Không có mặt hạn chế nào."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Đề xuất nội dung gây nghiện là cơ chế thao túng tâm lý (doomscrolling), khiến người dùng mất kiểm soát thời gian."
+                    },
+                    {
+                        question: "Mặt tốt của 'Trợ lý ảo' (điều khiển bằng giọng nói) là rất tiện lợi. Nhưng rủi ro (mặt hại) của nó là gì?",
+                        options: [
+                            "Nó thường trả lời bằng tiếng nước ngoài.",
+                            "Nó phải bật micro liên tục để chờ lệnh, có nguy cơ NGHE LÉN và thu thập trái phép âm thanh riêng tư trong nhà em.",
+                            "Nó làm tốn quá nhiều tiền điện.",
+                            "Nó không biết nói đùa."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Rủi ro quyền riêng tư (Privacy risk) từ các thiết bị thông minh luôn rình rập, thu thập dữ liệu sinh trắc học giọng nói."
+                    },
+                    {
+                        question: "Tính năng 'Lọc ảnh làm đẹp' (Filter) giúp em có những bức ảnh sáng tạo, vui nhộn. Tuy nhiên, nếu lạm dụng nó sẽ gây tác hại tâm lý gì?",
+                        options: [
+                            "Làm camera bị hỏng.",
+                            "Làm ảnh sai lệch sự thật, dễ khiến em TỰ TI về ngoại hình thật của mình so với hình ảnh hoàn hảo ảo trên mạng.",
+                            "Làm mất bạn bè.",
+                            "Giúp em trở thành diễn viên."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Các filter chỉnh sửa nhan sắc gây ra hội chứng rối loạn mặc cảm ngoại hình (Body Dysmorphia), tạo áp lực tiêu cực lên giới trẻ."
+                    },
+                    {
+                        question: "Phần mềm 'Chatbot học tập' giải đáp bài tập rất nhanh. Nếu em lạm dụng nó (giao AI làm thay hoàn toàn), hậu quả là gì?",
+                        options: [
+                            "Em sẽ được thầy cô khen ngợi vì làm bài nhanh.",
+                            "Em sẽ trở nên thông minh hơn.",
+                            "Em sẽ Ỷ LẠI, mất đi khả năng tự suy nghĩ, không rèn luyện được kỹ năng và kiến thức sẽ bị rỗng.",
+                            "Phần mềm sẽ thu phí đắt đỏ."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Công cụ học tập bị biến thành công cụ gian lận sẽ làm thui chột tư duy và kỹ năng giải quyết vấn đề của học sinh."
+                    },
+                    {
+                        question: "Tính năng 'Dịch tự động' giúp hiểu nhanh văn bản tiếng nước ngoài. Điểm hạn chế của nó là gì?",
+                        options: [
+                            "Nó chỉ dịch được 1 từ mỗi lần.",
+                            "AI đôi khi dịch sai ngữ cảnh, dịch từ lóng bị sai nghĩa, dẫn đến HIỂU LẦM trầm trọng nếu tin tưởng 100%.",
+                            "Nó chỉ dịch được tiếng Anh.",
+                            "Nó làm tốn giấy mực."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Máy móc thiếu sự tinh tế trong ngôn ngữ học (ngữ dụng học), dễ dịch máy móc (word-by-word) gây sai lệch ý nghĩa thực tế."
+                    },
+                    {
+                        question: "Vì sao chúng ta KHÔNG NÊN nghĩ rằng 'AI là hoàn hảo, toàn điều tốt'?",
+                        options: [
+                            "Vì AI rất xấu xí.",
+                            "Vì AI do con người tạo ra, nó có thể sai sót, bị lợi dụng hoặc thiết kế đi kèm với mục đích thu thập dữ liệu người dùng.",
+                            "Vì AI luôn hoạt động chậm chạp.",
+                            "Vì chỉ người lớn mới được dùng AI."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Trí tuệ nhân tạo là một sản phẩm công nghệ nhân tạo (Artifact), mang theo những giới hạn và ý đồ của người thiết kế ra nó."
+                    },
+                    {
+                        question: "Thái độ đúng đắn nhất của một học sinh lớp 6 trước công nghệ AI là gì?",
+                        options: [
+                            "Tẩy chay, không bao giờ dùng bất kỳ ứng dụng nào.",
+                            "Hưởng thụ mọi tính năng, dùng càng nhiều càng tốt, không cần quan tâm rủi ro.",
+                            "Hưởng CÁI LỢI (dùng để hỗ trợ học tập) và cảnh giác TỰ BẢO VỆ trước CÁI HẠI (bảo mật dữ liệu, tránh nghiện).",
+                            "Sợ hãi và bỏ chạy khi thấy robot."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Đây là định hướng phát triển công dân số: Biết sử dụng công nghệ một cách khai phóng, đồng thời có ý thức phòng vệ (Sức đề kháng số)."
+                    },
+                    {
+                        question: "Việc nhìn nhận được 2 mặt lợi - hại của AI gọi là gì trong các kỹ năng thế kỷ 21?",
+                        options: [
+                            "Kỹ năng lập trình phần mềm.",
+                            "Tư duy phản biện (Critical Thinking).",
+                            "Kỹ năng thiết kế đồ họa.",
+                            "Kỹ năng thuyết trình trước đám đông."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Tư duy phản biện là quá trình phân tích thông tin một cách khách quan để hình thành nhận định toàn diện, tránh rơi vào bẫy truyền thông."
+                    }
+                ]
+            },
+            "6": {
+                title: "Tiết 6: Bộ câu hỏi kiểm tra an toàn ứng dụng",
+                questions: [
+                    {
+                        question: "Mục đích của việc sử dụng 'Bộ 5 câu hỏi kiểm tra an toàn' trước khi tải ứng dụng là gì?",
+                        options: [
+                            "Để tải ứng dụng nhanh hơn.",
+                            "Tạo ra một 'bộ lọc' giúp em nhận biết ứng dụng đó có an toàn, đáng tin cậy hay đang lén lút thu thập thông tin của em.",
+                            "Để biết ứng dụng đó do nước nào sản xuất.",
+                            "Để kiểm tra xem ứng dụng có màu gì."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Đây là công cụ tự phòng vệ (Self-defense tool) giúp học sinh chủ động đánh giá mức độ rủi ro trước khi cài đặt phần mềm lạ."
+                    },
+                    {
+                        question: "Câu hỏi 1: 'App này có an toàn, hợp tuổi em không?' giúp phòng tránh rủi ro gì?",
+                        options: [
+                            "Tốn tiền mua ứng dụng.",
+                            "Tốn pin điện thoại.",
+                            "Tiếp xúc với nội dung bạo lực, xấu độc hoặc không phù hợp với lứa tuổi trẻ em.",
+                            "Làm máy chạy chậm."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Kiểm tra xếp hạng độ tuổi (Age rating) là màng lọc đầu tiên để chặn các nội dung độc hại trên môi trường mạng."
+                    },
+                    {
+                        question: "Dấu hiệu nào sau đây cho thấy một ứng dụng ĐÁNG NGỜ ở câu hỏi 'App xin quá nhiều quyền không?'",
+                        options: [
+                            "Ứng dụng Bản đồ xin quyền truy cập 'Vị trí'.",
+                            "Ứng dụng Camera xin quyền truy cập 'Máy ảnh'.",
+                            "Ứng dụng Trò chơi giải đố đơn giản xin quyền truy cập 'Danh bạ điện thoại', 'Tin nhắn' và 'Vị trí'.",
+                            "Ứng dụng Gọi điện xin quyền truy cập 'Micro'."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Nguyên tắc Quyền hạn tối thiểu (Least Privilege). Khi ứng dụng đòi các quyền không liên quan đến chức năng hoạt động, nó đang cố tình thu thập dữ liệu trái phép."
+                    },
+                    {
+                        question: "Câu hỏi 4: 'Ai làm ra app, có uy tín không?' vì sao lại quan trọng?",
+                        options: [
+                            "Vì app của công ty lớn thường có màu đẹp hơn.",
+                            "Vì nhà phát triển uy tín thường tuân thủ luật bảo vệ dữ liệu; các app lạ ẩn danh có nguy cơ cao chứa mã độc hoặc lừa đảo.",
+                            "Vì app uy tín luôn miễn phí.",
+                            "Vì biết tên người làm ra để gọi điện cảm ơn."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Tính minh bạch của nhà phát triển (Developer transparency) là thước đo độ tin cậy. Tổ chức vô danh không có nghĩa vụ chịu trách nhiệm khi có sự cố."
+                    },
+                    {
+                        question: "Câu hỏi 3: 'Có thể tắt/từ chối tính năng thu thập không?' nhằm bảo vệ quyền gì của người dùng?",
+                        options: [
+                            "Quyền được chơi game miễn phí.",
+                            "Quyền quyết định (Quyền tự chủ) - không bị ép buộc phải giao dữ liệu mới được dùng ứng dụng.",
+                            "Quyền được chia sẻ ảnh lên mạng.",
+                            "Quyền đổi màu ứng dụng."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Cơ chế Opt-out (Quyền từ chối) là tiêu chuẩn đạo đức thiết kế, tôn trọng sự lựa chọn của người dùng đối với dữ liệu cá nhân."
+                    },
+                    {
+                        question: "Nếu em dùng bộ câu hỏi để soi một ứng dụng lạ và thấy có quá nhiều câu trả lời 'Đáng ngờ', hành động tiếp theo của em là gì?",
+                        options: [
+                            "Cứ tải về dùng thử xem sao.",
+                            "KHÔNG tải, KHÔNG dùng ứng dụng đó; hỏi ý kiến cha mẹ hoặc thầy cô nếu vẫn muốn dùng.",
+                            "Chia sẻ ứng dụng đó cho bạn bè cùng tải.",
+                            "Nhập thử dữ liệu giả vào ứng dụng."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Phòng bệnh hơn chữa bệnh. Dừng lại khi thấy cờ đỏ (Red flags) là hành động an toàn nhất trên không gian số."
+                    },
+                    {
+                        question: "Câu hỏi 2: 'App có thu thập thông tin cá nhân không? Thu gì?' giúp em nhận thức được điều gì?",
+                        options: [
+                            "App có tốn nhiều dung lượng ổ cứng không.",
+                            "Biết rõ mình đang 'đánh đổi' những thông tin gì (ảnh, vị trí, danh bạ) để đổi lấy việc sử dụng ứng dụng.",
+                            "Biết được mật khẩu wifi của nhà mạng.",
+                            "Biết được giá tiền của ứng dụng."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Nâng cao nhận thức về Giá trị dữ liệu (Data Value). Không có gì là hoàn toàn miễn phí, dữ liệu chính là 'tiền tệ' trên không gian mạng."
+                    },
+                    {
+                        question: "Dấu hiệu của một ứng dụng AN TOÀN khi xét duyệt là gì?",
+                        options: [
+                            "Xin truy cập mọi thứ trên điện thoại.",
+                            "Ghi rõ độ tuổi, công ty uy tín, chỉ xin những quyền thực sự cần thiết cho chức năng và cho phép người dùng từ chối thu thập dữ liệu.",
+                            "Ứng dụng hoàn toàn vô danh.",
+                            "Chứa rất nhiều quảng cáo mờ ám."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Sự tuân thủ các quy tắc bảo mật thiết kế (Privacy by Design) là dấu hiệu của một sản phẩm công nghệ có đạo đức."
+                    },
+                    {
+                        question: "Việc nhớ và sử dụng 'Bộ 5 câu hỏi' này giúp em rèn luyện thói quen gì trong kỷ nguyên số?",
+                        options: [
+                            "Thói quen lướt mạng vô định.",
+                            "Thói quen KIỂM TRA TRƯỚC, TIN SAU; trở thành người dùng làm chủ công nghệ, biết bảo vệ sự an toàn của chính mình.",
+                            "Thói quen mua sắm trực tuyến.",
+                            "Thói quen sợ hãi công nghệ mới."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Chuyển từ trạng thái bị động sang chủ động (Proactive user). Trao quyền cho học sinh bằng công cụ tư duy thực tế."
+                    },
+                    {
+                        question: "Khi bạn bè rủ em tải một app 'Bói toán khuôn mặt bằng AI' cực hot, em sẽ khuyên bạn điều gì dựa trên bài học?",
+                        options: [
+                            "'Tải nhanh đi, đang hot lắm!'",
+                            "'Cẩn thận đấy, app này bắt tải ảnh mặt lên, không biết nó dùng ảnh mình vào việc gì đâu, có thể bị lộ thông tin cá nhân.'",
+                            "'Để tớ mượn điện thoại cậu chơi thử.'",
+                            "'App này tốn pin lắm.'"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Lan tỏa ý thức an toàn số. Vận dụng kiến thức để cảnh báo nguy cơ rò rỉ dữ liệu sinh trắc học từ các ứng dụng mồi nhử (Clickbait apps)."
+                    }
+                ]
+            },
+            "7": {
+                title: "Tiết 7: Dữ liệu & thuật toán: AI học thế nào?",
+                questions: [
+                    {
+                        question: "Để một hệ thống AI trở nên thông minh và làm được việc, con người cần cung cấp cho nó 2 thành phần chính nào?",
+                        options: [
+                            "Bàn phím và Chuột.",
+                            "Điện năng và Wifi.",
+                            "DỮ LIỆU (Data) và THUẬT TOÁN (Algorithm).",
+                            "Màn hình và Loa ngoài."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Dữ liệu là nguyên liệu đầu vào, thuật toán là bộ não xử lý. Thiếu một trong hai thì không thể hình thành trí tuệ nhân tạo."
+                    },
+                    {
+                        question: "Trong ẩn dụ 'AI giống như một bạn học trò', DỮ LIỆU được ví như cái gì?",
+                        options: [
+                            "Là chiếc cặp sách.",
+                            "Là cuốn 'sách giáo khoa' chứa hàng triệu ví dụ, bài tập mà AI phải đọc để rút ra kiến thức.",
+                            "Là bài kiểm tra cuối kì.",
+                            "Là giờ ra chơi."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Dữ liệu (Data) là nguồn thông tin thô để máy móc tiến hành quá trình học tập (đào tạo mô hình)."
+                    },
+                    {
+                        question: "Cũng trong ẩn dụ đó, THUẬT TOÁN (Algorithm) được ví như cái gì?",
+                        options: [
+                            "Là chiếc bút chì.",
+                            "Là 'phương pháp học' của bạn học trò: các bước xử lý để tìm ra quy luật từ cuốn sách (dữ liệu) đó.",
+                            "Là bảng điểm.",
+                            "Là giáo viên chủ nhiệm."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Thuật toán là tập hợp các quy tắc toán học, các bước logic được lập trình sẵn để máy tính phân tích dữ liệu và tự động điều chỉnh."
+                    },
+                    {
+                        question: "Trợ lý ảo nghe và hiểu lời nói của em (ví dụ: 'Mai trời mưa không?') thông qua trình tự 4 bước nào?",
+                        options: [
+                            "Tắt máy -> Bật máy -> Nghe -> Nghỉ.",
+                            "Nghe giọng (thu âm) -> ĐỔI THÀNH CHỮ -> Hiểu ý (phân tích ngữ nghĩa) -> Tìm và trả lời.",
+                            "Chụp ảnh -> Phân tích ảnh -> In ảnh -> Đọc ảnh.",
+                            "Tìm kiếm -> Download -> Upload -> Delete."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Đây là quy trình xử lý ngôn ngữ tự nhiên (NLP) cơ bản: Thu nhận tín hiệu âm thanh -> Chuyển đổi Speech-to-Text -> Xử lý ngữ nghĩa -> Truy xuất thông tin."
+                    },
+                    {
+                        question: "Bước quan trọng nào giúp máy tính chuyển đổi âm thanh (lời nói) thành dạng mà nó có thể phân tích được?",
+                        options: [
+                            "Tăng âm lượng loa thật to.",
+                            "Biến đổi sóng âm thanh thành các dòng VĂN BẢN (chữ viết).",
+                            "Xóa hết tạp âm xung quanh.",
+                            "Phát lại âm thanh đó nhiều lần."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Máy tính phân tích từ vựng và ngữ pháp tốt nhất dưới dạng dữ liệu văn bản. Do đó bước Speech-to-Text là cầu nối bắt buộc."
+                    },
+                    {
+                        question: "Khi em nói 'Bật đèn', trợ lý ảo nhận ra em đang muốn điều khiển thiết bị điện. Đó là bước nào trong 4 bước hoạt động?",
+                        options: [
+                            "Bước Nghe giọng.",
+                            "Bước Đổi thành chữ.",
+                            "Bước HIỂU Ý (phân tích mục đích của câu lệnh).",
+                            "Bước Tìm và trả lời."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Giai đoạn nhận diện ý định (Intent Recognition) trong xử lý ngôn ngữ, giúp máy phân loại yêu cầu của người dùng để kích hoạt hành động tương ứng."
+                    },
+                    {
+                        question: "Nếu con người đưa cho AI bộ dữ liệu (cuốn sách) bị sai lệch hoặc toàn thông tin giả, điều gì sẽ xảy ra?",
+                        options: [
+                            "AI sẽ tự biết đó là thông tin sai và không học.",
+                            "AI sẽ học sai, đưa ra kết quả sai lệch và trở nên vô dụng (Rác vào thì Rác ra).",
+                            "AI sẽ báo cáo cảnh sát.",
+                            "Máy tính sẽ phát nổ."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Nguyên lý GIGO (Garbage In, Garbage Out) trong khoa học dữ liệu. Thuật toán tốt đến mấy cũng thất bại nếu dữ liệu đầu vào là rác."
+                    },
+                    {
+                        question: "Hành động AI phân tích một bức ảnh và kết luận 'Đây là con mèo' diễn ra như thế nào?",
+                        options: [
+                            "AI dùng ma thuật để nhìn thấu bức ảnh.",
+                            "AI nhận ảnh -> xem xét các chi tiết (đường nét, màu sắc) -> SO SÁNH với dữ liệu ảnh mèo đã học trước đó -> Đưa ra kết luận.",
+                            "AI lên mạng hỏi người khác.",
+                            "AI đoán bừa."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Cơ chế của Thị giác máy tính (Computer Vision): Trích xuất đặc trưng (Feature extraction) và so khớp mẫu (Pattern matching) dựa trên mô hình đã được huấn luyện."
+                    },
+                    {
+                        question: "Bài học rút ra từ việc hiểu 'AI hoạt động qua các bước' là gì?",
+                        options: [
+                            "Sợ hãi vì AI phức tạp quá.",
+                            "AI không phải phép màu thần bí, nó chỉ là cỗ máy thực hiện các quy trình (thuật toán) xử lý dữ liệu do con người sắp đặt.",
+                            "Con người không cần phải học gì nữa.",
+                            "AI có linh hồn riêng."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Giải mĩ hóa công nghệ (Demystification). Hiểu bản chất từng bước giúp học sinh xóa bỏ sự sợ hãi vô lý và tự tin làm chủ công cụ."
+                    },
+                    {
+                        question: "Tóm lại, sự 'thông minh' của AI thực chất bắt nguồn từ đâu?",
+                        options: [
+                            "Từ phép thuật tự nhiên.",
+                            "Từ sức lao động của CON NGƯỜI trong việc thiết kế thuật toán và cung cấp bộ dữ liệu khổng lồ.",
+                            "Từ bản thân vỏ nhựa của chiếc máy tính.",
+                            "Từ nguồn điện cắm vào tường."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Đằng sau sự ảo diệu của trí tuệ nhân tạo là trí tuệ thực sự của con người (kỹ sư dữ liệu, nhà khoa học máy tính)."
+                    }
+                ]
+            },
+            "8": {
+                title: "Tiết 8: Tác động tích cực & tiêu cực của AI với gia đình",
+                questions: [
+                    {
+                        question: "Trong lĩnh vực Giải trí gia đình, tác động TÍCH CỰC của các ứng dụng AI (như Youtube, Netflix) là gì?",
+                        options: [
+                            "Gây cãi lộn giữa các thành viên.",
+                            "Gợi ý chính xác các phim, bài hát, video đúng sở thích, giúp cả nhà giải trí thư giãn mà không mất công tìm kiếm.",
+                            "Làm tivi hỏng nhanh hơn.",
+                            "Bắt mọi người phải trả nhiều tiền."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Hệ thống đề xuất (Recommendation Systems) tạo ra sự tiện lợi tối đa, nâng cao trải nghiệm giải trí cá nhân hóa."
+                    },
+                    {
+                        question: "Ngược lại, tác động TIÊU CỰC của tính năng 'Gợi ý giải trí' đối với gia đình là gì?",
+                        options: [
+                            "Tivi không chiếu được hình ảnh.",
+                            "Khiến mọi người bị cuốn vào màn hình xem mãi không dứt (nghiện), ít vận động và làm giảm thời gian trò chuyện thực tế giữa cha mẹ và con cái.",
+                            "Làm mạng wifi bị yếu đi.",
+                            "Ứng dụng tự động xóa video."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Thiết kế gây nghiện (Addictive design) của các nền tảng nhằm giữ chân người dùng dẫn đến hiện tượng xa lánh xã hội ngay trong chính ngôi nhà của mình."
+                    },
+                    {
+                        question: "Với việc Đi lại của gia đình, AI trên bản đồ (Google Maps) giúp ích (tích cực) điều gì?",
+                        options: [
+                            "Tự động lái xe thay bố mẹ.",
+                            "Tìm đường ngắn nhất, cảnh báo điểm kẹt xe, giúp gia đình đi lại nhanh chóng và tiết kiệm thời gian.",
+                            "Phát nhạc trên xe ô tô.",
+                            "Sửa chữa xe khi bị hỏng."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Ứng dụng phân tích dữ liệu giao thông theo thời gian thực (Real-time traffic data) để tối ưu hóa lộ trình di chuyển."
+                    },
+                    {
+                        question: "Tác hại (tiêu cực) nào có thể xảy ra nếu người lái xe 'tin tưởng mù quáng' vào AI bản đồ?",
+                        options: [
+                            "Điện thoại sẽ bị nổ.",
+                            "Đi theo chỉ dẫn của bản đồ đi vào đường cấm, đường xấu, đường cụt hoặc lao xuống sông mà quên quan sát thực tế.",
+                            "Bản đồ sẽ thu phí cao hơn.",
+                            "Xe sẽ chạy chậm lại."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Nguy cơ 'Tự động hóa thiên kiến' (Automation Bias). Con người lười suy nghĩ, phó mặc an toàn cho máy móc dù máy có thể đưa thông tin lỗi thời."
+                    },
+                    {
+                        question: "Trong việc Học tập ở nhà, AI mang lại lợi ích gì cho em?",
+                        options: [
+                            "Làm hộ em tất cả bài tập về nhà.",
+                            "Hỗ trợ tra cứu nhanh, dịch từ vựng, luyện phát âm và giải thích các khái niệm khó hiểu.",
+                            "Giúp em trốn học mà thầy cô không biết.",
+                            "Tự động nâng điểm thi cho em."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "AI đóng vai trò như một gia sư cá nhân hóa (Personalized tutor), hỗ trợ đắc lực quá trình tiếp thu kiến thức."
+                    },
+                    {
+                        question: "Hậu quả xấu (tiêu cực) đối với học sinh nếu lạm dụng AI trong học tập ở nhà là gì?",
+                        options: [
+                            "Mắt sẽ tinh hơn.",
+                            "Trở nên ỷ lại, lười suy nghĩ, lười làm bài, dẫn đến rỗng kiến thức và kỹ năng thực tế bị thui chột.",
+                            "Sẽ được nhà trường khen thưởng.",
+                            "AI sẽ trở thành bạn thân."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Phó mặc quá trình nhận thức cho máy tính làm mất đi sự rèn luyện tư duy cốt lõi của não bộ."
+                    },
+                    {
+                        question: "Các thiết bị thông minh (Smart home) có AI giúp nhắc lịch, nhắc uống thuốc... tiềm ẩn nguy cơ tiêu cực nào?",
+                        options: [
+                            "Chúng làm nhà cửa bẩn hơn.",
+                            "Nguy cơ bị nghe lén, lộ lọt thông tin sinh hoạt riêng tư, lịch trình và tình trạng sức khỏe của cả nhà nếu thiết bị không bảo mật.",
+                            "Chúng tiêu thụ điện năng bằng cả khu phố.",
+                            "Chúng sẽ tự động mở cửa cho trộm."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Rủi ro bảo mật dữ liệu IoT (Internet of Things). Các thiết bị liên tục thu thập dữ liệu cá nhân trong môi trường không gian riêng tư nhất."
+                    },
+                    {
+                        question: "Để giữ được mặt TỐT và tránh mặt XẤU của AI trong gia đình, chúng ta cần làm gì?",
+                        options: [
+                            "Cấm sử dụng mọi thiết bị điện tử trong nhà.",
+                            "Giao hết mọi quyết định sinh hoạt cho AI quản lý.",
+                            "Sử dụng AI có CHỪNG MỰC, tự đặt ra các quy tắc gia đình (ví dụ: giờ ăn cơm không dùng điện thoại) để giữ gìn sự kết nối thật.",
+                            "Mua thật nhiều thiết bị AI đắt tiền."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Giải pháp cân bằng kỹ thuật số (Digital Wellbeing). Đặt ra các ranh giới lành mạnh giữa công nghệ và đời sống thực."
+                    },
+                    {
+                        question: "Vì sao không thể khẳng định 'AI hoàn toàn tốt' hay 'AI hoàn toàn xấu' đối với cuộc sống gia đình?",
+                        options: [
+                            "Vì AI chưa được hoàn thiện.",
+                            "Vì công nghệ mang tính trung lập; nó tốt hay xấu PHỤ THUỘC VÀO CÁCH MỖI GIA ĐÌNH SỬ DỤNG nó (tư duy hai mặt).",
+                            "Vì mỗi loại máy tính có tính cách khác nhau.",
+                            "Vì luật pháp chưa quy định rõ ràng."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Công nghệ khuếch đại ý định của người sử dụng. Làm chủ công nghệ là làm chủ thói quen sử dụng của bản thân."
+                    },
+                    {
+                        question: "Tóm lại, thông điệp chính của tiết học về tác động của AI đối với gia đình là gì?",
+                        options: [
+                            "AI đang phá hoại hạnh phúc gia đình.",
+                            "AI sẽ thay thế hoàn toàn tình cảm con người.",
+                            "Nhận diện rõ hai chiều tác động (Tích cực & Tiêu cực) để chủ động điều chỉnh hành vi, bảo vệ hạnh phúc và sự gắn kết gia đình thực sự.",
+                            "Mọi gia đình đều phải trang bị hệ thống AI."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Giáo dục nhận thức xã hội. Hướng học sinh đến việc xây dựng môi trường sống gia đình lành mạnh trong kỷ nguyên số."
+                    }
+                ]
+            },
+            "9": {
+                title: "Tiết 9: Phân biệt công cụ có AI và không AI",
+                questions: [
+                    {
+                        question: "Đâu là DẤU HIỆU QUAN TRỌNG NHẤT để nhận biết một công cụ có tích hợp AI?",
+                        options: [
+                            "Công cụ đó chạy bằng điện.",
+                            "Công cụ đó có màn hình cảm ứng rất to.",
+                            "Khả năng HỌC THEO THÓI QUEN của người dùng (càng dùng nhiều, nó càng hiểu em và gợi ý chính xác hơn).",
+                            "Công cụ đó có vỏ ngoài bằng nhựa."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Khả năng học hỏi từ dữ liệu (Machine Learning) là đặc trưng cốt lõi phân biệt phần mềm AI với phần mềm truyền thống (chỉ làm theo lệnh lập trình sẵn)."
+                    },
+                    {
+                        question: "Máy tính bỏ túi (Calculator) dù tính toán cực kỳ nhanh nhưng KHÔNG PHẢI là AI. Vì sao?",
+                        options: [
+                            "Vì nó quá rẻ tiền.",
+                            "Vì nó chỉ làm một việc cố định theo công thức cài sẵn, bấm 1000 lần phép '2+2' nó vẫn chỉ ra '4', nó KHÔNG học được gì mới từ em.",
+                            "Vì nó dùng pin năng lượng mặt trời.",
+                            "Vì nó không biết nói tiếng Anh."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Máy tính bỏ túi là một công cụ Rule-based (dựa trên quy tắc cứng). Nó không có khả năng tự thay đổi hành vi dựa trên kinh nghiệm (dữ liệu)."
+                    },
+                    {
+                        question: "Vì sao ứng dụng Youtube được coi là CÓ AI?",
+                        options: [
+                            "Vì nó chiếu video rất mượt.",
+                            "Vì nó có khả năng phân tích dữ liệu lịch sử xem của em để TỰ ĐỘNG GỢI Ý các video đúng sở thích mà em chưa từng tìm kiếm.",
+                            "Vì nó cho phép xem miễn phí.",
+                            "Vì nó có nút chia sẻ."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Hệ thống đề xuất của Youtube sử dụng thuật toán Học máy (Machine Learning) phức tạp để xây dựng hồ sơ sở thích của người dùng."
+                    },
+                    {
+                        question: "Dấu hiệu 'Nhận diện ngôn ngữ tự nhiên, hình ảnh, giọng nói' cho thấy công cụ đó CÓ AI. Đâu là ví dụ của tính năng này?",
+                        options: [
+                            "Đồng hồ báo thức kêu đúng giờ hẹn.",
+                            "Trợ lý ảo (Siri) nghe hiểu câu nói 'Mở nhạc đi' của em và thực hiện lệnh.",
+                            "Tivi tự tắt khi rút phích cắm.",
+                            "Máy in in ra tờ giấy."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Xử lý Ngôn ngữ tự nhiên (NLP) và nhận dạng giọng nói đòi hỏi mô hình AI phức tạp để hiểu ý định của con người, vượt ngoài các lệnh nút bấm cơ học."
+                    },
+                    {
+                        question: "Đồng hồ báo thức kỹ thuật số dù kêu đúng giờ mỗi ngày nhưng KHÔNG CÓ AI. Vì sao?",
+                        options: [
+                            "Vì nó chỉ thực hiện đúng một lệnh do con người cài đặt, không có khả năng nghe, hiểu, học hay thay đổi giờ nếu em không tự bấm.",
+                            "Vì nó có màn hình quá nhỏ.",
+                            "Vì nó không kết nối wifi.",
+                            "Vì tiếng chuông của nó quá ồn."
+                        ],
+                        correctAnswer: 0,
+                        explanation: "Thiết bị điện tử tự động hóa cơ bản (Automation) không được tính là trí tuệ nhân tạo nếu thiếu đi khả năng học (Learning) và thích ứng (Adaptability)."
+                    },
+                    {
+                        question: "Khi em hỏi Trợ lý ảo cùng một câu hỏi 'Hôm nay thế nào?' ở hai ngày khác nhau, nó có thể trả lời hai câu khác nhau. Dấu hiệu này chứng tỏ điều gì?",
+                        options: [
+                            "Trợ lý ảo bị hỏng.",
+                            "Dấu hiệu CÓ AI: Công cụ có AI có thể sinh ra phản hồi đa dạng, linh hoạt tùy ngữ cảnh (thời tiết, thời gian) chứ không rập khuôn.",
+                            "Người phát triển đang ngồi trả lời trực tiếp.",
+                            "Điện thoại bị virus."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Tính linh hoạt (Flexibility) và khả năng sinh nội dung (Generative) là đặc tính của các mô hình ngôn ngữ lớn (LLMs) đằng sau trợ lý ảo."
+                    },
+                    {
+                        question: "Tính năng Dịch tự động (Google Dịch) đôi khi dịch sai một câu thành ý nghĩa ngô nghê, khó đoán trước. Đây là dấu hiệu gì?",
+                        options: [
+                            "Cảnh báo nên vứt điện thoại.",
+                            "Dấu hiệu CÓ AI: AI dựa trên xác suất, xử lý tình huống phức tạp nên CÓ THỂ SAI THEO KIỂU KHÓ ĐOÁN, không như máy tính bỏ túi luôn đúng.",
+                            "Dấu hiệu máy bị vô nước.",
+                            "Dấu hiệu phần mềm hết hạn."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Hành vi của hệ thống Học máy mang tính xác suất (Probabilistic) chứ không phải tính tất định (Deterministic). Do đó, chúng có những sai sót không tuân theo quy luật logic thông thường."
+                    },
+                    {
+                        question: "Máy đo huyết áp điện tử tại nhà hiện số đo tự động, nó thuộc nhóm nào?",
+                        options: [
+                            "CÓ AI, vì nó tự động đo được.",
+                            "KHÔNG AI, vì nó chỉ đo cảm biến vật lý và hiện số cố định, không học thói quen, không nhận diện giọng nói hay sinh nội dung.",
+                            "Vừa có vừa không.",
+                            "Đây là một loại robot."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Máy đo huyết áp là một thiết bị cảm biến y tế (Sensor-based device). Nó thực hiện phép đo vật lý chứ không sử dụng thuật toán phân tích dữ liệu phức tạp để dự đoán."
+                    },
+                    {
+                        question: "Câu nói nào sau đây là MỘT SAI LẦM phổ biến khi phân biệt công cụ AI?",
+                        options: [
+                            "AI phải học từ dữ liệu.",
+                            "'Cứ thiết bị điện tử nào có màn hình, cắm điện và làm việc tự động thì đều là AI.'",
+                            "AI có thể nhận diện khuôn mặt.",
+                            "Máy tính bỏ túi không có AI."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Rất nhiều thiết bị điện tử (như tủ lạnh thường, máy in, đồng hồ) hoạt động tự động bằng vi mạch điện tử cơ bản nhưng không hề chứa thuật toán Trí tuệ nhân tạo."
+                    },
+                    {
+                        question: "Mục đích của việc phân biệt được 'CÓ AI' và 'KHÔNG AI' là gì?",
+                        options: [
+                            "Để biết cái nào bán được nhiều tiền hơn.",
+                            "Giúp em không bị 'thần thánh hóa' mọi đồ điện tử, hiểu đúng bản chất công cụ để dùng đúng cách và không sợ hãi công nghệ.",
+                            "Để đi thi sửa máy tính.",
+                            "Không có mục đích gì cả."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Nâng cao năng lực Kỹ thuật số (Digital Literacy). Giúp học sinh định hình rõ ranh giới của công nghệ AI trong một thế giới tràn ngập thiết bị điện tử."
+                    }
+                ]
+            },
+            "10": {
+                title: "Tiết 10: Công nghệ AI quen thuộc quanh em",
+                questions: [
+                    {
+                        question: "Khi em dùng điện thoại đưa lên trước mặt, điện thoại tự động mở khóa mà không cần nhập mật khẩu. Đây là ứng dụng của công nghệ AI nào?",
+                        options: [
+                            "Nhận dạng giọng nói.",
+                            "Chuyển văn bản thành giọng nói.",
+                            "Nhận dạng hình ảnh (Computer Vision).",
+                            "Dịch tự động."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Tính năng FaceID hoặc mở khóa bằng khuôn mặt sử dụng camera để thu thập hình ảnh và thuật toán thị giác máy tính để so khớp đặc điểm khuôn mặt."
+                    },
+                    {
+                        question: "Em nói vào điện thoại: 'Ngày mai mấy giờ mặt trời mọc?', điện thoại lập tức hiển thị thông tin thời tiết. Công nghệ AI nào đã nghe và hiểu câu hỏi của em?",
+                        options: [
+                            "Nhận dạng hình ảnh.",
+                            "Nhận dạng giọng nói (Speech Recognition).",
+                            "Gợi ý nội dung.",
+                            "Dịch tự động."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Công nghệ nhận dạng giọng nói (Speech-to-Text) kết hợp với Xử lý ngôn ngữ tự nhiên (NLP) giúp máy tính chuyển đổi âm thanh thành văn bản và hiểu ý định câu lệnh."
+                    },
+                    {
+                        question: "Một ứng dụng trên điện thoại có khả năng 'đọc to' toàn bộ câu chuyện cổ tích bằng một giọng rất truyền cảm cho người khiếm thị nghe. Đó là công nghệ gì?",
+                        options: [
+                            "Nhận dạng giọng nói.",
+                            "Chuyển văn bản thành giọng nói (Text-to-Speech).",
+                            "Nhận dạng hình ảnh.",
+                            "Lọc ảnh làm đẹp."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Công nghệ Text-to-Speech (TTS) sử dụng AI để tổng hợp giọng nói nhân tạo từ văn bản kỹ thuật số, rất hữu ích cho người khiếm thị hoặc việc học ngôn ngữ."
+                    },
+                    {
+                        question: "Khi em đi du lịch nước ngoài, em gõ một câu tiếng Việt vào máy và nó lập tức hiện ra câu tiếng Anh tương ứng. Đây là công nghệ AI nào?",
+                        options: [
+                            "Gợi ý nội dung.",
+                            "Nhận dạng khuôn mặt.",
+                            "Dịch tự động (Machine Translation).",
+                            "Chuyển giọng nói thành văn bản."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Dịch máy (Machine Translation) sử dụng mạng nơ-ron nhân tạo để phân tích ngữ pháp, ngữ nghĩa và chuyển đổi văn bản giữa các ngôn ngữ."
+                    },
+                    {
+                        question: "Vừa nghe xong một bài hát của ca sĩ Sơn Tùng, ứng dụng nhạc lập tức tự động chuyển sang một bài hát khác có giai điệu rất giống mà em cũng thích. Công nghệ gì đang hoạt động?",
+                        options: [
+                            "Dịch tự động.",
+                            "Nhận dạng hình ảnh.",
+                            "Hệ thống gợi ý nội dung (Recommendation System).",
+                            "Đọc văn bản."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Hệ thống đề xuất âm nhạc phân tích lịch sử nghe nhạc của hàng triệu người dùng để tìm ra các bài hát có tính tương đồng và gợi ý cho cá nhân."
+                    },
+                    {
+                        question: "Ứng dụng camera tự động nhóm tất cả các bức ảnh có mặt mẹ em vào một album riêng tên là 'Mẹ'. Ứng dụng đã dùng công nghệ gì?",
+                        options: [
+                            "Nhận dạng giọng nói.",
+                            "Gợi ý video.",
+                            "Nhận dạng hình ảnh (nhận diện khuôn mặt).",
+                            "Dịch văn bản."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Tính năng gom nhóm ảnh (Clustering) sử dụng thuật toán nhận diện khuôn mặt (Facial Recognition) để phân loại hình ảnh dựa trên các đặc trưng sinh trắc học."
+                    },
+                    {
+                        question: "Tính năng 'gõ phím bằng giọng nói' (em đọc đến đâu chữ hiện lên màn hình đến đó) là sự kết hợp của công nghệ nào?",
+                        options: [
+                            "Dịch tự động.",
+                            "Nhận dạng hình ảnh.",
+                            "Nhận dạng giọng nói (Chuyển giọng nói thành văn bản).",
+                            "Gợi ý nội dung."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Đây là ứng dụng Speech-to-Text (STT), phân tích sóng âm thanh và ánh xạ chúng với các từ vựng trong cơ sở dữ liệu ngôn ngữ."
+                    },
+                    {
+                        question: "Mục đích chính của việc học sinh lớp 6 cần 'nhận biết tên' các công nghệ AI quen thuộc là gì?",
+                        options: [
+                            "Để biết cách tháo lắp điện thoại.",
+                            "Để tự mình lập trình ra các ứng dụng đó ngay lập tức.",
+                            "Để nhận thức được AI đang hiện diện rất gần gũi trong đời sống, biết gọi tên công nghệ đang phục vụ mình, xóa bỏ sự xa lạ.",
+                            "Để khoe khoang với bạn bè."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Nhận thức công nghệ (Technology Awareness). Học sinh không cần hiểu sâu mã nguồn, chỉ cần biết tên gọi và chức năng để làm chủ công cụ trong giao tiếp và sử dụng hàng ngày."
+                    },
+                    {
+                        question: "Khi em giơ camera điện thoại lên một bảng hiệu tiếng Pháp, màn hình hiện đè lên đó dòng chữ dịch sang tiếng Việt. Đây là sự kết hợp của 2 công nghệ AI nào?",
+                        options: [
+                            "Nhận dạng giọng nói VÀ Gợi ý video.",
+                            "Nhận dạng hình ảnh (để đọc chữ trên biển) VÀ Dịch tự động.",
+                            "Chuyển văn bản thành giọng nói VÀ Gợi ý nội dung.",
+                            "Máy tính bỏ túi VÀ Đồng hồ báo thức."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Đây là ví dụ điển hình của ứng dụng AI phức hợp (như Google Lens): Nhận dạng kí tự quang học (OCR - nhánh của Thị giác máy) kết hợp Dịch máy."
+                    },
+                    {
+                        question: "Sự phát triển mạnh mẽ của các công nghệ AI này (nghe, nhìn, đọc, dịch) hướng tới mục tiêu lớn nhất là gì?",
+                        options: [
+                            "Làm con người trở nên lười biếng hoàn toàn.",
+                            "Tạo ra một thế giới ảo thay thế thế giới thật.",
+                            "Giúp máy tính tương tác với thế giới và con người một cách tự nhiên hơn, giống như cách con người giao tiếp với nhau.",
+                            "Tiêu thụ nhiều điện năng nhất có thể."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Mục tiêu tối thượng của AI là mô phỏng năng lực nhận thức của con người (Trí tuệ nhân tạo tổng quát - AGI), giúp tương tác Người-Máy (HCI) trở nên liền mạch."
+                    }
+                ]
+            },
+            "11": {
+                title: "Tiết 11: Nên và không nên dùng AI",
+                questions: [
+                    {
+                        question: "Câu hỏi quan trọng NHẤT em cần tự hỏi trước khi nhờ AI làm một việc gì đó trong học tập là gì?",
+                        options: [
+                            "Việc này có mất nhiều tiền wifi không?",
+                            "Việc này NẾU TỰ LÀM thì em có học thêm được kỹ năng gì không? (Việc này em CÓ CẦN tự rèn luyện không?)",
+                            "AI có thể làm việc này trong mấy giây?",
+                            "Giao diện của AI có đẹp không?"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Nếu một việc là cốt lõi để rèn luyện kỹ năng (ví dụ: viết văn, tư duy giải toán), giao nó cho máy móc đồng nghĩa với việc tự tước đi cơ hội phát triển não bộ."
+                    },
+                    {
+                        question: "Tình huống: Em dùng AI để luyện phát âm tiếng Anh. AI nghe em đọc, chỉ ra lỗi sai và đọc lại cho em nghe. Đây là tình huống NÊN hay KHÔNG NÊN dùng AI?",
+                        options: [
+                            "KHÔNG NÊN, vì nó làm máy điện thoại hỏng.",
+                            "KHÔNG NÊN, vì em sẽ ỷ lại.",
+                            "NÊN, vì AI ở đây là công cụ hỗ trợ luyện tập, giúp em nhận ra lỗi sai, và em vẫn phải TỰ MÌNH luyện đọc để giỏi lên.",
+                            "NÊN, vì em không cần phải học tiếng Anh nữa."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "AI đóng vai trò phản hồi (Feedback loop) giống như một gia sư, nhưng quá trình rèn luyện cơ miệng và kỹ năng vẫn do chính học sinh thực hiện."
+                    },
+                    {
+                        question: "Tình huống: Đề bài yêu cầu 'Viết bài văn tả cảm xúc của em về người mẹ'. Em nên xử lý thế nào với AI?",
+                        options: [
+                            "Bảo AI viết nguyên một bài hoàn chỉnh rồi chép lại nộp cho thầy cô.",
+                            "KHÔNG NÊN nhờ AI viết hộ, vì văn tả mẹ cần cảm xúc chân thật, kỷ niệm riêng của em. Viết văn là kỹ năng em CẦN tự rèn.",
+                            "Bảo AI viết rồi sửa lại tên mẹ mình vào.",
+                            "Không làm bài tập này vì AI không biết mẹ em."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Viết lách là tư duy và cảm xúc. Sử dụng văn bản tạo sinh (Generative text) trong bài tập sáng tạo cá nhân là vi phạm tính xác thực (Authenticity) và liêm chính học thuật."
+                    },
+                    {
+                        question: "Tình huống: Em chuẩn bị đi đến một nhà sách ở con đường rất lạ và phức tạp. Việc dùng AI bản đồ để tìm đường là NÊN hay KHÔNG NÊN?",
+                        options: [
+                            "KHÔNG NÊN, vì em phải tự rèn luyện kỹ năng đi lạc.",
+                            "NÊN, vì đây là công việc phụ, AI giúp em tiết kiệm thời gian, tránh đi lạc và đảm bảo an toàn, không làm em kém đi.",
+                            "KHÔNG NÊN, vì đi đường lạ mới vui.",
+                            "NÊN, vì AI sẽ chở em đi."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Đối với các tác vụ tiện ích định tuyến (Routing), việc tự động hóa hoàn toàn mang lại hiệu suất và an toàn mà không đánh đổi kỹ năng cốt lõi cần rèn luyện."
+                    },
+                    {
+                        question: "Hậu quả thực sự của việc thường xuyên nhờ AI 'làm hộ hết bài tập toán' là gì?",
+                        options: [
+                            "Em sẽ trở thành thiên tài Toán học.",
+                            "Giáo viên sẽ rất vui vì em làm bài nhanh.",
+                            "Em mất cơ hội rèn luyện tư duy logic. Khi vào phòng thi không có AI, em sẽ không thể tự làm được bài.",
+                            "AI sẽ yêu cầu trả phí cao."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Hội chứng 'Thui chột kỹ năng' (Deskilling) do lạm dụng tự động hóa. Não bộ không được rèn luyện sẽ mất đi khả năng giải quyết vấn đề độc lập."
+                    },
+                    {
+                        question: "Tình huống: Em buồn bực vì cãi nhau với bạn thân. Việc chỉ lên mạng tâm sự với Chatbot AI thay vì nói chuyện với con người là NÊN hay KHÔNG NÊN?",
+                        options: [
+                            "NÊN, vì Chatbot giữ bí mật tốt hơn.",
+                            "NÊN, vì Chatbot trả lời nhanh hơn.",
+                            "KHÔNG NÊN, vì những vấn đề tâm lý, cảm xúc cần sự thấu hiểu, đồng cảm và lời khuyên chân thành từ người thật (gia đình, bạn bè). AI chỉ là máy vô tri.",
+                            "KHÔNG NÊN, vì tốn dữ liệu mạng."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Máy móc thiếu năng lực cảm xúc (Emotional Intelligence) thực sự. Tìm kiếm sự an ủi từ AI tạo ra ảo giác về sự đồng hành, cản trở các mối quan hệ xã hội lành mạnh."
+                    },
+                    {
+                        question: "Khi em cần dịch một đoạn văn bản dài từ tiếng nước ngoài sang tiếng Việt để HIỂU NHANH Ý CHÍNH, việc dùng AI dịch là NÊN hay KHÔNG NÊN?",
+                        options: [
+                            "KHÔNG NÊN, vì phải tự dò từ điển từng từ một mới tốt.",
+                            "NÊN, vì AI giúp em nắm bắt thông tin nhanh chóng. Tuy nhiên, vẫn cần đọc kỹ lại vì AI có thể dịch sai ngữ cảnh.",
+                            "NÊN, vì AI luôn dịch đúng 100%.",
+                            "KHÔNG NÊN, vì AI không biết dịch."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Sử dụng AI cho mục đích tóm tắt thông tin thô (Information skimming) là hợp lý, nhưng đòi hỏi sự kiểm chứng ngữ cảnh từ người dùng."
+                    },
+                    {
+                        question: "Nguyên tắc 'Dùng AI đúng lúc' có thể được tóm tắt bằng câu nào sau đây?",
+                        options: [
+                            "Việc gì khó, có AI lo.",
+                            "AI làm việc chính, em làm việc phụ.",
+                            "Dùng AI để HỖ TRỢ các việc phụ và gợi ý; KIÊN QUYẾT TỰ LÀM những việc cần rèn luyện tư duy và kỹ năng của bản thân.",
+                            "Không bao giờ dùng AI."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Định vị AI là Công cụ khuếch đại (Amplifier) chứ không phải Vật thế thân (Substitute) cho năng lực cốt lõi của con người."
+                    },
+                    {
+                        question: "Tình huống: AI gợi ý một bài toán nâng cao rất hay dựa trên trình độ của em. Đây là NÊN hay KHÔNG NÊN dùng?",
+                        options: [
+                            "KHÔNG NÊN, vì nó làm em phải học nhiều hơn.",
+                            "NÊN, vì tính năng cá nhân hóa của AI giúp em tìm được tài liệu học tập phù hợp để tự rèn luyện tốt hơn.",
+                            "NÊN, bảo AI giải luôn bài toán đó.",
+                            "KHÔNG NÊN, vì bài khó quá."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Học tập thích ứng (Adaptive learning) là một trong những ứng dụng tuyệt vời nhất của AI, giúp tối ưu hóa lộ trình phát triển cá nhân."
+                    },
+                    {
+                        question: "Mục tiêu của tiết học 'Nên và Không Nên dùng AI' là giúp học sinh hình thành phẩm chất gì?",
+                        options: [
+                            "Lười biếng và ỷ lại.",
+                            "Sự tự ti trước máy móc.",
+                            "Sự TỰ CHỦ (biết giới hạn), TRUNG THỰC (không gian lận nhờ máy) và TRÁCH NHIỆM với sự phát triển trí tuệ của chính mình.",
+                            "Kỹ năng sửa chữa máy tính."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Giáo dục nhân cách trong kỷ nguyên số. Trí tuệ con người chỉ phát triển thông qua sự nỗ lực tự thân, công nghệ không thể mua được sự hiểu biết thực sự."
+                    }
+                ]
+            },
+            "12": {
+                title: "Tiết 12: Giới hạn của AI so với con người (Tổng kết)",
+                questions: [
+                    {
+                        question: "Mặc dù tính toán siêu tốc và ghi nhớ hàng triệu dữ liệu, AI lại RẤT KÉM ở lĩnh vực nào so với con người?",
+                        options: [
+                            "Tìm kiếm đường đi trên bản đồ.",
+                            "Dịch các câu văn bản đơn giản.",
+                            "Thấu hiểu cảm xúc thật sự, sự đồng cảm và khả năng sáng tạo độc đáo từ trái tim.",
+                            "Chơi cờ vua."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Trí tuệ cảm xúc (EQ) và khả năng sáng tạo nghệ thuật đích thực (mang trải nghiệm sống) là ranh giới lớn nhất mà AI hiện tại chưa thể vượt qua."
+                    },
+                    {
+                        question: "Tình huống: Một người bạn đang khóc vì chuyện buồn. Tại sao sự an ủi của một con người lại giá trị hơn hàng ngàn lời khuyên hay nhất do AI tạo ra?",
+                        options: [
+                            "Vì con người nói to hơn AI.",
+                            "Vì AI không biết cách gửi tin nhắn.",
+                            "Vì sự an ủi của con người chứa đựng tình cảm THẬT, ánh mắt, cái ôm và sự đồng cảm; còn AI chỉ là ghép nối từ ngữ vô hồn.",
+                            "Vì bạn đó không có điện thoại."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Sự hiện diện của con người (Human Presence) và khả năng chia sẻ nỗi đau là đặc quyền của sinh vật có ý thức, điều máy móc không thể mô phỏng sự chân thành."
+                    },
+                    {
+                        question: "Trong việc sáng tác một câu chuyện, vì sao con người vẫn vượt trội hơn AI?",
+                        options: [
+                            "Vì con người viết chữ đẹp hơn máy in.",
+                            "Vì AI viết quá chậm.",
+                            "Vì tác phẩm của con người mang theo kỉ niệm, trải nghiệm sống cá nhân và sự phá cách; AI chỉ chắp vá, xào nấu lại dữ liệu cũ đã học.",
+                            "Vì con người có thể thức đêm."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "AI tạo sinh thiếu tính Độc bản (Originality). Mọi thứ nó tạo ra đều là nội suy từ không gian dữ liệu huấn luyện, không có tính đột phá từ tư duy mới."
+                    },
+                    {
+                        question: "Khi đối mặt với một tình huống hệ trọng, phức tạp (ví dụ: cứu người, phán xử đúng sai), vì sao AI KHÔNG THỂ là người ra quyết định cuối cùng?",
+                        options: [
+                            "Vì máy tính cần phải cắm điện mới chạy.",
+                            "Vì quyết định hệ trọng đòi hỏi SỰ THẤU HIỂU ĐẠO ĐỨC, nhận thức về hoàn cảnh đặc biệt và NĂNG LỰC CHỊU TRÁCH NHIỆM - điều máy vô tri không có.",
+                            "Vì AI tính toán quá nhanh gây nhầm lẫn.",
+                            "Vì luật pháp cấm dùng máy tính."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Đạo đức học (Ethics) và Trách nhiệm giải trình (Accountability). Máy móc không thể bị bỏ tù hay trừng phạt lương tâm, do đó không thể giao quyền định đoạt sinh tử."
+                    },
+                    {
+                        question: "Khi một phần mềm AI làm sai (ví dụ: chỉ đường sai gây tai nạn), ai là người phải chịu trách nhiệm?",
+                        options: [
+                            "Bản thân cái điện thoại.",
+                            "Phần mềm AI đó.",
+                            "Cỗ máy không thể chịu trách nhiệm. Trách nhiệm thuộc về CON NGƯỜI (người lập trình ra AI, người cung cấp dịch vụ, hoặc người quyết định dùng nó).",
+                            "Không ai phải chịu trách nhiệm cả."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Nguyên tắc pháp lý cốt lõi: Con người chịu trách nhiệm cho các công cụ tự động hóa do họ tạo ra hoặc triển khai."
+                    },
+                    {
+                        question: "Việc hiểu rõ 'Những việc AI làm giỏi' (như tính toán, lặp lại) giúp ích gì cho con người?",
+                        options: [
+                            "Giúp con người sợ hãi máy móc.",
+                            "Giúp con người biết nhường các việc vất vả, máy móc đó cho AI làm, giải phóng sức lao động để tập trung vào việc sáng tạo, cảm xúc.",
+                            "Giúp con người thi chạy thi với AI.",
+                            "Giúp con người ngừng học Toán."
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Phân công lao động Người-Máy (Human-AI Collaboration). Tự động hóa giải phóng con người khỏi công việc tẻ nhạt để vươn tới các giá trị bậc cao."
+                    },
+                    {
+                        question: "Thông điệp cốt lõi và quan trọng nhất của toàn bộ chương trình AI Lớp 6 là gì?",
+                        options: [
+                            "AI sẽ sớm tiêu diệt và cai trị loài người.",
+                            "Máy móc luôn luôn đúng, con người phải phục tùng.",
+                            "CON NGƯỜI LÀM CHỦ AI. AI chỉ là công cụ hỗ trợ do con người tạo ra, điều khiển và phải chịu trách nhiệm khi sử dụng.",
+                            "Tẩy chay mọi thiết bị công nghệ."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Tư duy lấy con người làm trung tâm (Human-Centric AI). Tái khẳng định vị thế chủ thể của con người trước sự phát triển vũ bão của công nghệ."
+                    },
+                    {
+                        question: "Trong tương lai, để không bị AI 'cướp việc', học sinh cần tập trung rèn luyện những kỹ năng nào?",
+                        options: [
+                            "Rèn luyện kỹ năng bấm máy tính thật nhanh.",
+                            "Học thuộc lòng thật nhiều sách giáo khoa.",
+                            "Tập trung rèn luyện các kỹ năng 'Rất Người': Tư duy phản biện, Sáng tạo nghệ thuật, Kỹ năng giao tiếp, Thấu cảm và Khả năng tự học.",
+                            "Học cách ngủ ít lại."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Kỹ năng thế kỷ 21 (21st Century Skills) nhấn mạnh vào các năng lực siêu nhận thức và cảm xúc xã hội mà thuật toán không thể sao chép."
+                    },
+                    {
+                        question: "Câu nói nào sau đây mô tả đúng đắn thái độ của một học sinh lớp 6 khi tiếp xúc với công nghệ mới?",
+                        options: [
+                            "'Mình không biết gì về máy tính nên sẽ không bao giờ đụng vào AI.'",
+                            "'Có AI rồi, từ nay mình không cần làm bài tập nữa.'",
+                            "'AI là trợ thủ rất giỏi. Mình sẽ dùng nó để hỗ trợ việc học, nhưng mình luôn tự kiểm tra lại và tự chịu trách nhiệm.'",
+                            "'Mình sợ AI sẽ theo dõi mình nên sẽ đập bỏ điện thoại.'"
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Thái độ công dân số tích cực, chủ động, không e ngại nhưng cũng không ỷ lại, biết tận dụng công nghệ an toàn."
+                    },
+                    {
+                        question: "Kết thúc Lớp 6 với nền tảng 'Con người làm chủ AI', bước sang Lớp 7 các em sẽ được học làm gì?",
+                        options: [
+                            "Học cách viết code phần mềm phức tạp.",
+                            "Học cách tháo lắp linh kiện máy tính.",
+                            "Từ việc 'hiểu' công cụ, sẽ tiến tới việc học cách 'LÀM DỰ ÁN AI' theo nhóm để giải quyết các vấn đề thực tế quanh em.",
+                            "Không học Tin học nữa."
+                        ],
+                        correctAnswer: 2,
+                        explanation: "Lộ trình giáo dục năng lực AI: Lớp 6 (Nhận thức) -> Lớp 7 (Thiết kế Dự án sơ khai) -> Lớp 8 (Kịch bản chi tiết) -> Lớp 9 (Đánh giá hoàn thiện)."
+                    }
+                ]
+            }
+        };
+
+        // Khởi tạo các thành phần giao diện
+        const lessonSelect = document.getElementById('lesson-select');
+        const quizContainer = document.getElementById('quiz-container');
+        const placeholderState = document.getElementById('placeholder-state');
+        const submitSection = document.getElementById('submit-section');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsSection = document.getElementById('results-section');
+        const scoreDisplay = document.getElementById('score-display');
+        const retryBtn = document.getElementById('retry-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const quizInfoBar = document.getElementById('quiz-info-bar');
+        const lessonTitleDisplay = document.getElementById('lesson-title-display');
+        const questionCount = document.getElementById('question-count');
+
+        let currentLessonId = null;
+
+        // Xử lý sự kiện khi chọn tiết học
+        lessonSelect.addEventListener('change', (e) => {
+            currentLessonId = e.target.value;
+            loadQuiz(currentLessonId);
+        });
+
+        // Hàm tải câu hỏi của tiết đã chọn
+        function loadQuiz(lessonId) {
+            const data = quizData[lessonId];
+            if (!data) return;
+
+            // Cập nhật trạng thái giao diện
+            placeholderState.classList.add('hidden');
+            resultsSection.classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+            submitSection.classList.remove('hidden');
+            quizInfoBar.classList.remove('hidden');
+            
+            // Cập nhật thông tin thanh Info Bar
+            lessonTitleDisplay.textContent = data.title;
+            questionCount.textContent = data.questions.length;
+
+            quizContainer.innerHTML = ''; // Xóa câu hỏi cũ
+
+            // Dựng HTML cho từng câu hỏi
+            data.questions.forEach((q, index) => {
+                const qNum = index + 1;
+                
+                // Khung chứa câu hỏi
+                const questionBlock = document.createElement('div');
+                questionBlock.className = 'bg-white p-6 rounded-xl shadow-sm border border-slate-200 fade-in';
+                questionBlock.style.animationDelay = `${index * 0.05}s`;
+                questionBlock.id = `question-block-${index}`;
+                
+                // Tiêu đề câu hỏi
+                const questionText = document.createElement('h3');
+                questionText.className = 'text-lg font-bold text-slate-800 mb-4';
+                questionText.innerHTML = `<span class="text-orange-600">Câu ${qNum}:</span> ${q.question}`;
+                questionBlock.appendChild(questionText);
+
+                // Khung chứa các lựa chọn
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'space-y-3';
+                
+                q.options.forEach((opt, optIndex) => {
+                    const optionId = `q${index}_opt${optIndex}`;
+                    
+                    const optionLabel = document.createElement('label');
+                    optionLabel.className = 'flex items-start p-4 border border-slate-200 rounded-lg cursor-pointer hover:bg-orange-50 transition-colors peer-checked:border-orange-600 peer-checked:bg-orange-50 group';
+                    optionLabel.id = `label_${optionId}`;
+                    
+                    const radioInput = document.createElement('input');
+                    radioInput.type = 'radio';
+                    radioInput.name = `question${index}`;
+                    radioInput.value = optIndex;
+                    radioInput.className = 'mt-1 mr-3 w-5 h-5 text-orange-600 border-slate-300 focus:ring-orange-500';
+                    radioInput.id = optionId;
+                    
+                    const optionTextDiv = document.createElement('div');
+                    optionTextDiv.className = 'text-slate-700 font-medium';
+                    optionTextDiv.textContent = opt;
+
+                    optionLabel.appendChild(radioInput);
+                    optionLabel.appendChild(optionTextDiv);
+                    optionsDiv.appendChild(optionLabel);
+                    
+                    // Hiệu ứng click để làm nổi bật lựa chọn (Tông màu Cam)
+                    radioInput.addEventListener('change', function() {
+                        const allLabels = optionsDiv.querySelectorAll('label');
+                        allLabels.forEach(lbl => {
+                            lbl.classList.remove('border-orange-600', 'bg-orange-50', 'ring-1', 'ring-orange-600');
+                        });
+                        if(this.checked) {
+                             optionLabel.classList.add('border-orange-600', 'bg-orange-50', 'ring-1', 'ring-orange-600');
+                        }
+                    });
+                });
+                
+                questionBlock.appendChild(optionsDiv);
+
+                // Khu vực giải thích (ẩn lúc đầu)
+                const explanationDiv = document.createElement('div');
+                explanationDiv.id = `explanation-${index}`;
+                explanationDiv.className = 'mt-4 p-4 rounded-lg text-sm hidden';
+                
+                const explanationTitle = document.createElement('p');
+                explanationTitle.className = 'font-bold mb-1';
+                explanationTitle.id = `explanation-title-${index}`;
+                
+                const explanationText = document.createElement('p');
+                explanationText.textContent = q.explanation;
+                
+                explanationDiv.appendChild(explanationTitle);
+                explanationDiv.appendChild(explanationText);
+                questionBlock.appendChild(explanationDiv);
+
+                quizContainer.appendChild(questionBlock);
+            });
+            
+            // Cuộn lên đầu trang bài thi
+            window.scrollTo({ top: quizContainer.offsetTop - 100, behavior: 'smooth' });
+        }
+
+        // Xử lý sự kiện nộp bài
+        submitBtn.addEventListener('click', () => {
+            if (!currentLessonId) return;
+            
+            const data = quizData[currentLessonId];
+            let score = 0;
+            let answeredCount = 0;
+
+            // Chấm điểm từng câu
+            data.questions.forEach((q, index) => {
+                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                const explanationDiv = document.getElementById(`explanation-${index}`);
+                const explanationTitle = document.getElementById(`explanation-title-${index}`);
+                const questionBlock = document.getElementById(`question-block-${index}`);
+                
+                // Vô hiệu hóa các nút radio sau khi nộp
+                const allInputs = document.querySelectorAll(`input[name="question${index}"]`);
+                allInputs.forEach(input => input.disabled = true);
+                
+                // Hiển thị phần giải thích
+                explanationDiv.classList.remove('hidden');
+
+                if (selectedOption) {
+                    answeredCount++;
+                    const selectedValue = parseInt(selectedOption.value);
+                    const labelDiv = document.getElementById(`label_q${index}_opt${selectedValue}`);
+                    
+                    if (selectedValue === q.correctAnswer) {
+                        // Trả lời đúng
+                        score++;
+                        labelDiv.classList.replace('border-orange-600', 'border-green-500');
+                        labelDiv.classList.replace('bg-orange-50', 'bg-green-50');
+                        labelDiv.classList.replace('ring-orange-600', 'ring-green-500');
+                        
+                        explanationDiv.classList.add('bg-green-100', 'text-green-800');
+                        explanationTitle.innerHTML = '<span class="text-green-600">✓ Chính xác:</span>';
+                        questionBlock.classList.add('border-green-200');
+                    } else {
+                        // Trả lời sai
+                        labelDiv.classList.replace('border-orange-600', 'border-red-500');
+                        labelDiv.classList.replace('bg-orange-50', 'bg-red-50');
+                        labelDiv.classList.replace('ring-orange-600', 'ring-red-500');
+                        
+                        // Highlight đáp án đúng
+                        const correctLabelDiv = document.getElementById(`label_q${index}_opt${q.correctAnswer}`);
+                        correctLabelDiv.classList.add('border-green-500', 'bg-green-50', 'ring-1', 'ring-green-500');
+                        
+                        explanationDiv.classList.add('bg-red-100', 'text-red-800');
+                        explanationTitle.innerHTML = '<span class="text-red-600">✗ Sai rồi:</span>';
+                        questionBlock.classList.add('border-red-200');
+                    }
+                } else {
+                    // Không trả lời
+                     const correctLabelDiv = document.getElementById(`label_q${index}_opt${q.correctAnswer}`);
+                     correctLabelDiv.classList.add('border-yellow-500', 'bg-yellow-50', 'ring-1', 'ring-yellow-500');
+                     
+                     explanationDiv.classList.add('bg-yellow-100', 'text-yellow-800');
+                     explanationTitle.innerHTML = '<span class="text-yellow-600">! Chưa trả lời:</span>';
+                     questionBlock.classList.add('border-yellow-200');
+                }
+            });
+
+            // Hiển thị phần kết quả tổng
+            submitSection.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+            scoreDisplay.textContent = `${score}/${data.questions.length}`;
+            
+            // Lời chúc phản hồi
+            const percentage = score / data.questions.length;
+            if (percentage === 1) {
+                feedbackMessage.textContent = "Xuất sắc! Bạn đã nắm vững hoàn toàn kiến thức tiết này.";
+            } else if (percentage >= 0.8) {
+                feedbackMessage.textContent = "Rất tốt! Bạn hiểu bài khá sâu, chỉ nhầm lẫn một chút xíu thôi.";
+            } else if (percentage >= 0.5) {
+                feedbackMessage.textContent = "Khá tốt. Hãy đọc lại phần giải thích các câu sai để nhớ lâu hơn nhé.";
+            } else {
+                feedbackMessage.textContent = "Bạn cần ôn tập lại tiết học này kỹ hơn. Đừng nản chí, làm lại nhé!";
+            }
+
+            // Cuộn xuống xem kết quả
+            window.scrollTo({ top: resultsSection.offsetTop - 50, behavior: 'smooth' });
+        });
+
+        // Nút làm lại
+        retryBtn.addEventListener('click', () => {
+            if (currentLessonId) {
+                loadQuiz(currentLessonId); // Tải lại tiết học hiện tại
+            }
+        });
+    </script>
+</body>
+</html>
