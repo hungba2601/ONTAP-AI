@@ -10,6 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- JSZip for exporting genuine Word DOCX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -244,6 +247,10 @@
                 </h2>
             </div>
             <div class="flex items-center gap-3">
+                <button type="button" onclick="exportQuizBlankToDocx()" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all shadow-2xs no-print" title="Tải đề trắc nghiệm này về máy dạng file Word (.docx)">
+                    <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>Xuất đề DOCX</span>
+                </button>
                 <div class="text-xs font-semibold text-slate-500">
                     Tiến độ: <span id="answered-counter" class="text-slate-900 font-bold">0</span>/<span id="total-counter">10</span> câu
                 </div>
@@ -327,6 +334,10 @@
                     <button type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="px-5 py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-xl transition-all shadow-xs flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         Chọn bài khác
+                    </button>
+                    <button type="button" onclick="exportQuizResultToDocx()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition-all shadow-xs flex items-center gap-2 no-print" title="Tải kết quả bài làm về máy dưới dạng file Word (.docx)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Xuất DOCX
                     </button>
                     <button type="button" onclick="window.print()" class="px-4 py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-xl transition-all shadow-xs flex items-center gap-2 no-print" title="In hoặc lưu kết quả thành PDF">
                         <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
@@ -6563,6 +6574,338 @@ window.ALL_QUIZ_DATA = ALL_QUIZ_DATA;
                 retryBtn.classList.remove("hidden");
             }
         }
+        // =============================================================
+        // TÍNH NĂNG XUẤT FILE WORD (DOCX) BÀI ÔN TẬP & KẾT QUẢ
+        // =============================================================
+        function xmlEscape(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&apos;');
+        }
+
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 500);
+        }
+
+        async function createAndDownloadDocx({ title, subtitle, infoRows, questions, footerNote, filename }) {
+            let pList = [];
+
+            // Tiêu đề chính
+            pList.push(`
+            <w:p>
+              <w:pPr><w:jc w:val="center"/><w:spacing w:after="80"/></w:pPr>
+              <w:r><w:rPr><w:b/><w:sz w:val="32"/><w:color w:val="1E40AF"/><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/></w:rPr><w:t>${xmlEscape(title)}</w:t></w:r>
+            </w:p>`);
+
+            if (subtitle) {
+                pList.push(`
+            <w:p>
+              <w:pPr><w:jc w:val="center"/><w:spacing w:after="200"/></w:pPr>
+              <w:r><w:rPr><w:b/><w:i/><w:sz w:val="26"/><w:color w:val="475569"/><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/></w:rPr><w:t>${xmlEscape(subtitle)}</w:t></w:r>
+            </w:p>`);
+            }
+
+            // Bảng thông tin học sinh & bài thi
+            if (infoRows && infoRows.length > 0) {
+                let tableRows = infoRows.map(row => `
+                <w:tr>
+                  <w:tc>
+                    <w:tcPr><w:tcW w:w="2800" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="F1F5F9"/></w:tcPr>
+                    <w:p><w:r><w:rPr><w:b/><w:sz w:val="24"/></w:rPr><w:t>${xmlEscape(row.label)}</w:t></w:r></w:p>
+                  </w:tc>
+                  <w:tc>
+                    <w:tcPr><w:tcW w:w="6200" w:type="dxa"/></w:tcPr>
+                    <w:p><w:r><w:rPr>${row.bold ? '<w:b/>' : ''}${row.color ? `<w:color w:val="${row.color}"/>` : ''}<w:sz w:val="24"/></w:rPr><w:t>${xmlEscape(row.val)}</w:t></w:r></w:p>
+                  </w:tc>
+                </w:tr>`).join('');
+
+                pList.push(`
+            <w:tbl>
+              <w:tblPr>
+                <w:tblW w:w="9000" w:type="dxa"/>
+                <w:jc w:val="center"/>
+                <w:tblBorders>
+                  <w:top w:val="single" w:sz="6" w:space="0" w:color="CBD5E1"/>
+                  <w:left w:val="single" w:sz="6" w:space="0" w:color="CBD5E1"/>
+                  <w:bottom w:val="single" w:sz="6" w:space="0" w:color="CBD5E1"/>
+                  <w:right w:val="single" w:sz="6" w:space="0" w:color="CBD5E1"/>
+                  <w:insideH w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/>
+                  <w:insideV w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/>
+                </w:tblBorders>
+              </w:tblPr>
+              ${tableRows}
+            </w:tbl>
+            <w:p><w:spacing w:after="160"/><w:r><w:t></w:t></w:r></w:p>`);
+            }
+
+            // Danh sách các câu hỏi
+            if (questions && questions.length > 0) {
+                questions.forEach((q, idx) => {
+                    pList.push(`
+            <w:p>
+              <w:pPr><w:spacing w:before="160" w:after="60"/></w:pPr>
+              <w:r><w:rPr><w:b/><w:sz w:val="25"/><w:color w:val="0F172A"/></w:rPr><w:t>Câu ${idx + 1}: ${xmlEscape(q.question)}</w:t></w:r>
+            </w:p>`);
+
+                    ['A', 'B', 'C', 'D'].forEach((optLetter, optIdx) => {
+                        const optText = (q.options && q.options[optIdx]) || '';
+                        const isSelected = q.userChoice === optIdx;
+                        const isCorrect = q.correctAnswer === optIdx;
+
+                        let tag = '';
+                        let colorAttr = '';
+                        let boldAttr = '';
+
+                        if (q.showResult) {
+                            if (isCorrect) {
+                                tag = ' [✓ ĐÁP ÁN ĐÚNG]';
+                                colorAttr = '<w:color w:val="15803D"/>';
+                                boldAttr = '<w:b/>';
+                            } else if (isSelected && !isCorrect) {
+                                tag = ' [✗ LỰA CHỌN CỦA EM]';
+                                colorAttr = '<w:color w:val="DC2626"/>';
+                                boldAttr = '<w:b/>';
+                            }
+                        }
+
+                        pList.push(`
+            <w:p>
+              <w:pPr><w:ind w:left="400"/><w:spacing w:after="40"/></w:pPr>
+              <w:r><w:rPr><w:b/><w:sz w:val="23"/>${colorAttr}</w:rPr><w:t>${optLetter}. </w:t></w:r>
+              <w:r><w:rPr><w:sz w:val="23"/>${boldAttr}${colorAttr}</w:rPr><w:t>${xmlEscape(optText)}${tag}</w:t></w:r>
+            </w:p>`);
+                    });
+
+                    if (q.showResult && q.explanation) {
+                        pList.push(`
+            <w:p>
+              <w:pPr><w:ind w:left="400"/><w:spacing w:before="40" w:after="140"/></w:pPr>
+              <w:r><w:rPr><w:i/><w:sz w:val="22"/><w:color w:val="475569"/></w:rPr><w:t>💡 Giải thích: ${xmlEscape(q.explanation)}</w:t></w:r>
+            </w:p>`);
+                    }
+                });
+            }
+
+            // Ghi chú chân trang bản quyền
+            if (footerNote) {
+                pList.push(`
+            <w:p>
+              <w:pPr><w:jc w:val="center"/><w:spacing w:before="300"/></w:pPr>
+              <w:r><w:rPr><w:i/><w:sz w:val="20"/><w:color w:val="64748B"/></w:rPr><w:t>${xmlEscape(footerNote)}</w:t></w:r>
+            </w:p>`);
+            }
+
+            const docXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    ${pList.join('')}
+    <w:sectPr>
+      <w:pgSz w:w="11906" w:h="16838"/>
+      <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/>
+    </w:sectPr>
+  </w:body>
+</w:document>`;
+
+            // Nếu JSZip có sẵn, xuất file .docx chuẩn OpenXML
+            if (window.JSZip) {
+                try {
+                    const zip = new window.JSZip();
+
+                    zip.file('[Content_Types].xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
+</Types>`);
+
+                    zip.file('_rels/.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`);
+
+                    zip.file('word/_rels/document.xml.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>`);
+
+                    zip.file('word/styles.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:docDefaults>
+    <w:rPrDefault>
+      <w:rPr>
+        <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>
+        <w:sz w:val="24"/>
+        <w:szCs w:val="24"/>
+        <w:lang w:val="vi-VN"/>
+      </w:rPr>
+    </w:rPrDefault>
+  </w:docDefaults>
+</w:styles>`);
+
+                    zip.file('word/document.xml', docXml);
+
+                    const blob = await zip.generateAsync({ type: 'blob' });
+                    downloadBlob(blob, filename.endsWith('.docx') ? filename : filename + '.docx');
+                    return;
+                } catch (e) {
+                    console.warn('Lỗi khi nén file docx bằng JSZip, chuyển sang xuất Word HTML:', e);
+                }
+            }
+
+            // Fallback nếu không có JSZip: Xuất file Word định dạng HTML (.doc) mở trực tiếp bằng Microsoft Word
+            let htmlDoc = `
+            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+            <head><meta charset='utf-8'><title>${xmlEscape(title)}</title>
+            <style>
+              body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.5; color: #1e293b; }
+              h1 { text-align: center; color: #1e40af; font-size: 16pt; margin-bottom: 4px; }
+              h2 { text-align: center; color: #475569; font-size: 13pt; font-style: italic; margin-top: 0; }
+              table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+              th, td { border: 1px solid #cbd5e1; padding: 8px 12px; }
+              th { background-color: #f1f5f9; text-align: left; width: 30%; }
+              .question { font-weight: bold; margin-top: 14px; margin-bottom: 6px; }
+              .option { margin-left: 20px; margin-bottom: 4px; }
+              .correct { color: #15803d; font-weight: bold; }
+              .wrong { color: #dc2626; font-weight: bold; }
+              .explanation { margin-left: 20px; color: #475569; font-style: italic; margin-bottom: 12px; }
+              .footer { text-align: center; margin-top: 30px; font-size: 10pt; color: #64748b; font-style: italic; }
+            </style>
+            </head>
+            <body>
+              <h1>${xmlEscape(title)}</h1>
+              ${subtitle ? `<h2>${xmlEscape(subtitle)}</h2>` : ''}
+              <table>
+                ${infoRows.map(r => `<tr><th>${xmlEscape(r.label)}</th><td style="${r.bold ? 'font-weight:bold;' : ''}${r.color ? `color:#${r.color};` : ''}">${xmlEscape(r.val)}</td></tr>`).join('')}
+              </table>
+              ${questions.map((q, i) => `
+                <div class="question">Câu ${i + 1}: ${xmlEscape(q.question)}</div>
+                ${['A', 'B', 'C', 'D'].map((letter, optIdx) => {
+                    const optText = (q.options && q.options[optIdx]) || '';
+                    const isSelected = q.userChoice === optIdx;
+                    const isCorrect = q.correctAnswer === optIdx;
+                    let tag = '';
+                    let cls = 'option';
+                    if (q.showResult) {
+                        if (isCorrect) { tag = ' [✓ ĐÁP ÁN ĐÚNG]'; cls += ' correct'; }
+                        else if (isSelected && !isCorrect) { tag = ' [✗ LỰA CHỌN CỦA EM]'; cls += ' wrong'; }
+                    }
+                    return `<div class="${cls}">${letter}. ${xmlEscape(optText)}${tag}</div>`;
+                }).join('')}
+                ${(q.showResult && q.explanation) ? `<div class="explanation">💡 Giải thích: ${xmlEscape(q.explanation)}</div>` : ''}
+              `).join('')}
+              ${footerNote ? `<div class="footer">${xmlEscape(footerNote)}</div>` : ''}
+            </body>
+            </html>`;
+
+            const fallbackBlob = new Blob(['\ufeff', htmlDoc], { type: 'application/msword' });
+            downloadBlob(fallbackBlob, filename.endsWith('.docx') ? filename.replace(/\.docx$/, '.doc') : filename + '.doc');
+        }
+
+        // Xuất kết quả bài làm học sinh ra file Word (.docx)
+        function exportQuizResultToDocx() {
+            if (!currentLessonId || !ALL_QUIZ_DATA[currentGrade] || !ALL_QUIZ_DATA[currentGrade][currentLessonId]) {
+                alert('⚠️ Chưa có dữ liệu bài làm để xuất!');
+                return;
+            }
+
+            const lesson = ALL_QUIZ_DATA[currentGrade][currentLessonId];
+            const school = selectStudentSchool.value || 'Chưa chọn trường';
+            const sName = inputStudentName.value.trim() || 'Học sinh';
+            const sClass = inputStudentClass.value.trim().toUpperCase() || `${currentGrade}`;
+            const timeSpent = getFormattedDuration();
+            const scoreText = scoreDisplay.textContent || '0';
+            const pctText = percentageDisplay.textContent || '0%';
+            const feedback = feedbackMessage.textContent || '';
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('vi-VN') + ' ' + now.toLocaleTimeString('vi-VN');
+
+            const questions = lesson.questions.map((q, idx) => {
+                const checkedRadio = document.querySelector(`input[name="question${idx}"]:checked`);
+                const userChoice = checkedRadio ? parseInt(checkedRadio.value) : -1;
+                return {
+                    question: q.question,
+                    options: q.options,
+                    correctAnswer: q.correctAnswer,
+                    userChoice: userChoice,
+                    showResult: true,
+                    explanation: q.explanation
+                };
+            });
+
+            const cleanFileName = `KetQua_AI_Khoi${currentGrade}_${sClass}_${sName.replace(/[\/\\?%*:|"<>]/g, '_')}.docx`;
+
+            createAndDownloadDocx({
+                title: 'HỆ THỐNG ÔN TẬP MÔN TRÍ TUỆ NHÂN TẠO (AI) CẤP THCS',
+                subtitle: `KẾT QUẢ BÀI LÀM: Khối ${currentGrade} - ${lesson.title}`,
+                infoRows: [
+                    { label: 'Trường THCS:', val: school, bold: true },
+                    { label: 'Họ và tên học sinh:', val: sName, bold: true },
+                    { label: 'Lớp học:', val: sClass, bold: true },
+                    { label: 'Bài ôn tập:', val: `Khối ${currentGrade} - ${lesson.title}` },
+                    { label: 'Điểm số đạt được:', val: `${scoreText}/${lesson.questions.length} Điểm (${pctText})`, bold: true, color: '15803D' },
+                    { label: 'Thời gian làm bài:', val: timeSpent },
+                    { label: 'Thời gian nộp bài:', val: dateStr },
+                    { label: 'Đánh giá nhận xét:', val: feedback }
+                ],
+                questions: questions,
+                footerNote: 'Hệ thống Ôn tập AI Cấp THCS • Made by Nguyễn Phi Hùng - Zalo 0938750424',
+                filename: cleanFileName
+            });
+        }
+
+        // Xuất đề ôn tập ra file Word (.docx)
+        function exportQuizBlankToDocx() {
+            if (!currentLessonId || !ALL_QUIZ_DATA[currentGrade] || !ALL_QUIZ_DATA[currentGrade][currentLessonId]) {
+                alert('⚠️ Vui lòng chọn một tiết học để xuất đề Word!');
+                return;
+            }
+
+            const lesson = ALL_QUIZ_DATA[currentGrade][currentLessonId];
+            const school = selectStudentSchool.value || 'THCS An Nhơn / THCS Nguyễn Văn Nghi';
+
+            const questions = lesson.questions.map((q) => {
+                return {
+                    question: q.question,
+                    options: q.options,
+                    correctAnswer: q.correctAnswer,
+                    userChoice: -1,
+                    showResult: false,
+                    explanation: ''
+                };
+            });
+
+            const cleanFileName = `DeOnTap_AI_Khoi${currentGrade}_${lesson.title.replace(/[\/\\?%*:|"<>]/g, '_')}.docx`;
+
+            createAndDownloadDocx({
+                title: 'HỆ THỐNG ÔN TẬP MÔN TRÍ TUỆ NHÂN TẠO (AI) CẤP THCS',
+                subtitle: `PHIẾU HỌC TẬP: Khối ${currentGrade} - ${lesson.title}`,
+                infoRows: [
+                    { label: 'Trường THCS:', val: school },
+                    { label: 'Họ và tên học sinh:', val: '..................................................................................' },
+                    { label: 'Lớp:', val: `............... (Khối ${currentGrade})` },
+                    { label: 'Tiết học:', val: lesson.title },
+                    { label: 'Điểm số:', val: '............. / 10' }
+                ],
+                questions: questions,
+                footerNote: 'Hệ thống Ôn tập AI Cấp THCS • Made by Nguyễn Phi Hùng - Zalo 0938750424',
+                filename: cleanFileName
+            });
+        }
+
     </script>
 </body>
 </html>
