@@ -166,10 +166,15 @@
                             <option value="" disabled selected>-- Chọn trường THCS --</option>
                             <option value="THCS An Nhơn">THCS An Nhơn</option>
                             <option value="THCS Nguyễn Văn Nghi">THCS Nguyễn Văn Nghi</option>
+                            <option value="Trường khác">🏫 Trường khác...</option>
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
                             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </div>
+                    </div>
+                    <div id="custom-school-wrapper" class="hidden mt-2 fade-in">
+                        <input type="text" id="input-custom-school" placeholder="Nhập tên trường của bạn..." class="w-full px-3 py-2 bg-white border border-indigo-300 rounded-xl text-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all font-medium placeholder:text-slate-400" />
+                        <p class="text-[11px] text-indigo-600 mt-1 italic">Học sinh & Thầy cô trường khác có thể tự do nhập tên trường tại đây.</p>
                     </div>
                 </div>
 
@@ -451,6 +456,8 @@
 
         // Các phần tử DOM chính
         const selectStudentSchool = document.getElementById('select-student-school');
+        const customSchoolWrapper = document.getElementById('custom-school-wrapper');
+        const inputCustomSchool = document.getElementById('input-custom-school');
         const inputStudentName = document.getElementById('input-student-name');
         const inputStudentClass = document.getElementById('input-student-class');
         const lessonSelect = document.getElementById('lesson-select');
@@ -484,6 +491,7 @@
             
             // Lắng nghe thay đổi thông tin học sinh để tự động lưu
             selectStudentSchool.addEventListener('change', saveStudentInfo);
+            if (inputCustomSchool) inputCustomSchool.addEventListener('input', saveStudentInfo);
             inputStudentName.addEventListener('input', saveStudentInfo);
             inputStudentClass.addEventListener('input', saveStudentInfo);
 
@@ -509,11 +517,30 @@
         // -------------------------------------------------------------
         // HÀM QUẢN LÝ THÔNG TIN HỌC SINH
         // -------------------------------------------------------------
+        function getEffectiveSchool() {
+            const raw = selectStudentSchool ? selectStudentSchool.value : '';
+            if (raw === 'Trường khác') {
+                const custom = inputCustomSchool ? inputCustomSchool.value.trim() : '';
+                return custom || 'Trường khác';
+            }
+            return raw;
+        }
+
         function loadStudentInfo() {
             const savedSchool = localStorage.getItem('ai_quiz_student_school') || '';
+            const savedCustomSchool = localStorage.getItem('ai_quiz_student_custom_school') || '';
             const savedName = localStorage.getItem('ai_quiz_student_name') || '';
             const savedClass = localStorage.getItem('ai_quiz_student_class') || '';
-            if (savedSchool) selectStudentSchool.value = savedSchool;
+
+            if (savedSchool === 'Trường khác') {
+                selectStudentSchool.value = 'Trường khác';
+                if (customSchoolWrapper) customSchoolWrapper.classList.remove('hidden');
+                if (inputCustomSchool && savedCustomSchool) inputCustomSchool.value = savedCustomSchool;
+            } else if (savedSchool) {
+                selectStudentSchool.value = savedSchool;
+                if (customSchoolWrapper) customSchoolWrapper.classList.add('hidden');
+            }
+
             if (savedName) inputStudentName.value = savedName;
             if (savedClass) inputStudentClass.value = savedClass;
             updateStudentDisplay();
@@ -521,10 +548,20 @@
         }
 
         function saveStudentInfo() {
-            const school = selectStudentSchool.value;
+            const schoolVal = selectStudentSchool.value;
+            if (schoolVal === 'Trường khác') {
+                if (customSchoolWrapper) customSchoolWrapper.classList.remove('hidden');
+                const custom = inputCustomSchool ? inputCustomSchool.value.trim() : '';
+                localStorage.setItem('ai_quiz_student_school', 'Trường khác');
+                localStorage.setItem('ai_quiz_student_custom_school', custom);
+            } else {
+                if (customSchoolWrapper) customSchoolWrapper.classList.add('hidden');
+                localStorage.setItem('ai_quiz_student_school', schoolVal);
+                localStorage.removeItem('ai_quiz_student_custom_school');
+            }
+
             const name = inputStudentName.value.trim();
             const sClass = inputStudentClass.value.trim();
-            localStorage.setItem('ai_quiz_student_school', school);
             localStorage.setItem('ai_quiz_student_name', name);
             localStorage.setItem('ai_quiz_student_class', sClass);
             updateStudentDisplay();
@@ -532,7 +569,7 @@
         }
 
         function updateStudentDisplay() {
-            const school = selectStudentSchool.value;
+            const school = getEffectiveSchool();
             const name = inputStudentName.value.trim();
             const sClass = inputStudentClass.value.trim().toUpperCase();
             if (school && name && sClass) {
@@ -824,7 +861,7 @@
         // HÀM CHẤM ĐIỂM & NỘP BÀI
         // -------------------------------------------------------------
         function handleSubmitQuiz() {
-            const studentSchool = selectStudentSchool.value;
+            const studentSchool = getEffectiveSchool();
             const studentName = inputStudentName.value.trim();
             const studentClass = inputStudentClass.value.trim().toUpperCase();
 
@@ -1290,7 +1327,7 @@
             }
 
             const lesson = ALL_QUIZ_DATA[currentGrade][currentLessonId];
-            const school = selectStudentSchool.value || 'Chưa chọn trường';
+            const school = getEffectiveSchool() || 'Chưa chọn trường';
             const sName = inputStudentName.value.trim() || 'Học sinh';
             const sClass = inputStudentClass.value.trim().toUpperCase() || `${currentGrade}`;
             const timeSpent = getFormattedDuration();
@@ -1342,7 +1379,7 @@
             }
 
             const lesson = ALL_QUIZ_DATA[currentGrade][currentLessonId];
-            const school = selectStudentSchool.value || 'THCS An Nhơn / THCS Nguyễn Văn Nghi';
+            const school = getEffectiveSchool() || 'THCS An Nhơn / THCS Nguyễn Văn Nghi';
 
             const questions = lesson.questions.map((q) => {
                 return {
